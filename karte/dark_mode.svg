@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="868" height="500" viewBox="0 0 868 500" font-family="Consolas, Menlo, 'DejaVu Sans Mono', 'Courier New', monospace" font-size="16px">
+<title>sz@github</title>
+<style>
+  text { white-space: pre; fill: #e6edf3; }
+  .key { fill: #e6edf3; font-weight: 700; }
+  .value { fill: #9198a1; }
+  .akzent { fill: #7fb0db; font-weight: 700; }
+  .punkte { fill: #484f58; }
+  .linie { stroke: #484f58; stroke-width: 1; }
+</style>
+<defs>
+  <linearGradient id="verlauf" gradientUnits="userSpaceOnUse" x1="0" y1="30" x2="0" y2="470">
+    <stop offset="0" stop-color="#1f639f"/>
+    <stop offset="1" stop-color="#5b9bd0"/>
+  </linearGradient>
+</defs>
+<rect width="100%" height="100%" rx="15" fill="#161b22"/>
+<g fill="#30363d">
+  <rect x="64" y="34" width="20" height="20"/>
+  <rect x="86" y="34" width="20" height="20"/>
+  <rect x="108" y="34" width="20" height="20"/>
+  <rect x="130" y="34" width="20" height="20"/>
+  <rect x="152" y="34" width="20" height="20"/>
+  <rect x="174" y="34" width="20" height="20"/>
+  <rect x="42" y="56" width="20" height="20"/>
+  <rect x="64" y="56" width="20" height="20"/>
+  <rect x="86" y="56" width="20" height="20"/>
+  <rect x="108" y="56" width="20" height="20"/>
+  <rect x="130" y="56" width="20" height="20"/>
+  <rect x="152" y="56" width="20" height="20"/>
+  <rect x="174" y="56" width="20" height="20"/>
+  <rect x="42" y="78" width="20" height="20"/>
+  <rect x="64" y="78" width="20" height="20"/>
+  <rect x="42" y="100" width="20" height="20"/>
+  <rect x="64" y="100" width="20" height="20"/>
+  <rect x="42" y="122" width="20" height="20"/>
+  <rect x="64" y="122" width="20" height="20"/>
+  <rect x="86" y="122" width="20" height="20"/>
+  <rect x="108" y="122" width="20" height="20"/>
+  <rect x="130" y="122" width="20" height="20"/>
+  <rect x="152" y="122" width="20" height="20"/>
+  <rect x="64" y="144" width="20" height="20"/>
+  <rect x="86" y="144" width="20" height="20"/>
+  <rect x="108" y="144" width="20" height="20"/>
+  <rect x="130" y="144" width="20" height="20"/>
+  <rect x="152" y="144" width="20" height="20"/>
+  <rect x="174" y="144" width="20" height="20"/>
+  <rect x="152" y="166" width="20" height="20"/>
+  <rect x="174" y="166" width="20" height="20"/>
+  <rect x="42" y="188" width="20" height="20"/>
+  <rect x="64" y="188" width="20" height="20"/>
+  <rect x="86" y="188" width="20" height="20"/>
+  <rect x="108" y="188" width="20" height="20"/>
+  <rect x="130" y="188" width="20" height="20"/>
+  <rect x="152" y="188" width="20" height="20"/>
+  <rect x="174" y="188" width="20" height="20"/>
+  <rect x="42" y="210" width="20" height="20"/>
+  <rect x="64" y="210" width="20" height="20"/>
+  <rect x="86" y="210" width="20" height="20"/>
+  <rect x="108" y="210" width="20" height="20"/>
+  <rect x="130" y="210" width="20" height="20"/>
+  <rect x="152" y="210" width="20" height="20"/>
+  <rect x="42" y="276" width="20" height="20"/>
+  <rect x="64" y="276" width="20" height="20"/>
+  <rect x="86" y="276" width="20" height="20"/>
+  <rect x="108" y="276" width="20" height="20"/>
+  <rect x="130" y="276" width="20" height="20"/>
+  <rect x="152" y="276" width="20" height="20"/>
+  <rect x="174" y="276" width="20" height="20"/>
+  <rect x="42" y="298" width="20" height="20"/>
+  <rect x="64" y="298" width="20" height="20"/>
+  <rect x="86" y="298" width="20" height="20"/>
+  <rect x="108" y="298" width="20" height="20"/>
+  <rect x="130" y="298" width="20" height="20"/>
+  <rect x="152" y="298" width="20" height="20"/>
+  <rect x="174" y="298" width="20" height="20"/>
+  <rect x="130" y="320" width="20" height="20"/>
+  <rect x="152" y="320" width="20" height="20"/>
+  <rect x="174" y="320" width="20" height="20"/>
+  <rect x="108" y="342" width="20" height="20"/>
+  <rect x="130" y="342" width="20" height="20"/>
+  <rect x="152" y="342" width="20" height="20"/>
+  <rect x="86" y="364" width="20" height="20"/>
+  <rect x="108" y="364" width="20" height="20"/>
+  <rect x="130" y="364" width="20" height="20"/>
+  <rect x="64" y="386" width="20" height="20"/>
+  <rect x="86" y="386" width="20" height="20"/>
+  <rect x="108" y="386" width="20" height="20"/>
+  <rect x="42" y="408" width="20" height="20"/>
+  <rect x="64" y="408" width="20" height="20"/>
+  <rect x="86" y="408" width="20" height="20"/>
+  <rect x="42" y="430" width="20" height="20"/>
+  <rect x="64" y="430" width="20" height="20"/>
+  <rect x="86" y="430" width="20" height="20"/>
+  <rect x="108" y="430" width="20" height="20"/>
+  <rect x="130" y="430" width="20" height="20"/>
+  <rect x="152" y="430" width="20" height="20"/>
+  <rect x="174" y="430" width="20" height="20"/>
+  <rect x="42" y="452" width="20" height="20"/>
+  <rect x="64" y="452" width="20" height="20"/>
+  <rect x="86" y="452" width="20" height="20"/>
+  <rect x="108" y="452" width="20" height="20"/>
+  <rect x="130" y="452" width="20" height="20"/>
+  <rect x="152" y="452" width="20" height="20"/>
+  <rect x="174" y="452" width="20" height="20"/>
+</g>
+<g fill="url(#verlauf)">
+  <rect x="60" y="30" width="20" height="20"/>
+  <rect x="82" y="30" width="20" height="20"/>
+  <rect x="104" y="30" width="20" height="20"/>
+  <rect x="126" y="30" width="20" height="20"/>
+  <rect x="148" y="30" width="20" height="20"/>
+  <rect x="170" y="30" width="20" height="20"/>
+  <rect x="38" y="52" width="20" height="20"/>
+  <rect x="60" y="52" width="20" height="20"/>
+  <rect x="82" y="52" width="20" height="20"/>
+  <rect x="104" y="52" width="20" height="20"/>
+  <rect x="126" y="52" width="20" height="20"/>
+  <rect x="148" y="52" width="20" height="20"/>
+  <rect x="170" y="52" width="20" height="20"/>
+  <rect x="38" y="74" width="20" height="20"/>
+  <rect x="60" y="74" width="20" height="20"/>
+  <rect x="38" y="96" width="20" height="20"/>
+  <rect x="60" y="96" width="20" height="20"/>
+  <rect x="38" y="118" width="20" height="20"/>
+  <rect x="60" y="118" width="20" height="20"/>
+  <rect x="82" y="118" width="20" height="20"/>
+  <rect x="104" y="118" width="20" height="20"/>
+  <rect x="126" y="118" width="20" height="20"/>
+  <rect x="148" y="118" width="20" height="20"/>
+  <rect x="60" y="140" width="20" height="20"/>
+  <rect x="82" y="140" width="20" height="20"/>
+  <rect x="104" y="140" width="20" height="20"/>
+  <rect x="126" y="140" width="20" height="20"/>
+  <rect x="148" y="140" width="20" height="20"/>
+  <rect x="170" y="140" width="20" height="20"/>
+  <rect x="148" y="162" width="20" height="20"/>
+  <rect x="170" y="162" width="20" height="20"/>
+  <rect x="38" y="184" width="20" height="20"/>
+  <rect x="60" y="184" width="20" height="20"/>
+  <rect x="82" y="184" width="20" height="20"/>
+  <rect x="104" y="184" width="20" height="20"/>
+  <rect x="126" y="184" width="20" height="20"/>
+  <rect x="148" y="184" width="20" height="20"/>
+  <rect x="170" y="184" width="20" height="20"/>
+  <rect x="38" y="206" width="20" height="20"/>
+  <rect x="60" y="206" width="20" height="20"/>
+  <rect x="82" y="206" width="20" height="20"/>
+  <rect x="104" y="206" width="20" height="20"/>
+  <rect x="126" y="206" width="20" height="20"/>
+  <rect x="148" y="206" width="20" height="20"/>
+  <rect x="38" y="272" width="20" height="20"/>
+  <rect x="60" y="272" width="20" height="20"/>
+  <rect x="82" y="272" width="20" height="20"/>
+  <rect x="104" y="272" width="20" height="20"/>
+  <rect x="126" y="272" width="20" height="20"/>
+  <rect x="148" y="272" width="20" height="20"/>
+  <rect x="170" y="272" width="20" height="20"/>
+  <rect x="38" y="294" width="20" height="20"/>
+  <rect x="60" y="294" width="20" height="20"/>
+  <rect x="82" y="294" width="20" height="20"/>
+  <rect x="104" y="294" width="20" height="20"/>
+  <rect x="126" y="294" width="20" height="20"/>
+  <rect x="148" y="294" width="20" height="20"/>
+  <rect x="170" y="294" width="20" height="20"/>
+  <rect x="126" y="316" width="20" height="20"/>
+  <rect x="148" y="316" width="20" height="20"/>
+  <rect x="170" y="316" width="20" height="20"/>
+  <rect x="104" y="338" width="20" height="20"/>
+  <rect x="126" y="338" width="20" height="20"/>
+  <rect x="148" y="338" width="20" height="20"/>
+  <rect x="82" y="360" width="20" height="20"/>
+  <rect x="104" y="360" width="20" height="20"/>
+  <rect x="126" y="360" width="20" height="20"/>
+  <rect x="60" y="382" width="20" height="20"/>
+  <rect x="82" y="382" width="20" height="20"/>
+  <rect x="104" y="382" width="20" height="20"/>
+  <rect x="38" y="404" width="20" height="20"/>
+  <rect x="60" y="404" width="20" height="20"/>
+  <rect x="82" y="404" width="20" height="20"/>
+  <rect x="38" y="426" width="20" height="20"/>
+  <rect x="60" y="426" width="20" height="20"/>
+  <rect x="82" y="426" width="20" height="20"/>
+  <rect x="104" y="426" width="20" height="20"/>
+  <rect x="126" y="426" width="20" height="20"/>
+  <rect x="148" y="426" width="20" height="20"/>
+  <rect x="170" y="426" width="20" height="20"/>
+  <rect x="38" y="448" width="20" height="20"/>
+  <rect x="60" y="448" width="20" height="20"/>
+  <rect x="82" y="448" width="20" height="20"/>
+  <rect x="104" y="448" width="20" height="20"/>
+  <rect x="126" y="448" width="20" height="20"/>
+  <rect x="148" y="448" width="20" height="20"/>
+  <rect x="170" y="448" width="20" height="20"/>
+</g>
+  <text x="230" y="40" textLength="88.2" lengthAdjust="spacing"><tspan class="akzent">sz@github</tspan></text>
+  <line class="linie" x1="328.0" y1="35" x2="837.6" y2="35"/>
+  <text x="230" y="60" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">OS: </tspan><tspan class="punkte">............................</tspan><tspan class="value"> Windows 11, Linux in Docker</tspan></text>
+  <text x="230" y="80" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Uptime: </tspan><tspan class="punkte">...........................................</tspan><tspan class="value"> 26 years</tspan></text>
+  <text x="230" y="100" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Kernel: </tspan><tspan class="punkte">.................</tspan><tspan class="value"> Fachinformatiker Systemintegration</tspan></text>
+  <text x="230" y="120" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Shell: </tspan><tspan class="punkte">...........................</tspan><tspan class="value"> leidenschaftliche Neugier</tspan></text>
+  <text x="230" y="140" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">IDE: </tspan><tspan class="punkte">........................</tspan><tspan class="value"> VS Code, IntelliJ, Claude Code</tspan></text>
+  <text x="230" y="180" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Languages.Programming: </tspan><tspan class="punkte">...</tspan><tspan class="value"> TS, JS, PHP, Python, C, Java, ASM</tspan></text>
+  <text x="230" y="200" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Languages.Scripting: </tspan><tspan class="punkte">......................</tspan><tspan class="value"> Bash, PowerShell</tspan></text>
+  <text x="230" y="220" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Languages.Computer: </tspan><tspan class="punkte">.......</tspan><tspan class="value"> HTML, CSS, SQL, YAML, HCL, LaTeX</tspan></text>
+  <text x="230" y="240" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Languages.Real: </tspan><tspan class="punkte">................</tspan><tspan class="value"> Deutsch, Russisch, Englisch</tspan></text>
+  <text x="230" y="280" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Infra: </tspan><tspan class="punkte">................</tspan><tspan class="value"> Docker, Kubernetes, Terraform, Azure</tspan></text>
+  <text x="230" y="300" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Projects: </tspan><tspan class="punkte">..........</tspan><tspan class="value"> Ausbildungs-Berichtsheft, Fundus (bald)</tspan></text>
+  <text x="230" y="340" textLength="88.2" lengthAdjust="spacing"><tspan class="text">- Contact</tspan></text>
+  <line class="linie" x1="328.0" y1="335" x2="837.6" y2="335"/>
+  <text x="230" y="360" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">GitHub: </tspan><tspan class="punkte">.........................................</tspan><tspan class="value"> SergeyZakh</tspan></text>
+  <text x="230" y="380" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">LinkedIn: </tspan><tspan class="punkte">...............................</tspan><tspan class="value"> sergey-zakharov-jr</tspan></text>
+  <text x="230" y="420" textLength="137.2" lengthAdjust="spacing"><tspan class="text">- GitHub Stats</tspan></text>
+  <line class="linie" x1="377.0" y1="415" x2="837.6" y2="415"/>
+  <text x="230" y="440" textLength="352.8" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Repos: </tspan><tspan class="value">1</tspan><tspan class="text"> | </tspan><tspan class="key">Stars: </tspan><tspan class="value">1</tspan><tspan class="text"> | </tspan><tspan class="key">Followers: </tspan><tspan class="value">1</tspan></text>
+  <text x="230" y="460" textLength="313.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Contributions (last year): </tspan><tspan class="value">315</tspan></text>
+</svg>
