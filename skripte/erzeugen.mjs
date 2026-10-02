@@ -1,5 +1,5 @@
 // Erzeugt aus angaben.mjs die Profilkarte (karte/dark_mode.svg, karte/light_mode.svg) und auf der
-// Startseite die Eckdaten und Kenntnisse zwischen den Markierungen <!-- eckdaten:… --> und <!-- kenntnisse:… -->.
+// Startseite die Kenntnisse zwischen den Markierungen <!-- kenntnisse:… -->.
 // Aufruf: node skripte/erzeugen.mjs
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -164,11 +164,10 @@ for (const modus of ['dark', 'light']) {
   writeFileSync(join(wurzel, 'karte', `${modus}_mode.svg`), karte(modus));
 }
 
-// ---------- Eckdaten und Kenntnisse in index.html ----------
+// ---------- Kenntnisse in index.html ----------
 
 // Die Startseite hat Platz: deutsche Überschriften und ausgeschriebene Namen statt der kurzen aus
-// neofetch. Was hier fehlt (Uptime, Kernel, Shell), steht nur in der Karte.
-const ECKDATEN = { OS: 'System', 'Languages.Real': 'Sprachen' };
+// neofetch. Was hier fehlt (System, Sprachen, Uptime, Kernel, Shell), steht nur in der Karte.
 const KENNTNISSE = {
   'Languages.Programming': 'Programmieren', 'Languages.Scripting': 'Skripte',
   'Languages.Computer': 'Auszeichnung und Daten', Infra: 'Infrastruktur', IDE: 'Werkzeuge',
@@ -176,12 +175,6 @@ const KENNTNISSE = {
 const AUSGESCHRIEBEN = { TS: 'TypeScript', JS: 'JavaScript', ASM: 'Assembler' };
 // Werkzeuge stehen in der Karte vorn, auf der Seite zuletzt
 const reihenfolge = Object.values(KENNTNISSE);
-
-const wert = (schluessel) => angaben.find((a) => a && a[0] === schluessel)?.[1];
-const eckdaten = [
-  ...Object.entries(ECKDATEN).map(([k, titel]) => [titel, wert(k)]),
-  ['GitHub', `${zahlen.beitraege} Beiträge im letzten Jahr`],
-].map(([titel, v]) => `      <div><dt>${esc(titel)}</dt><dd>${esc(v)}</dd></div>`).join('\n');
 
 const kenntnisse = angaben
   .filter((a) => a && KENNTNISSE[a[0]])
@@ -194,11 +187,11 @@ const kenntnisse = angaben
 
 const datei = join(wurzel, 'index.html');
 let seite = readFileSync(datei, 'utf8');
-for (const [name, inhalt] of [['eckdaten', eckdaten], ['kenntnisse', kenntnisse]]) {
+for (const [name, inhalt] of [['kenntnisse', kenntnisse]]) {
   const muster = new RegExp(`(<!-- ${name}:anfang -->)[\\s\\S]*?(\\n\\s*<!-- ${name}:ende -->)`);
   if (!muster.test(seite)) throw new Error(`Markierungen <!-- ${name}:anfang/ende --> fehlen in index.html`);
   seite = seite.replace(muster, `$1\n${inhalt}$2`);
 }
 writeFileSync(datei, seite);
 
-console.log('geschrieben: karte/dark_mode.svg, karte/light_mode.svg, Eckdaten und Kenntnisse in index.html');
+console.log('geschrieben: karte/dark_mode.svg, karte/light_mode.svg, Kenntnisse in index.html');

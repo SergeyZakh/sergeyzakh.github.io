@@ -184,16 +184,6 @@ ${zeilen.join('\n')}
   </div></section>`;
 }
 
-// Eckdaten oben auf der Startseite: die neueste Version über alle Projekte, damit sichtbar ist,
-// dass sich hier etwas tut. Das Datum kommt aus dem CHANGELOG, nicht von Hand.
-function zuletzt(alle) {
-  const iso = (d) => d.split('.').reverse().join('-');
-  const neu = alle.filter((p) => p.datum).sort((a, b) => iso(b.datum).localeCompare(iso(a.datum)))[0];
-  if (!neu) return '';
-  const name = `${esc(neu.name)} ${esc(neu.version)}`;
-  return `<div><dt>Zuletzt</dt><dd><a href="#neues">${name}</a>, ${esc(neu.datum)}</dd></div>`;
-}
-
 // Projekte mit Bild stehen groß und abwechselnd gespiegelt; die ohne Bild, die direkt aufeinander
 // folgen, nebeneinander in einem Raster, damit neben ihnen nicht eine halbe Zeile leer bleibt.
 function projekteBauen(alle) {
@@ -219,12 +209,10 @@ ${projekteBauen(alle)}
   </div></section>`;
   const muster = /(<!-- projekte:anfang -->)[\s\S]*?(\n\s*<!-- projekte:ende -->)/;
   if (!muster.test(lauf.startseite)) throw new Error('Markierungen <!-- projekte:anfang/ende --> fehlen in index.html');
-  if (!lauf.startseite.includes('<!-- zuletzt -->')) throw new Error('Markierung <!-- zuletzt --> fehlt in index.html');
   // Ersetzen über Funktionen: Ein „$“ in einem Text aus den Repos wäre sonst ein Platzhalter
   const neues = neuesBauen(alle);
   writeFileSync(join(lauf.ziel, 'index.html'), lauf.startseite
-    .replace(muster, (_, vor, nach) => `${vor}\n${teil}\n\n${neues}${nach}`)
-    .replace('<!-- zuletzt -->', () => zuletzt(alle)));
+    .replace(muster, (_, vor, nach) => `${vor}\n${teil}\n\n${neues}${nach}`));
 }
 
 // ---------- 404, Sitemap ----------

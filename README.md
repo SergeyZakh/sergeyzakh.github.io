@@ -13,7 +13,7 @@ Ein Eintrag in `projekte.mjs`, mehr nicht. Was daraus folgt:
   rechts, darunter drei Punkte. Ohne Bild kompakt; aufeinanderfolgende stehen nebeneinander im
   Raster. Nummer und Anzahl zählen sich selbst.
 - **Version und Datum:** aus der ersten Überschrift `## [x.y.z] – JJJJ-MM-TT` im `CHANGELOG.md` des
-  Repos, bei jedem Bau neu. Die neueste Version aller Projekte steht oben in den Eckdaten als „Zuletzt“.
+  Repos, bei jedem Bau neu.
 - **Neues:** die letzten Versionen aus den CHANGELOGs, je Projekt höchstens zwei, zusammen vier. Als
   Text der Satz unter der Versionsüberschrift, sonst die fett gesetzten Anfänge der Punkte; jede Zeile
   führt auf die Version in den Docs.
@@ -30,9 +30,9 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 
 ## Startseite
 
-`index.html` ist die Vorlage. Von oben: Name mit Eckdaten, Projekte, Neues, Kenntnisse, Kontakt; die
+`index.html` ist die Vorlage. Von oben: Titel, Name und ein Satz (mittig), Projekte, Neues, Kenntnisse, Kontakt; die
 Leiste oben springt dorthin (unter 480 px ohne „Neues“, damit sie in die Breite passt).
-Eckdaten und Kenntnisse stehen nur in `angaben.mjs`: Nach einer
+Die Kenntnisse stehen nur in `angaben.mjs`: Nach einer
 Änderung schreibt `node skripte/erzeugen.mjs` sie in die Seite und in die Karte unter `karte/`, die
 das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Den Projektteil zwischen
 `<!-- projekte:… -->` setzt erst der Bau ein, zusammen mit „Neues“; die fertige Seite liegt danach

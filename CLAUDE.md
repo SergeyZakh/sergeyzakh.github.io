@@ -9,7 +9,7 @@ Erst lesen: [README.md](README.md).
 ```bash
 npm ci
 node skripte/quellen-holen.mjs   # Repos der Projekte nach quellen/
-node skripte/erzeugen.mjs        # angaben.mjs → Profilkarte, Eckdaten und Kenntnisse in index.html
+node skripte/erzeugen.mjs        # angaben.mjs → Profilkarte und Kenntnisse in index.html
 node skripte/seite-bauen.mjs     # alles nach _site/
 node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Action nicht
 ```

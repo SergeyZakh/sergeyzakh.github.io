@@ -68,38 +68,16 @@
   .leiste .trenner { width: 1px; height: 18px; margin: 0 4px; background: var(--linie); }
   .leiste .sz { width: 30px; height: auto; }
 
-  /* ---------- Kopf ---------- */
+  /* ---------- Kopf: Titel, Name und ein Satz, mittig ---------- */
   /* Oben zählt der Abstand ab der Leiste, nicht ab dem Seitenrand: Sie steht 16 px tiefer, als sie Platz nimmt */
-  .kopf { padding-top: calc(var(--abstand) + 16px); padding-bottom: var(--abstand); }
+  .kopf { padding-top: calc(var(--abstand) + 16px); padding-bottom: var(--abstand); text-align: center; }
   h1 {
     /* Zeilenhöhe nicht unter 1: Darunter stößt die Unterlänge des g in „Sergey“ an das h in „Zakharov“.
        Der Rand oben gleicht die größere Zeile aus (die Hälfte des Zuwachses, .07em). */
     margin: calc(22px - .07em) 0 0; font-size: clamp(60px, 12.4vw, 172px); line-height: 1.04; font-weight: 600; letter-spacing: -.05em;
-    margin-left: -.06em;
   }
-  .einleitung { display: grid; grid-template-columns: 7fr 5fr; gap: 40px; margin-top: 56px; align-items: end; }
-  .einleitung p { margin: 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 30ch; }
-  .einleitung p span { color: var(--schiefer); }
-  .eckdaten { margin: 0; border-top: 1px solid var(--linie); }
-  .eckdaten div { display: grid; grid-template-columns: 110px 1fr; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--linie); align-items: baseline; }
-  .eckdaten dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
-  .eckdaten dd { margin: 0; font-size: 15px; }
-  /* Innenabstand an Textlinks vergrößert nur die Tippfläche, die Zeile bleibt gleich hoch */
-  .eckdaten dd a { padding: 10px 0; text-decoration: underline; text-decoration-color: var(--linie-fest); text-underline-offset: 4px; }
-  .eckdaten dd a:hover { text-decoration-color: currentColor; }
-
-  /* Breit genug: Eckdaten rechts neben dem Namen, bündig mit seiner letzten Zeile, die Einleitung
-     darunter. So bleibt oben rechts keine leere Fläche, und die Projekte rücken höher. */
-  @media (min-width: 1100px) {
-    .kopf { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); column-gap: 48px; }
-    .kopf > .versal { grid-column: 1 / -1; }
-    .kopf h1 { grid-column: 1; grid-row: 2; }
-    .einleitung { display: contents; }
-    .einleitung p { grid-column: 1; grid-row: 3; margin-top: 32px; }
-    /* Unten bündig mit der Grundlinie von „Zakharov“, nicht mit dem Rand seiner Zeile */
-    .eckdaten { grid-column: 2; grid-row: 2; align-self: end; margin-bottom: calc(6px + min(.87vw, 12px)); }
-    .eckdaten div { grid-template-columns: 92px 1fr; }
-  }
+  .einleitung { margin: 24px auto 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 36ch; text-wrap: balance; }
+  .einleitung span { color: var(--schiefer); }
 
   /* ---------- Abschnitte ---------- */
   /* Jeder Abschnitt ist ein Band über die ganze Breite, abwechselnd auf Grund und Fläche, oben eine
@@ -215,11 +193,10 @@
     .leiste a:not(.marke) { padding-left: 10px; padding-right: 10px; }
     .fuss nav a { padding: 10px 0; }
     h1 { font-size: clamp(56px, 17vw, 120px); }
-    .einleitung { grid-template-columns: 1fr; gap: 40px; margin-top: 28px; }
+    .einleitung { margin-top: 28px; font-size: 21px; }
     /* Zwei Zeilen statt eines Umbruchs mitten in „· in Ausbildung“ */
     .kopf .versal span { display: block; }
     .kopf .versal .trenner { display: none; }
-    .einleitung p { font-size: 21px; }
     /* Untereinander: Kopf, Aktionen, Bild, dann die Punkte */
     .projekt, .projekt.gespiegelt {
       grid-template-columns: minmax(0, 1fr); grid-template-rows: none;
@@ -280,18 +257,8 @@
 <header class="kopf breite">
   <div class="versal"><span>Fachinformatiker für Systemintegration</span><span class="trenner"> · </span><span>in Ausbildung</span></div>
   <h1>Sergey<br>Zakharov</h1>
-  <div class="einleitung">
-    <p>Ich baue Werkzeuge für Ausbildung und Betrieb, die man selbst betreibt. <span>Was man dort einträgt,
-      bleibt im Browser oder im eigenen Netz.</span></p>
-    <dl class="eckdaten">
-      <!-- eckdaten:anfang -->
-      <div><dt>System</dt><dd>Windows 11, Linux in Docker</dd></div>
-      <div><dt>Sprachen</dt><dd>Deutsch, Russisch, Englisch</dd></div>
-      <div><dt>GitHub</dt><dd>315 Beiträge im letzten Jahr</dd></div>
-      <!-- eckdaten:ende -->
-      <!-- zuletzt -->
-    </dl>
-  </div>
+  <p class="einleitung">Ich baue Werkzeuge für Ausbildung und Betrieb, die man selbst betreibt. <span>Was man dort
+    einträgt, bleibt im Browser oder im eigenen Netz.</span></p>
 </header>
 
 <main>
