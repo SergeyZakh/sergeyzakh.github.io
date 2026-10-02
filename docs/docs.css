@@ -17,7 +17,7 @@
 :root {
   --text: #16161A; --linie: #DEDCD6; --linie-fest: #BDBAB2; --linie-leise: #EFEEEA;
   --grund: #F3F2EE; --flaeche: #FFFFFF; --band: #F6F5F1; --hauch: rgba(22, 22, 26, .06);
-  --schiefer: #62615C; --leise: #9A9891; --gut: #1A7F37; --bernstein: #8A5300;
+  --schiefer: #4D4C4A; --leise: #686764; --gut: #1A7F37; --bernstein: #8A5300;
   --glas: rgba(243, 242, 238, .78); --glas-kante: rgba(22, 22, 26, .08);
   --code-grund: #1B1B20; --code-kopf: #26262C; --code-kante: #1B1B20; --code-text: #E6E6EA; --code-leise: #8E8E98;
   --code-hell: #EAE9E4; --markierung: #FFF1A8; --diagramm: #FFFFFF;
@@ -41,9 +41,9 @@
   color-scheme: dark; --seite: #0B0B0D;
     --text: #ECEBE7; --linie: #2E2E34; --linie-fest: #4B4B53; --linie-leise: #232328;
     --grund: #111114; --flaeche: #1B1B1F; --band: #1F1F24; --hauch: rgba(255, 255, 255, .07);
-    --schiefer: #A3A29B; --leise: #6E6D68; --gut: #4CB86B; --bernstein: #D8AE5E;
+    --schiefer: #A3A29B; --leise: #8A8984; --gut: #4CB86B; --bernstein: #D8AE5E;
     --glas: rgba(17, 17, 20, .78); --glas-kante: rgba(255, 255, 255, .08);
-    --code-grund: #18181C; --code-kopf: #202025; --code-kante: #2E2E34; --code-text: #E6E6EA; --code-leise: #85858F;
+    --code-grund: #18181C; --code-kopf: #202025; --code-kante: #2E2E34; --code-text: #E6E6EA; --code-leise: #8E8E98;
     --code-hell: #26262C; --markierung: #5A4A10; --diagramm: #F3F2EE;
     --schatten: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
     --schatten-hoch: 0 2px 6px rgba(0, 0, 0, .35), 0 18px 48px rgba(0, 0, 0, .55);

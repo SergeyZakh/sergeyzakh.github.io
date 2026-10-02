@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sergey Zakharov</title>
-<meta name="description" content="Sergey Zakharov: Werkzeuge für Ausbildung und Betrieb, die man selbst betreibt. Projekte, Docs, Kenntnisse und Kontakt.">
+<meta name="description" content="Sergey Zakharov: einige meiner Projekte mit Docs, dazu Neues, Kenntnisse und Kontakt.">
 <meta name="color-scheme" content="light dark">
 <script>
   // Hell oder dunkel: die gespeicherte Wahl, sonst wie das System. Steht im Kopf, damit vor dem ersten
@@ -39,7 +39,7 @@
   :root {
     --text: #16161A; --linie: #DEDCD6; --linie-fest: #BDBAB2; --grund: #F3F2EE; --flaeche: #FFFFFF; --buehne: #E9E8E2;
     --hauch: rgba(22, 22, 26, .06); --voll-hover: #33333A;
-    --schiefer: #62615C; --leise: #9A9891; --gut: #1A7F37; --bernstein: #8A5300;
+    --schiefer: #4D4C4A; --leise: #686764; --gut: #1A7F37; --bernstein: #8A5300;
     --glas: rgba(243, 242, 238, .72); --glas-kante: rgba(22, 22, 26, .08);
     --schatten-bild: 0 1px 2px rgba(22, 22, 26, .06), 0 24px 60px rgba(22, 22, 26, .14);
     --sans: "Instrument Sans", system-ui, -apple-system, sans-serif;
@@ -56,7 +56,7 @@
       color-scheme: dark;
       --text: #ECEBE7; --linie: #2E2E34; --linie-fest: #4B4B53; --grund: #111114; --flaeche: #1B1B1F; --buehne: #26262C;
       --hauch: rgba(255, 255, 255, .07); --voll-hover: #D2D1CC;
-      --schiefer: #A3A29B; --leise: #6E6D68; --gut: #4CB86B; --bernstein: #D8AE5E;
+      --schiefer: #A3A29B; --leise: #8A8984; --gut: #4CB86B; --bernstein: #D8AE5E;
       --glas: rgba(17, 17, 20, .72); --glas-kante: rgba(255, 255, 255, .08);
       --schatten-bild: 0 1px 2px rgba(0, 0, 0, .5), 0 24px 60px rgba(0, 0, 0, .55);
   }
@@ -101,7 +101,6 @@
   h1 { margin: 0; line-height: 0; }
   h1 .sz { width: clamp(176px, 26vw, 320px); height: auto; margin: 0 auto; }
   .einleitung { margin: 40px auto 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 36ch; text-wrap: balance; }
-  .einleitung span { color: var(--schiefer); }
   .kopf-aktionen { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
   .kopf-aktionen .knopf { padding: 0 22px; }
 
@@ -224,7 +223,7 @@
   /* Dunkler Schluss für Kontakt und Fuß: dieselben Namen, andere Werte, so passt alles darin von selbst */
   .nacht {
     --text: #F3F2EE; --linie: rgba(243, 242, 238, .14); --linie-fest: rgba(243, 242, 238, .32);
-    --schiefer: rgba(243, 242, 238, .64); --leise: rgba(243, 242, 238, .46);
+    --schiefer: rgba(243, 242, 238, .64); --leise: rgba(243, 242, 238, .5);
     background: #16161A; color: var(--text);
   }
   .band.nacht { border-top-color: transparent; }
@@ -328,8 +327,7 @@
 
 <header class="kopf breite">
   <h1><svg class="sz" viewBox="0 0 159 89" role="img" aria-label="Sergey Zakharov"><use href="#sz"/></svg></h1>
-  <p class="einleitung">Ich baue Werkzeuge für Ausbildung und Betrieb, die man selbst betreibt. <span>Was man dort
-    einträgt, bleibt im Browser oder im eigenen Netz.</span></p>
+  <p class="einleitung">Hier stehen einige meiner Projekte, mit Docs und dem, was sich zuletzt geändert hat.</p>
   <div class="kopf-aktionen"><a class="knopf voll" href="#projekte">Projekte ansehen</a><a class="knopf" href="https://github.com/SergeyZakh">GitHub ↗</a></div>
 </header>
 
