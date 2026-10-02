@@ -55,6 +55,7 @@ ${weiterBlaettern(w, s)}
 
   s.inhalt = gebaut.inhalt;
   s.woerter = woerter;
+  s.beschreibung = beschreibung;
   const url = posix.relative('docs', ordner);
   for (const a of abschnitte(gebaut.html, titelText)) {
     lauf.suche.push({ k: w.kurz, w: w.name, s: s.titel, t: a.t, u: `${url ? url + '/' : ''}${a.a ? '#' + a.a : ''}`, x: a.x });
@@ -73,59 +74,90 @@ function lesezeit(w) {
   return min < 60 ? `${Math.max(1, min)} Min.` : `rund ${Math.round(min / 30) / 2} Std.`.replace('.5', ',5');
 }
 
-// Übersicht: oben mittig Titel, Satz und Suche; darunter je Projekt eine gleich große Karte (Bild, Name, Satz,
-// Umfang, Knöpfe); darunter alle Seiten, je Projekt die Gruppen in festen Spalten
-export function uebersicht(alle) {
-  const karten = alle.map((w) => {
-    const erste = w.seiten.find((s) => s.pfad === 'erste-schritte');
-    const bild = w.bild && existsSync(join(lauf.wurzel, w.bild.datei))
-      ? (([b, h]) => `<a class="karte-bild" href="${w.kurz}/" tabindex="-1" aria-hidden="true"><img src="../${esc(w.bild.datei)}" width="${b}" height="${h}" loading="lazy" alt=""></a>`)(bildgroesse(join(lauf.wurzel, w.bild.datei)))
-      : '<div class="karte-bild leer"></div>';
-    const knoepfe = erste
-      ? `<a class="knopf voll" href="${w.kurz}/${erste.pfad}/">Erste Schritte</a><a class="knopf" href="${w.kurz}/">Überblick</a>`
-      : `<a class="knopf voll" href="${w.kurz}/">Überblick</a>`;
-    return `<article class="karte">
-    ${bild}
-    <div class="karte-kopf"><h2><a href="${w.kurz}/">${esc(w.name)}</a></h2>${versionsMarke(w, true)}</div>
+// Übersicht unter docs/: oben mittig Titel, Satz und Suche; darunter je Projekt die Seiten nach Gruppen.
+// VORSCHAU: Variante aus UEBERSICHT (a Kacheln, b Liste, c Umschalter)
+// Kurzbeschreibung: aus Verweisen bleibt Text wie „Changelog , Versionen“ übrig, und ein Satz kann mit
+// Doppelpunkt vor einer Liste enden; beides glätten, dann an einer Wortgrenze kürzen
+const kurz = (t, n) => {
+  const glatt = (t || '').replace(/\s+([,.;:!?])/g, '$1').replace(/:\s*$/, '');
+  return glatt.length > n ? glatt.slice(0, glatt.lastIndexOf(' ', n)) + ' …' : glatt;
+};
+// Spalten nach Anzahl: volle Reihen (4, 3, 2), sonst 4 und die letzte Reihe mittig
+const kachelSpalten = (n) => (n <= 4 ? n : n % 4 === 0 ? 4 : n % 3 === 0 ? 3 : 4);
+
+function projektKopf(w, ebene = 'h2') {
+  return `<header class="projekt-kopf">
+    <${ebene}><a href="${w.kurz}/">${esc(w.name)}</a></${ebene}>
+    ${versionsMarke(w, true)}
     <p class="satz">${esc(w.satz)}</p>
     <p class="umfang">${w.seiten.length} Seiten · ${lesezeit(w)} Lesezeit</p>
-    <div class="karte-knoepfe">${knoepfe}</div>
-  </article>`;
-  }).join('\n  ');
-  const bloecke = alle.map((w) => {
-    const gruppen = w.gruppen.map((g) => {
-      const seiten = g.eintraege.filter((e) => e.datei);
-      const link = (e, text) => `<li><a href="${esc(posix.join(w.kurz, e.pfad))}/">${text}</a></li>`;
-      const rest = seiten.length - UEBERSICHT_JE_GRUPPE;
-      const links = seiten.slice(0, rest > 1 ? UEBERSICHT_JE_GRUPPE : seiten.length).map((e) => link(e, esc(e.titel))).join('')
-        + (rest > 1 ? link(seiten[UEBERSICHT_JE_GRUPPE], `<span class="mehr">und ${rest} weitere →</span>`) : '');
-      return `<div><p class="gruppe">${esc(g.titel || 'Loslegen')}</p><ul>${links}</ul></div>`;
-    }).join('\n      ');
-    return `<section class="werkzeug-block">
-    <h3><a href="${w.kurz}/">${esc(w.name)}</a></h3>
-    <div class="spalten">
-      ${gruppen}
+  </header>`;
+}
+const gruppenVon = (w) => w.gruppen.map((g) => ({ titel: g.titel || 'Loslegen', seiten: g.eintraege.filter((e) => e.datei) }));
+const ziel = (w, e) => `${esc(posix.join(w.kurz, e.pfad))}/`;
+
+function kacheln(w) {
+  return gruppenVon(w).map((g) => `<section class="gruppe-block">
+    <h3 class="gruppe">${esc(g.titel)}</h3>
+    <div class="kacheln" style="--sp: ${kachelSpalten(g.seiten.length)}">
+      ${g.seiten.map((e) => `<a class="kachel" href="${ziel(w, e)}"><b>${esc(e.titel)}</b><span>${esc(kurz(e.beschreibung, 110))}</span></a>`).join('\n      ')}
     </div>
-  </section>`;
-  }).join('\n  ');
-  const haupt = `<div class="uebersicht-kopf">
+  </section>`).join('\n  ');
+}
+
+function liste(w) {
+  return gruppenVon(w).map((g) => `<section class="gruppe-block">
+    <h3 class="gruppe">${esc(g.titel)}</h3>
+    <ul class="liste">
+      ${g.seiten.map((e) => `<li><a href="${ziel(w, e)}"><b>${esc(e.titel)}</b><span>${esc(kurz(e.beschreibung, 90))}</span>${symbol('rechts')}</a></li>`).join('\n      ')}
+    </ul>
+  </section>`).join('\n  ');
+}
+
+export function uebersicht(alle) {
+  const variante = process.env.UEBERSICHT || 'a';
+  const kopf = `<div class="uebersicht-kopf">
 <p class="pfad"><a href="../">Startseite</a><span>/</span>Docs</p>
 <h1>Docs</h1>
 <p class="unterzeile">Anleitungen und Hintergründe zu meinen Projekten. Die Texte stammen aus den
   Repositories und werden jede Nacht neu gebaut, damit sie zum Code passen.</p>
 <button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Befehl, Einstellung oder Frage suchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
-</div>
-<div class="karten">
-  ${karten}
-</div>
-<h2 class="abschnitt">Alle Seiten</h2>
-<div class="werkzeug-liste">
-  ${bloecke}
 </div>`;
+  let haupt;
+  if (variante === 'c') {
+    haupt = `${kopf}
+<nav class="projekt-umschalter" aria-label="Projekt">
+  ${alle.map((w, i) => `<a href="#${w.kurz}"${i === 0 ? ' aria-current="true"' : ''}>${esc(w.name)}</a>`).join('\n  ')}
+</nav>
+${alle.map((w) => `<section class="projekt-teil" id="${w.kurz}">
+  ${projektKopf(w)}
+  ${kacheln(w)}
+</section>`).join('\n')}
+<script>
+  // Nur das gewählte Projekt zeigen; ohne Skript stehen alle untereinander
+  (function () {
+    var links = [].slice.call(document.querySelectorAll('.projekt-umschalter a'));
+    var teile = [].slice.call(document.querySelectorAll('.projekt-teil'));
+    function zeigen(kurz) {
+      if (!teile.some(function (t) { return t.id === kurz; })) kurz = teile[0].id;
+      teile.forEach(function (t) { t.hidden = t.id !== kurz; });
+      links.forEach(function (a) { a.toggleAttribute('aria-current', a.getAttribute('href') === '#' + kurz); });
+    }
+    links.forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); history.replaceState(null, '', a.getAttribute('href')); zeigen(a.getAttribute('href').slice(1)); }); });
+    zeigen(location.hash.slice(1));
+  })();
+</script>`;
+  } else {
+    haupt = `${kopf}
+${alle.map((w) => `<section class="projekt-teil" id="${w.kurz}">
+  ${projektKopf(w)}
+  ${variante === 'b' ? liste(w) : kacheln(w)}
+</section>`).join('\n')}`;
+  }
   writeFileSync(join(lauf.ziel, 'docs', 'index.html'), rahmen({
     titel: 'Docs · Sergey Zakharov',
     beschreibung: `Anleitungen und Hintergründe zu ${alle.map((w) => w.name).join(', ').replace(/, ([^,]*)$/, ' und $1')}.`,
-    rel: '..', haupt, klasse: 'uebersicht',
+    rel: '..', haupt, klasse: `uebersicht variante-${variante}`,
   }));
 }
 // ---------- Startseite: der Projektteil ----------

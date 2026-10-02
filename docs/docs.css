@@ -279,28 +279,44 @@ h1 { margin: 12px 0 0; font-size: clamp(36px, 4.2vw, 54px); line-height: 1.04; f
 }
 .suchfeld:hover { border-color: var(--linie-fest); }
 .suchfeld span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.uebersicht .karten {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); grid-auto-rows: auto auto auto auto auto;
-  column-gap: 24px; margin: 80px 0 -24px;
+.projekt-teil { margin-top: 104px; }
+.projekt-kopf { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+.projekt-kopf h2 { margin: 0; font-size: clamp(36px, 4vw, 48px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
+.projekt-kopf h2 a { text-decoration: none; }
+.projekt-kopf .satz { margin: 4px 0 0; font-size: 17px; line-height: 1.5; color: var(--schiefer); max-width: 46ch; text-wrap: balance; }
+.projekt-kopf .umfang { margin: 0; font-size: 13.5px; color: var(--leise); }
+.gruppe-block { margin-top: 48px; }
+.gruppe-block .gruppe { margin: 0 0 16px; text-align: center; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
+/* A und C: gleich große Kacheln, Spalten nach Anzahl, jede Reihe mittig */
+.kacheln { --k: 264px; display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; width: calc(var(--sp) * var(--k) + (var(--sp) - 1) * 16px); max-width: 100%; margin: 0 auto; }
+.kachel {
+  display: flex; flex-direction: column; gap: 6px; flex: 0 0 var(--k); height: 148px; padding: 18px 20px; overflow: hidden;
+  border: 1px solid var(--linie); border-radius: 14px; background: var(--flaeche); text-decoration: none; transition: border-color .15s, transform .15s;
 }
-.karte {
-  display: grid; grid-row: span 5; grid-template-rows: subgrid; margin-bottom: 24px; padding-bottom: 28px;
-  border: 1px solid var(--linie); border-radius: 20px; background: var(--flaeche); overflow: hidden;
+.kachel:hover { border-color: var(--linie-fest); transform: translateY(-2px); }
+.kachel b { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+.kachel span { font-size: 14px; line-height: 1.45; color: var(--schiefer); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+/* B: Listen wie in den Einstellungen, eine mittige Spalte, jede Zeile gleich hoch */
+.variante-b .gruppe-block { max-width: 680px; margin-left: auto; margin-right: auto; }
+.variante-b .gruppe-block .gruppe { text-align: left; padding-left: 18px; }
+.liste { list-style: none; margin: 0; padding: 0; border: 1px solid var(--linie); border-radius: 14px; background: var(--flaeche); overflow: hidden; }
+.liste li + li { border-top: 1px solid var(--linie-leise); }
+.liste a { display: grid; grid-template-columns: minmax(0, 1fr) 16px; grid-template-rows: auto auto; column-gap: 12px; align-items: center; height: 68px; padding: 0 16px 0 18px; text-decoration: none; align-content: center; }
+.liste a:hover { background: var(--band); }
+.liste b { grid-column: 1; font-size: 15.5px; font-weight: 600; }
+.liste span { grid-column: 1; font-size: 13.5px; color: var(--schiefer); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.liste svg { grid-column: 2; grid-row: 1 / span 2; width: 16px; height: 16px; color: var(--leise); }
+/* C: Umschalter für das Projekt, Segmente gleich breit */
+.projekt-umschalter { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; width: max-content; margin: 64px auto 0; padding: 4px; border-radius: 999px; background: var(--hauch); }
+.projekt-umschalter a { min-width: 140px; padding: 9px 20px; border-radius: 999px; text-align: center; font-size: 15px; font-weight: 500; color: var(--schiefer); text-decoration: none; }
+.projekt-umschalter a[aria-current] { background: var(--flaeche); color: var(--text); box-shadow: var(--schatten); }
+.variante-c .projekt-teil { margin-top: 56px; }
+@media (max-width: 860px) {
+  .projekt-teil { margin-top: 72px; }
+  .kacheln { --k: 100%; width: 100%; }
+  .kachel { height: auto; min-height: 112px; }
+  .projekt-umschalter a { min-width: 0; }
 }
-.karte-bild { display: block; aspect-ratio: 16 / 9; padding: 28px 28px 0; background: var(--band); overflow: hidden; }
-.karte-bild img { display: block; width: 100%; height: auto; border-radius: 8px 8px 0 0; box-shadow: var(--schatten-hoch); transition: transform .3s ease; }
-.karte-bild:hover img { transform: translateY(-4px); }
-.karte-kopf { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px; padding: 24px 28px 0; }
-.karte h2 { margin: 0; font-size: 34px; line-height: 1.05; font-weight: 600; letter-spacing: -.03em; }
-.karte h2 a { text-decoration: none; }
-.karte .satz { margin: 10px 0 0; padding: 0 28px; font-size: 16.5px; line-height: 1.5; color: var(--schiefer); }
-.karte .umfang { margin: 14px 0 0; padding: 0 28px; font-size: 13.5px; color: var(--leise); }
-.karte-knoepfe { display: flex; flex-wrap: wrap; gap: 10px; padding: 20px 28px 0; }
-.uebersicht .abschnitt { margin: 104px 0 0; text-align: center; font-size: clamp(30px, 3.4vw, 40px); line-height: 1.05; font-weight: 600; letter-spacing: -.03em; }
-.werkzeug-liste { margin-top: 40px; }
-.werkzeug-block { border-top: 1px solid var(--linie); padding: 24px 0 40px; }
-.werkzeug-block h3 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.015em; }
-.werkzeug-block h3 a { display: inline-block; padding: 8px 0; margin: -8px 0; text-decoration: none; }
 .spalten { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 18px; }
 .spalten .gruppe { margin: 0 0 8px; }
 /* Die letzte Gruppe („Für Mitwirkende“) immer in der letzten Spalte, damit sie bei jedem Projekt an derselben
