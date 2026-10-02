@@ -94,12 +94,11 @@
   /* ---------- Kopf: Titel, Name und ein Satz, mittig ---------- */
   /* Oben zählt der Abstand ab der Leiste, nicht ab dem Seitenrand: Sie steht 16 px tiefer, als sie Platz nimmt */
   .kopf { padding-top: calc(var(--abstand) + 16px); padding-bottom: var(--abstand); text-align: center; }
-  h1 {
-    /* Zeilenhöhe nicht unter 1: Darunter stößt die Unterlänge des g in „Sergey“ an das h in „Zakharov“.
-       Der Rand oben gleicht die größere Zeile aus (die Hälfte des Zuwachses, .07em). */
-    margin: calc(22px - .07em) 0 0; font-size: clamp(60px, 12.4vw, 172px); line-height: 1.04; font-weight: 600; letter-spacing: -.05em;
-  }
-  .einleitung { margin: 24px auto 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 36ch; text-wrap: balance; }
+  /* Statt des Namens das SZ aus Quadraten, groß und mittig; der Name steht für Vorleser und Suchmaschinen
+     im Bild (aria-label) */
+  h1 { margin: 40px 0 0; line-height: 0; }
+  h1 .sz { width: clamp(176px, 26vw, 320px); height: auto; margin: 0 auto; }
+  .einleitung { margin: 40px auto 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 36ch; text-wrap: balance; }
   .einleitung span { color: var(--schiefer); }
   /* Ein schlichtes Quadratraster hinter dem Kopf, eine Linie genau auf der Mittelachse, zum Rand hin blasser */
   .kopf-raster { position: relative; overflow: hidden; }
@@ -281,8 +280,8 @@
     .leiste a, .leiste a.marke { padding-top: 10px; padding-bottom: 10px; }
     .leiste a:not(.marke) { padding-left: 10px; padding-right: 10px; }
     .fuss nav a { padding: 10px 0; }
-    h1 { font-size: clamp(56px, 17vw, 120px); }
-    .einleitung { margin-top: 28px; font-size: 21px; }
+    h1 { margin-top: 32px; }
+    .einleitung { margin-top: 40px; font-size: 21px; }
     .kopf-raster::before { --zelle: 40px; }
     /* Zwei Zeilen statt eines Umbruchs mitten in „· in Ausbildung“ */
     .kopf .versal span { display: block; }
@@ -358,7 +357,7 @@
 
 <div class="kopf-raster"><header class="kopf breite">
   <div class="versal"><span>Fachinformatiker für Systemintegration</span><span class="trenner"> · </span><span>in Ausbildung</span></div>
-  <h1>Sergey<br>Zakharov</h1>
+  <h1><svg class="sz" viewBox="0 0 159 89" role="img" aria-label="Sergey Zakharov"><use href="#sz"/></svg></h1>
   <p class="einleitung">Ich baue Werkzeuge für Ausbildung und Betrieb, die man selbst betreibt. <span>Was man dort
     einträgt, bleibt im Browser oder im eigenen Netz.</span></p>
   <div class="kopf-aktionen"><a class="knopf voll" href="#projekte">Projekte ansehen</a><a class="knopf" href="https://github.com/SergeyZakh">GitHub ↗</a></div>
