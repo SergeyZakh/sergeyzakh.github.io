@@ -72,10 +72,12 @@
   /* Oben zählt der Abstand ab der Leiste, nicht ab dem Seitenrand: Sie steht 16 px tiefer, als sie Platz nimmt */
   .kopf { padding-top: calc(var(--abstand) + 16px); padding-bottom: var(--abstand); }
   h1 {
-    margin: 22px 0 0; font-size: clamp(60px, 12.4vw, 172px); line-height: .9; font-weight: 600; letter-spacing: -.05em;
+    /* Zeilenhöhe nicht unter 1: Darunter stößt die Unterlänge des g in „Sergey“ an das h in „Zakharov“.
+       Der Rand oben gleicht die größere Zeile aus (die Hälfte des Zuwachses, .07em). */
+    margin: calc(22px - .07em) 0 0; font-size: clamp(60px, 12.4vw, 172px); line-height: 1.04; font-weight: 600; letter-spacing: -.05em;
     margin-left: -.06em;
   }
-  .einleitung { display: grid; grid-template-columns: 7fr 5fr; gap: 40px; margin-top: 64px; align-items: end; }
+  .einleitung { display: grid; grid-template-columns: 7fr 5fr; gap: 40px; margin-top: 56px; align-items: end; }
   .einleitung p { margin: 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 30ch; }
   .einleitung p span { color: var(--schiefer); }
   .eckdaten { margin: 0; border-top: 1px solid var(--linie); }
@@ -93,8 +95,9 @@
     .kopf > .versal { grid-column: 1 / -1; }
     .kopf h1 { grid-column: 1; grid-row: 2; }
     .einleitung { display: contents; }
-    .einleitung p { grid-column: 1; grid-row: 3; margin-top: 44px; }
-    .eckdaten { grid-column: 2; grid-row: 2; align-self: end; margin-bottom: 6px; }
+    .einleitung p { grid-column: 1; grid-row: 3; margin-top: 32px; }
+    /* Unten bündig mit der Grundlinie von „Zakharov“, nicht mit dem Rand seiner Zeile */
+    .eckdaten { grid-column: 2; grid-row: 2; align-self: end; margin-bottom: calc(6px + min(.87vw, 12px)); }
     .eckdaten div { grid-template-columns: 92px 1fr; }
   }
 
@@ -212,7 +215,7 @@
     .leiste a:not(.marke) { padding-left: 10px; padding-right: 10px; }
     .fuss nav a { padding: 10px 0; }
     h1 { font-size: clamp(56px, 17vw, 120px); }
-    .einleitung { grid-template-columns: 1fr; gap: 40px; margin-top: 32px; }
+    .einleitung { grid-template-columns: 1fr; gap: 40px; margin-top: 28px; }
     /* Zwei Zeilen statt eines Umbruchs mitten in „· in Ausbildung“ */
     .kopf .versal span { display: block; }
     .kopf .versal .trenner { display: none; }
