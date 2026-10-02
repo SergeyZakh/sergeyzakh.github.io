@@ -130,13 +130,10 @@ export function uebersicht(alle) {
   </section>`;
   }).join('\n  ');
   const haupt = `<div class="uebersicht-kopf">
-  <div>
-    <p class="pfad"><a href="../">Startseite</a><span>/</span>Docs</p>
-    <h1>Docs</h1>
-    <p class="unterzeile">Anleitungen und Hintergründe zu meinen Projekten. Die Texte stammen aus den
-      Repositories und werden jede Nacht neu gebaut, damit sie zum Code passen.</p>
-  </div>
-  <button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Befehl, Einstellung oder Frage suchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
+  <p class="pfad"><a href="../">Startseite</a><span>/</span>Docs</p>
+  <h1>Docs</h1>
+  <p class="unterzeile">Anleitungen und Hintergründe zu meinen Projekten. Die Texte stammen aus den
+    Repositories und werden jede Nacht neu gebaut, damit sie zum Code passen.</p>
 </div>
 <div class="karten">
   ${karten}
@@ -266,9 +263,8 @@ ${projekteBauen(alle)}
 export function seite404() {
   const haupt = `<div class="uebersicht-kopf"><p class="pfad"><a href="/">Startseite</a><span>/</span>404</p>
 <h1>Nicht gefunden</h1>
-<p class="unterzeile">Diese Seite gibt es nicht (mehr). Vielleicht ist sie umgezogen: Die Suche findet
+<p class="unterzeile">Diese Seite gibt es nicht (mehr). Vielleicht ist sie umgezogen: Die Suche oben findet
   alles in den Docs.</p>
-<button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Docs durchsuchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
 <p class="meta"><span><a href="/">Zur Startseite</a></span><span class="trenner">·</span><span><a href="/docs/">Zu den Docs</a></span></p></div>`;
   writeFileSync(join(lauf.ziel, '404.html'), rahmen({
     titel: 'Nicht gefunden · Sergey Zakharov', beschreibung: 'Diese Seite gibt es nicht.', rel: '', haupt, klasse: 'uebersicht',

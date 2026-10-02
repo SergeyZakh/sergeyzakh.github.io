@@ -55,7 +55,7 @@ Projekt neu aufnehmen; `node skripte/bildschirmfoto.mjs` hilft unter Windows.
 Die Texte bleiben in den Projekt-Repos und werden dort gepflegt. `skripte/seite-bauen.mjs` setzt sie
 im Stil der Startseite:
 
-- Übersicht unter `docs/`: Titel links, Suche rechts, je Projekt eine gleich große Karte (Bild, Stand,
+- Übersicht unter `docs/`: Titel und Satz (gesucht wird über die Kopfleiste), je Projekt eine gleich große Karte (Bild, Stand,
   Umfang mit Lesezeit, „Erste Schritte“), darunter alle Seiten als Vergleich: eine Spalte je Projekt unter
   seiner Karte, gleichnamige Seiten nebeneinander, ein Strich, wo eine Gruppe fehlt; eine Gruppe, die nur
   ein Projekt hat (Handbuch), über die volle Breite in Vierern

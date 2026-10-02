@@ -260,21 +260,12 @@ h1 { margin: 12px 0 0; font-size: clamp(36px, 4.2vw, 54px); line-height: 1.04; f
 .toc a.aktiv { color: var(--text); border-left-color: var(--text); }
 
 /* ---------- Übersicht unter docs/ ----------
-   Oben mittig Titel, Satz und Suche. Darunter je Projekt eine Karte; alle gleich groß, und Bild, Kopf, Satz,
+   Oben Titel und Satz; gesucht wird über die Kopfleiste. Darunter je Projekt eine Karte; alle gleich groß, und Bild, Kopf, Satz,
    Umfang und Knöpfe stehen in allen auf derselben Linie (Subgrid). Darunter alle Seiten. */
 .uebersicht .raster { grid-template-columns: minmax(0, 1fr); }
 .uebersicht .haupt { max-width: 1120px; justify-self: center; padding-top: 72px; }
-/* Kopf in denselben zwei Spalten wie die Karten: links Titel und Satz, rechts unten die Suche */
-.uebersicht-kopf { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); column-gap: 24px; row-gap: 32px; align-items: end; }
 .uebersicht h1 { margin-top: 18px; font-size: clamp(56px, 7vw, 88px); line-height: .92; letter-spacing: -.05em; }
 .uebersicht .unterzeile { max-width: 42ch; }
-.suchfeld {
-  display: flex; align-items: center; gap: 12px; width: 100%; height: 56px; margin: 0; padding: 0 12px 0 20px;
-  border: 1px solid var(--linie); border-radius: 999px; background: var(--flaeche); box-shadow: var(--schatten);
-  color: var(--leise); font-size: 16px; text-align: left; cursor: text;
-}
-.suchfeld:hover { border-color: var(--linie-fest); }
-.suchfeld span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .uebersicht .karten {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); grid-auto-rows: auto auto auto auto auto;
   column-gap: 24px; margin: 64px 0 -24px;
@@ -392,6 +383,5 @@ dialog.suche::backdrop { background: rgba(22, 22, 26, .25); backdrop-filter: blu
   .fakten div { grid-template-columns: 1fr; gap: 0; }
   .blaettern { grid-template-columns: 1fr; margin-top: 56px; }
   .blaettern .weiter { grid-column: auto; }
-  .suchfeld kbd { display: none; }
   dialog.suche { margin-top: 12px; max-height: calc(100% - 24px); }
 }
