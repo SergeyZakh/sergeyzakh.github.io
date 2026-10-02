@@ -1,0 +1,12 @@
+{
+  "name": "sergeyzakh.github.io",
+  "private": true,
+  "description": "Startseite und Docs unter sergeyzakh.github.io",
+  "scripts": {
+    "bauen": "node skripte/seite-bauen.mjs",
+    "pruefen": "node skripte/seite-pruefen.mjs"
+  },
+  "dependencies": {
+    "marked": "18.0.14"
+  }
+}

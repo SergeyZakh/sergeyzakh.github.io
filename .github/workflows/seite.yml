@@ -1,0 +1,60 @@
+# Baut die Seite (Startseite und Docs), prüft sie und veröffentlicht sie auf GitHub Pages.
+# Die Docs kommen aus den Repos Ausbildungs-Berichtsheft und fundus. Deshalb läuft der Bau auch jede
+# Nacht: Was dort an den Docs geändert wird, ist am nächsten Morgen hier, ohne Zutun.
+# Einmalig in den Repo-Einstellungen: Pages → Source → "GitHub Actions".
+name: Seite
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  bauen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # Volle Geschichte, damit „Stand“ je Seite vom letzten Commit an genau dieser Datei kommt
+      - uses: actions/checkout@v7
+        with:
+          repository: SergeyZakh/Ausbildungs-Berichtsheft
+          path: quellen/Ausbildungs-Berichtsheft
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: SergeyZakh/fundus
+          path: quellen/fundus
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node skripte/seite-bauen.mjs --quellen quellen
+      # Ein toter Verweis oder etwas, das von außen lädt, hält die Veröffentlichung auf;
+      # online bleibt dann die letzte gute Fassung.
+      - run: node skripte/seite-pruefen.mjs
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  veroeffentlichen:
+    needs: bauen
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v5
