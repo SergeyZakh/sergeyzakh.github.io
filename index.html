@@ -178,11 +178,20 @@
   .reihe .liste span { padding: 5px 12px; border: 1px solid var(--linie); border-radius: 999px; background: var(--grund); font-weight: 500; line-height: 1.4; }
 
   /* ---------- Kontakt ---------- */
-  .kontakt { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
-  .kontakt a { display: flex; flex-direction: column; gap: 6px; padding: 22px 0 26px; border-top: 1px solid var(--linie); border-bottom: 1px solid var(--linie); }
-  .kontakt b { font-size: clamp(40px, 5vw, 72px); line-height: 1.05; font-weight: 600; letter-spacing: -.04em; transition: transform .25s; }
-  .kontakt a:hover b { transform: translateX(10px); }
-  .kontakt small { font-size: 15px; color: var(--schiefer); }
+  /* Zwei gleich große Kacheln: Name und Adresse links, der Pfeil im Kreis rechts, alles auf denselben Linien */
+  .kontakt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .kontakt a {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 24px; align-items: center;
+    padding: 32px 32px 30px; border: 1px solid var(--linie); border-radius: 18px; transition: background .2s, border-color .2s;
+  }
+  .kontakt a:hover { background: rgba(243, 242, 238, .04); border-color: var(--linie-fest); }
+  .kontakt b { grid-column: 1; font-size: clamp(32px, 3.4vw, 44px); line-height: 1.05; font-weight: 600; letter-spacing: -.035em; }
+  .kontakt small { grid-column: 1; margin-top: 8px; font-size: 15px; color: var(--schiefer); overflow-wrap: anywhere; }
+  .kontakt .pfeil {
+    grid-column: 2; grid-row: 1 / span 2; display: grid; place-items: center; width: 52px; height: 52px;
+    border: 1px solid var(--linie-fest); border-radius: 50%; font-size: 20px; transition: background .2s, color .2s, border-color .2s;
+  }
+  .kontakt a:hover .pfeil { background: var(--text); border-color: var(--text); color: #16161A; }
   /* Dunkler Schluss für Kontakt und Fuß: dieselben Namen, andere Werte, so passt alles darin von selbst */
   .nacht {
     --text: #F3F2EE; --linie: rgba(243, 242, 238, .14); --linie-fest: rgba(243, 242, 238, .32);
@@ -209,7 +218,7 @@
     .neu .pfeil { grid-column: 3; grid-row: 1; }
   }
 
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .kontakt b { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   @media (max-width: 860px) {
     /* Am Handy größere Tippflächen in der Leiste */
     .leiste a, .leiste a.marke { padding-top: 10px; padding-bottom: 10px; }
@@ -249,9 +258,11 @@
     .kopf-buehne img { width: 82%; border-radius: 8px; }
     .kopf-buehne img:nth-child(2) { top: 22%; }
     .kopf-buehne img:only-child { left: 9%; }
-    .kontakt { grid-template-columns: 1fr; }
-    .kontakt a + a { border-top: 0; }
-    .kontakt a { gap: 2px; padding: 18px 0 20px; }
+    .kontakt { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .kontakt a { padding: 22px 20px 20px 22px; border-radius: 14px; }
+    .kontakt b { font-size: 30px; }
+    .kontakt small { margin-top: 4px; }
+    .kontakt .pfeil { width: 44px; height: 44px; font-size: 18px; }
     .fuss { grid-template-columns: 1fr; padding-top: 40px; padding-bottom: 48px; }
     .fuss .sz { order: -1; }
   }
@@ -312,8 +323,8 @@
   <section id="kontakt" class="band nacht"><div class="breite">
     <header class="band-kopf"><h2>Kontakt</h2><p>Zu den Projekten am besten über GitHub, sonst über LinkedIn.</p></header>
     <div class="kontakt">
-      <a href="https://github.com/SergeyZakh"><b>GitHub ↗</b><small>github.com/SergeyZakh</small></a>
-      <a href="https://www.linkedin.com/in/sergey-zakharov-jr/"><b>LinkedIn ↗</b><small>linkedin.com/in/sergey-zakharov-jr</small></a>
+      <a href="https://github.com/SergeyZakh"><b>GitHub</b><small>SergeyZakh</small><span class="pfeil" aria-hidden="true">↗</span></a>
+      <a href="https://www.linkedin.com/in/sergey-zakharov-jr/"><b>LinkedIn</b><small>sergey-zakharov-jr</small><span class="pfeil" aria-hidden="true">↗</span></a>
     </div>
   </div></section>
 </main>
