@@ -65,6 +65,25 @@ function finden(repo) {
   return [{ titel: null, seiten: oben }, { titel: 'Für Mitwirkende', seiten: unten }].filter((g) => g.seiten.length);
 }
 
+// Die Versionen aus einem CHANGELOG nach Keep a Changelog, neueste zuerst. Je Version das Datum und,
+// was sie ausmacht: der Satz direkt unter der Überschrift, wenn es einen gibt, sonst die fetten
+// Schlagworte der Punkte („**Woher kommt welches Wort?** …“), die unter „Neu“ zuerst.
+export function versionenAus(text) {
+  const klar = (t) => t.replace(/\*\*|`/g, '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' ').trim();
+  return text.split(/^## /m).slice(1).map((teil) => {
+    const [kopf, ...rest] = teil.split('\n');
+    const m = kopf.match(/^\[?v?(\d+\.\d+\.\d+)\]?(?:\s*[–—-]\s*(\d{4}-\d{2}-\d{2}))?/);
+    if (!m) return null;
+    const rumpf = rest.join('\n');
+    const erster = rumpf.trim().split(/\n\s*\n/)[0] || '';
+    const satz = /^[A-ZÄÖÜa-zäöü]/.test(erster) ? klar(erster) : null;
+    const abschnitte = rumpf.split(/^### /m);
+    const neu = abschnitte.filter((a) => /^Neu\b/.test(a)), sonst = abschnitte.filter((a) => !/^Neu\b/.test(a));
+    const punkte = [...neu, ...sonst].flatMap((a) => [...a.matchAll(/^- \*\*(.+?)\*\*/gm)].map((x) => klar(x[1]).replace(/[:.]$/, '')));
+    return { version: m[1], datum: m[2] ? m[2].split('-').reverse().join('.') : null, satz, punkte };
+  }).filter(Boolean);
+}
+
 function repoOrdner(p) {
   const name = p.repo.split('/')[1];
   const ort = lauf.quellen.map((q) => join(q, name)).find((o) => existsSync(join(o, '.git')) || existsSync(join(o, 'README.md')));
@@ -77,11 +96,10 @@ export function einlesen(p) {
   if (!p.repo) return { ...p, kurz, seiten: [], gruppen: [] };
   const repo = repoOrdner(p);
   const changelog = join(repo, 'CHANGELOG.md');
-  // „## [0.5.0] – 2026-10-01“, die erste Überschrift mit Nummer; „## [Unveröffentlicht]“ zählt nicht
-  const neueste = existsSync(changelog)
-    ? readFileSync(changelog, 'utf8').match(/^## \[?v?(\d+\.\d+\.\d+)\]?(?:\s*[–—-]\s*(\d{4}-\d{2}-\d{2}))?/m) : null;
-  const version = neueste?.[1] || null;
-  const datum = neueste?.[2] ? neueste[2].split('-').reverse().join('.') : null;
+  // „## [0.5.0] – 2026-10-01“; „## [Unveröffentlicht]“ zählt nicht
+  const versionen = existsSync(changelog) ? versionenAus(readFileSync(changelog, 'utf8').replace(/\r\n/g, '\n')) : [];
+  const version = versionen[0]?.version || null;
+  const datum = versionen[0]?.datum || null;
   const vorlage = p.docs === false ? [] : p.docs?.gruppen || finden(repo);
   const gruppen = vorlage.map((g) => ({
     titel: g.titel,
@@ -93,5 +111,5 @@ export function einlesen(p) {
   }
   const doppelt = seiten.map((s) => s.pfad).find((pfad, i, alle) => alle.indexOf(pfad) !== i);
   if (doppelt !== undefined) throw new Error(`${p.name}: zwei Seiten unter docs/${kurz}/${doppelt}`);
-  return { ...p, kurz, repoOrdner: repo, version, datum, gruppen, seiten, nachDatei: new Map(seiten.map((s) => [s.datei, s])) };
+  return { ...p, kurz, repoOrdner: repo, version, datum, versionen, gruppen, seiten, nachDatei: new Map(seiten.map((s) => [s.datei, s])) };
 }

@@ -8,11 +8,15 @@ Anfragen nach außen; auch die Schrift (Instrument Sans, wie in Berichtsheft und
 
 Ein Eintrag in `projekte.mjs`, mehr nicht. Was daraus folgt:
 
-- **Startseite:** ein Abschnitt mit Name, Stand, Satz und Knöpfen (die Demo dunkel, sonst die Docs);
-  mit `bild` groß mit Bildschirmfoto und drei Punkten, ohne Bild kompakt. Nummer und Anzahl zählen
-  sich selbst.
+- **Startseite:** ein Abschnitt mit Name, Stand, Satz und Knöpfen (die Demo dunkel, sonst die Docs).
+  Mit `bild` groß: Text und Bildschirmfoto nebeneinander, von Projekt zu Projekt abwechselnd links und
+  rechts, darunter drei Punkte. Ohne Bild kompakt; aufeinanderfolgende stehen nebeneinander im
+  Raster. Nummer und Anzahl zählen sich selbst.
 - **Version und Datum:** aus der ersten Überschrift `## [x.y.z] – JJJJ-MM-TT` im `CHANGELOG.md` des
   Repos, bei jedem Bau neu. Die neueste Version aller Projekte steht oben in den Eckdaten als „Zuletzt“.
+- **Neues:** die letzten Versionen aus den CHANGELOGs, je Projekt höchstens zwei, zusammen vier. Als
+  Text der Satz unter der Versionsüberschrift, sonst die fett gesetzten Anfänge der Punkte; jede Zeile
+  führt auf die Version in den Docs.
 - **Docs:** ohne weitere Angaben findet der Bau README, `docs/*.md`, CONTRIBUTING, SECURITY und
   CHANGELOG. Eine eigene Gliederung geht mit `docs: { gruppen }`, keine Docs mit `docs: false`.
 - **Kopfleiste der Docs:** bis drei Projekte ein Umschalter, ab vier ein Menü mit Stand und Satz.
@@ -26,10 +30,13 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 
 ## Startseite
 
-`index.html` ist die Vorlage. Eckdaten und Kenntnisse stehen nur in `angaben.mjs`: Nach einer
+`index.html` ist die Vorlage. Von oben: Name mit Eckdaten, Projekte, Neues, Kenntnisse, Kontakt; die
+Leiste oben springt dorthin (unter 480 px ohne „Neues“, damit sie in die Breite passt).
+Eckdaten und Kenntnisse stehen nur in `angaben.mjs`: Nach einer
 Änderung schreibt `node skripte/erzeugen.mjs` sie in die Seite und in die Karte unter `karte/`, die
 das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Den Projektteil zwischen
-`<!-- projekte:… -->` setzt erst der Bau ein; die fertige Seite liegt danach in `_site/`.
+`<!-- projekte:… -->` setzt erst der Bau ein, zusammen mit „Neues“; die fertige Seite liegt danach
+in `_site/`.
 `node skripte/bildschirmfoto.mjs` nimmt Vorschaubilder neu auf. Aufgenommen wird nicht zu breit, damit
 man auf der Startseite etwas lesen kann: `bilder/berichtsheft-woche.jpg` ist die Wochenansicht der
 Demo mit dem Beispielheft bei 1200 × 760 und doppelter Auflösung, `bilder/fundus.jpg` stammt aus

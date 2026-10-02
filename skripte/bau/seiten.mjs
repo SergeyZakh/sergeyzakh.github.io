@@ -53,6 +53,7 @@ ${weiterBlaettern(w, s)}
     inhalt: inhaltsverzeichnis(gebaut.inhalt),
   }));
 
+  s.inhalt = gebaut.inhalt;
   const url = posix.relative('docs', ordner);
   for (const a of abschnitte(gebaut.html, titelText)) {
     lauf.suche.push({ k: w.kurz, w: w.name, s: s.titel, t: a.t, u: `${url ? url + '/' : ''}${a.a ? '#' + a.a : ''}`, x: a.x });
@@ -102,7 +103,7 @@ export function uebersicht(alle) {
 }
 // ---------- Startseite: der Projektteil ----------
 
-// Mit Bild steht ein Projekt groß da, mit Bildschirmfoto und drei Punkten; ohne Bild kompakt.
+// Mit Bild steht ein Projekt groß da, mit Bildschirmfoto und drei Punkten; ohne Bild kompakt im Raster.
 // Die wichtigste Aktion (Demo, sonst Docs) ist ein dunkler Knopf, wie „Exportieren“ im Berichtsheft.
 export function aktionen(p, docs) {
   const knoepfe = [
@@ -118,20 +119,24 @@ export function aktionen(p, docs) {
 export const standText = (p) => [p.vorab ? `Vorabversion${p.version ? ' ' + p.version : ''}` : p.version && `v${p.version}`, p.datum]
   .filter(Boolean).join(' · ');
 
-function projektAbschnitt(p, nr) {
+function projektAbschnitt(p, nr, gespiegelt) {
   const stand = standText(p);
-  const zeile = `      <div class="projekt-zeile">
+  // Kopf, Aktionen, Bild und Punkte stehen nebeneinander im Raster des Artikels; wo was steht, regelt
+  // index.html je Breite: am PC Text und Bild nebeneinander, abwechselnd links und rechts, am Handy
+  // untereinander mit dem Bild vor den Punkten.
+  const kopf = `      <div class="projekt-kopf">
         <span class="nr">${String(nr).padStart(2, '0')}</span>
-        <div class="projekt-kopf">
-          <h2>${esc(p.name)}</h2>
-          ${stand ? `<span class="stand ${p.vorab ? 'vorab' : 'gut'}">${esc(stand)}</span>` : ''}
-        </div>
+        <h2>${esc(p.name)}</h2>
+        ${stand ? `<span class="stand ${p.vorab ? 'vorab' : 'gut'}">${esc(stand)}</span>` : ''}
         <p class="satz">${esc(p.satz)}</p>
-        <div class="aktionen">
+      </div>
+      <div class="aktionen">
           ${aktionen(p, p.seiten.length && `docs/${p.kurz}/`)}
-        </div>
       </div>`;
-  if (!p.bild) return `    <article class="projekt kurz">\n${zeile}\n    </article>`;
+  const punkte = Object.entries(p.punkte || {}).slice(0, 3)
+    .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('\n        ');
+  const punkteHtml = punkte ? `\n      <dl class="punkte">\n        ${punkte}\n      </dl>` : '';
+  if (!p.bild) return `    <article class="projekt kurz">\n${kopf}${punkteHtml}\n    </article>`;
 
   const groesse = (datei) => {
     if (!existsSync(join(lauf.wurzel, datei))) throw new Error(`${p.name}: Bild ${datei} fehlt (projekte.mjs)`);
@@ -140,16 +145,43 @@ function projektAbschnitt(p, nr) {
   const [breite, hoehe] = groesse(p.bild.datei);
   // Für schmale Bildschirme kann ein eigener Ausschnitt stehen
   const handy = p.bild.handy ? (([b, h]) => `<source media="(max-width: 860px)" srcset="${esc(p.bild.handy)}" width="${b}" height="${h}">`)(groesse(p.bild.handy)) : '';
+  // Das Bild führt zur Demo, sonst zu den Docs
+  const ziel = p.demo || (p.seiten.length ? `docs/${p.kurz}/` : null);
+  const bild = `<picture>${handy}<img src="${esc(p.bild.datei)}" width="${breite}" height="${hoehe}" loading="lazy" alt="${esc(p.bild.alt)}"></picture>`;
   // Kleine Bilder nicht über ihre Größe ziehen, sonst werden sie unscharf
-  const bild = `      <figure class="bild${breite < 1400 ? ' schmal' : ''}">
-        <picture>${handy}<img src="${esc(p.bild.datei)}" width="${breite}" height="${hoehe}" loading="lazy" alt="${esc(p.bild.alt)}"></picture>
-      </figure>`;
-  const punkte = Object.entries(p.punkte || {}).slice(0, 3)
-    .map(([k, v]) => `<div><h3>${esc(k)}</h3><p>${esc(v)}</p></div>`).join('\n        ');
-  return `    <article class="projekt">
-${zeile}
-${bild}${punkte ? `\n      <div class="drei">\n        ${punkte}\n      </div>` : ''}
+  return `    <article class="projekt${gespiegelt ? ' gespiegelt' : ''}">
+${kopf}
+      <figure class="bild${breite < 1400 ? ' schmal' : ''}">${ziel ? `<a href="${esc(ziel)}" tabindex="-1" aria-hidden="true">${bild}</a>` : bild}</figure>${punkteHtml}
     </article>`;
+}
+
+// Neues: die letzten Versionen aus den CHANGELOGs, je Projekt höchstens zwei, damit ein Projekt mit
+// vielen kleinen Ausgaben die anderen nicht verdrängt. Gleiches Datum: abwechselnd nach Projekt.
+const NEUES_JE_PROJEKT = 2;
+const NEUES_INSGESAMT = 4;
+
+function neuesBauen(alle) {
+  const iso = (d) => (d ? d.split('.').reverse().join('-') : '');
+  const eintraege = alle.flatMap((p, i) => (p.versionen || []).slice(0, NEUES_JE_PROJEKT).map((v, rang) => ({ p, v, i, rang })))
+    .sort((a, b) => iso(b.v.datum).localeCompare(iso(a.v.datum)) || a.rang - b.rang || a.i - b.i)
+    .slice(0, NEUES_INSGESAMT);
+  if (!eintraege.length) return '';
+  const zeilen = eintraege.map(({ p, v }) => {
+    // Anker der Version auf der Seite „Änderungen“, wie ihn der Bau dort vergeben hat
+    const seite = p.nachDatei?.get('CHANGELOG.md');
+    const anker = seite?.inhalt?.find((e) => e.text.startsWith(v.version))?.id;
+    const href = seite ? `docs/${p.kurz}/${seite.pfad}/${anker ? '#' + anker : ''}` : null;
+    const was = v.satz || v.punkte.slice(0, 3).join(' · ');
+    const innen = `<time>${esc(v.datum || '')}</time><b>${esc(p.name)} <span>${esc(v.version)}</span></b><span class="was">${esc(was)}</span>`;
+    return href ? `      <a class="neu" href="${esc(href)}">${innen}<span class="pfeil" aria-hidden="true">→</span></a>`
+      : `      <div class="neu">${innen}</div>`;
+  });
+  return `  <section id="neues" class="breite">
+    <div class="abschnitt-kopf"><span class="versal">Neues</span><span class="versal">aus den Änderungen</span></div>
+    <div class="neues">
+${zeilen.join('\n')}
+    </div>
+  </section>`;
 }
 
 // Eckdaten oben auf der Startseite: die neueste Version über alle Projekte, damit sichtbar ist,
@@ -158,20 +190,41 @@ function zuletzt(alle) {
   const iso = (d) => d.split('.').reverse().join('-');
   const neu = alle.filter((p) => p.datum).sort((a, b) => iso(b.datum).localeCompare(iso(a.datum)))[0];
   if (!neu) return '';
-  const aenderungen = neu.nachDatei?.get('CHANGELOG.md');
   const name = `${esc(neu.name)} ${esc(neu.version)}`;
-  return `<div><dt>Zuletzt</dt><dd>${aenderungen ? `<a href="${esc(posix.join('docs', neu.kurz, aenderungen.pfad))}/">${name}</a>` : name}, ${esc(neu.datum)}</dd></div>`;
+  return `<div><dt>Zuletzt</dt><dd><a href="#neues">${name}</a>, ${esc(neu.datum)}</dd></div>`;
+}
+
+// Projekte mit Bild stehen groß und abwechselnd gespiegelt; die ohne Bild, die direkt aufeinander
+// folgen, nebeneinander in einem Raster, damit neben ihnen nicht eine halbe Zeile leer bleibt.
+function projekteBauen(alle) {
+  const teile = [];
+  let gross = 0, weitere = [];
+  const weitereAbschliessen = () => {
+    if (weitere.length) teile.push(`    <div class="weitere">\n${weitere.join('\n')}\n    </div>`);
+    weitere = [];
+  };
+  alle.forEach((p, i) => {
+    if (!p.bild) return weitere.push(projektAbschnitt(p, i + 1));
+    weitereAbschliessen();
+    teile.push(projektAbschnitt(p, i + 1, gross++ % 2 === 1));
+  });
+  weitereAbschliessen();
+  return teile.join('\n');
 }
 
 export function startseiteBauen(alle) {
   const teil = `  <section id="projekte" class="breite">
     <div class="abschnitt-kopf"><span class="versal">Projekte</span><span class="versal">${String(alle.length).padStart(2, '0')}</span></div>
-${alle.map((p, i) => projektAbschnitt(p, i + 1)).join('\n')}
+${projekteBauen(alle)}
   </section>`;
   const muster = /(<!-- projekte:anfang -->)[\s\S]*?(\n\s*<!-- projekte:ende -->)/;
   if (!muster.test(lauf.startseite)) throw new Error('Markierungen <!-- projekte:anfang/ende --> fehlen in index.html');
   if (!lauf.startseite.includes('<!-- zuletzt -->')) throw new Error('Markierung <!-- zuletzt --> fehlt in index.html');
-  writeFileSync(join(lauf.ziel, 'index.html'), lauf.startseite.replace(muster, `$1\n${teil}$2`).replace('<!-- zuletzt -->', zuletzt(alle)));
+  // Ersetzen über Funktionen: Ein „$“ in einem Text aus den Repos wäre sonst ein Platzhalter
+  const neues = neuesBauen(alle);
+  writeFileSync(join(lauf.ziel, 'index.html'), lauf.startseite
+    .replace(muster, (_, vor, nach) => `${vor}\n${teil}\n\n${neues}${nach}`)
+    .replace('<!-- zuletzt -->', () => zuletzt(alle)));
 }
 
 // ---------- 404, Sitemap ----------

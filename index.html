@@ -96,18 +96,27 @@
 
   /* ---------- Abschnitte ---------- */
   .abschnitt-kopf { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--linie); }
-  .projekt { padding: 40px 0 96px; }
-  .projekt-zeile { display: grid; grid-template-columns: 64px 1fr; gap: 0 24px; align-items: baseline; }
-  .projekt-kopf { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; }
-  .nr { font-size: 15px; color: var(--leise); font-variant-numeric: tabular-nums; }
-  h2 { margin: 0; font-size: clamp(40px, 5.6vw, 72px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
-  .stand { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+
+  /* ---------- Projekte als Fallstudien ----------
+     Text und Bild nebeneinander, von Projekt zu Projekt abwechselnd links und rechts. Kopf, Aktionen,
+     Bild und Punkte sind Geschwister im Raster des Artikels; so kann das Bild am Handy vor die Punkte
+     rücken, ohne dass sich die Reihenfolge im HTML ändert. */
+  .projekt {
+    display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: 64px; align-items: start;
+    grid-template-rows: auto auto 1fr; grid-template-areas: "kopf bild" "aktionen bild" "punkte bild";
+    padding: 48px 0 112px;
+  }
+  .projekt.gespiegelt { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "bild kopf" "bild aktionen" "bild punkte"; }
+  .projekt-kopf { grid-area: kopf; }
+  .nr { display: block; margin-bottom: 14px; font-size: 14px; color: var(--leise); font-variant-numeric: tabular-nums; }
+  h2 { margin: 0; font-size: clamp(40px, 4.6vw, 64px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
+  .stand { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 14px; }
   .stand::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
   .stand.gut { color: var(--gut); }
   .stand.vorab { color: var(--bernstein); }
-  .satz { grid-column: 2; margin: 16px 0 0; font-size: 22px; line-height: 1.38; color: var(--schiefer); max-width: 34ch; letter-spacing: -.01em; }
+  .satz { margin: 18px 0 0; font-size: 21px; line-height: 1.4; color: var(--schiefer); max-width: 30ch; letter-spacing: -.01em; }
   /* Pillen wie in Berichtsheft und Fundus; die wichtigste Aktion dunkel wie „Exportieren“ */
-  .aktionen { grid-column: 2; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .aktionen { grid-area: aktionen; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
   .knopf {
     display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px 0 16px; border-radius: 999px;
     border: 1px solid var(--linie); background: var(--flaeche); font-size: 15px; font-weight: 500; white-space: nowrap;
@@ -117,40 +126,55 @@
   .knopf.voll { background: var(--text); border-color: var(--text); color: var(--grund); }
   .knopf.voll:hover { background: var(--voll-hover); border-color: var(--voll-hover); }
   .knopf svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .punkte { grid-area: punkte; margin: 44px 0 0; border-top: 1px solid var(--linie); }
+  .punkte div { padding: 14px 0 15px; border-bottom: 1px solid var(--linie); }
+  .punkte dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
+  .punkte dd { margin: 5px 0 0; font-size: 15.5px; line-height: 1.5; max-width: 44ch; }
 
-  /* Das Bild liegt auf einer ruhigen Fläche, damit helle Bildschirmfotos auch im dunklen Modus nicht blenden */
-  .bild { margin: 48px 0 0; padding: clamp(16px, 4vw, 48px) clamp(16px, 4vw, 48px) 0; background: var(--buehne); border-radius: 18px; overflow: hidden; }
-  .bild img { display: block; width: 100%; max-width: 1040px; height: auto; margin: 0 auto; border-radius: 10px 10px 0 0; box-shadow: var(--schatten-bild); }
+  /* Das Bild liegt auf einer ruhigen Fläche, damit helle Bildschirmfotos auch im dunklen Modus nicht
+     blenden, und schaut unten aus ihr heraus. Ein Klick führt zur Demo. */
+  .bild { grid-area: bild; margin: 0; padding: clamp(16px, 2.6vw, 36px) clamp(16px, 2.6vw, 36px) 0; background: var(--buehne); border-radius: 18px; overflow: hidden; }
+  .bild a { display: block; }
+  .bild img { display: block; width: 100%; height: auto; margin: 0 auto; border-radius: 10px 10px 0 0; box-shadow: var(--schatten-bild); transition: transform .3s ease; }
+  .bild a:hover img { transform: translateY(-4px); }
   .bild.schmal img { max-width: 760px; }
-  /* Projekte ohne Bildschirmfoto stehen kompakt untereinander */
-  .projekt.kurz { padding: 36px 0 44px; border-top: 1px solid var(--linie); }
-  .projekt.kurz h2 { font-size: clamp(32px, 3.6vw, 44px); }
-  .projekt.kurz .satz { font-size: 19px; }
-  .drei { display: grid; grid-template-columns: 64px repeat(3, 1fr); gap: 24px; margin-top: 36px; }
-  .drei div:first-child { grid-column: 2; }
-  .drei h3 { margin: 0 0 8px; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
-  .drei p { margin: 0; font-size: 15.5px; max-width: 34ch; }
 
-  /* ---------- Kenntnisse als Tabelle ---------- */
-  .kenntnisse { padding: 8px 0 96px; }
-  .reihe { display: grid; grid-template-columns: 64px 240px 1fr; gap: 24px; padding: 20px 0; border-top: 1px solid var(--linie); align-items: baseline; }
-  .reihe:first-child { border-top: 0; }
-  .reihe dt { font-size: 15px; color: var(--schiefer); grid-column: 2; }
-  .reihe dd { margin: 0; font-size: 28px; line-height: 1.3; letter-spacing: -.02em; font-weight: 500; }
-  /* Jeder Eintrag trägt seinen Punkt vorn; die Liste ragt um eine Punktbreite nach links aus dd, das
-     dort abschneidet. So verschwindet der Punkt vor dem ersten Eintrag jeder Zeile, auch nach einem
-     Umbruch, und keiner hängt allein am Zeilenende. */
-  .reihe dd { overflow: hidden; }
-  .reihe .liste { display: flex; flex-wrap: wrap; margin-left: -.8em; }
-  .reihe .liste span { white-space: nowrap; }
-  .reihe .liste span::before { content: "·"; display: inline-block; width: .8em; text-align: center; color: var(--leise); font-weight: 400; }
+  /* Ohne Bildschirmfoto: nebeneinander im Raster, je Spalte mindestens 300 px, am Handy untereinander */
+  .weitere { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); column-gap: 48px; padding-bottom: 96px; }
+  .weitere .projekt.kurz { display: block; padding: 32px 0 40px; border-top: 1px solid var(--linie); }
+  .projekt.kurz h2 { font-size: clamp(32px, 3.2vw, 40px); }
+  .projekt.kurz .satz { font-size: 18px; }
+  .projekt.kurz .aktionen { margin-top: 24px; }
+  .projekt.kurz .punkte { margin-top: 28px; }
+
+  /* ---------- Neues aus den CHANGELOGs ---------- */
+  .neues { padding-bottom: 112px; }
+  .neu {
+    display: grid; grid-template-columns: 112px minmax(0, 5fr) minmax(0, 8fr) 24px; gap: 24px; align-items: baseline;
+    padding: 20px 0; border-bottom: 1px solid var(--linie);
+  }
+  .neu time { font-size: 14px; color: var(--leise); font-variant-numeric: tabular-nums; }
+  .neu b { font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
+  .neu b span { font-weight: 400; color: var(--schiefer); }
+  .neu .was { font-size: 15.5px; line-height: 1.5; color: var(--schiefer); }
+  .neu .pfeil { justify-self: end; color: var(--leise); transition: transform .2s, color .2s; }
+  a.neu:hover .pfeil { transform: translateX(4px); color: var(--text); }
+  a.neu:hover .was { color: var(--text); }
+
+  /* ---------- Kenntnisse: eine Spalte je Bereich ---------- */
+  .kenntnisse { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 40px 32px; margin: 0; padding: 12px 0 112px; }
+  /* Die Linie oben an jeder Spalte, nicht unter dem Etikett: Bricht ein Etikett um, bleiben die Linien gleich hoch */
+  .reihe { border-top: 1px solid var(--linie); padding-top: 14px; }
+  .reihe dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
+  .reihe dd { margin: 12px 0 0; font-size: 20px; line-height: 1.5; letter-spacing: -.01em; font-weight: 500; }
+  .reihe .liste { display: flex; flex-direction: column; }
 
   /* ---------- Kontakt ---------- */
-  .kontakt { padding: 8px 0 72px; }
-  .kontakt a { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--linie); }
-  .kontakt b { font-size: clamp(40px, 6.4vw, 84px); line-height: 1.05; font-weight: 600; letter-spacing: -.04em; transition: transform .25s; }
+  .kontakt { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; padding-bottom: 80px; }
+  .kontakt a { display: flex; flex-direction: column; gap: 6px; padding: 22px 0 26px; border-bottom: 1px solid var(--linie); }
+  .kontakt b { font-size: clamp(40px, 5vw, 72px); line-height: 1.05; font-weight: 600; letter-spacing: -.04em; transition: transform .25s; }
   .kontakt a:hover b { transform: translateX(10px); }
-  .kontakt small { font-size: 16px; color: var(--schiefer); }
+  .kontakt small { font-size: 15px; color: var(--schiefer); }
   .fuss { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; padding-top: 48px; padding-bottom: 56px; color: var(--leise); font-size: 14px; }
   .fuss b { display: block; color: var(--text); font-weight: 600; font-size: 15px; }
   .fuss p { margin: 6px 0 0; }
@@ -161,6 +185,13 @@
   }
   .fuss nav a:hover { color: var(--text); text-decoration-color: currentColor; }
   .fuss .sz { width: 112px; height: auto; color: var(--linie); }
+
+  @media (max-width: 1100px) {
+    .kenntnisse { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .neu { grid-template-columns: 96px minmax(0, 1fr) 24px; row-gap: 4px; }
+    .neu .was { grid-column: 2; grid-row: 2; }
+    .neu .pfeil { grid-column: 3; grid-row: 1; }
+  }
 
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .kontakt b { transition: none; } }
   @media (max-width: 860px) {
@@ -175,29 +206,38 @@
     .kopf .versal span { display: block; }
     .kopf .versal .trenner { display: none; }
     .einleitung p { font-size: 21px; }
-    .projekt { padding: 28px 0 64px; }
-    .projekt-zeile { grid-template-columns: 1fr; }
-    .nr { margin-bottom: 6px; }
-    .satz, .aktionen { grid-column: 1; }
+    /* Untereinander: Kopf, Aktionen, Bild, dann die Punkte */
+    .projekt, .projekt.gespiegelt {
+      grid-template-columns: minmax(0, 1fr); grid-template-rows: none;
+      grid-template-areas: "kopf" "aktionen" "bild" "punkte"; padding: 32px 0 64px;
+    }
+    .weitere { padding-bottom: 48px; }
+    .weitere .projekt.kurz { padding: 28px 0 36px; }
+    .nr { margin-bottom: 10px; }
     .aktionen { margin-top: 22px; gap: 8px; }
+    .bild, .punkte { margin-top: 32px; }
     .knopf { height: 42px; padding: 0 16px 0 13px; font-size: 14.5px; }
     .leiste .trenner { margin: 0 1px; }
     .satz { font-size: 19px; }
-    .bild { margin-top: 32px; border-radius: 14px; }
+    .bild { border-radius: 14px; }
     .bild img { border-radius: 6px 6px 0 0; }
-    .drei { grid-template-columns: 1fr; gap: 20px; }
-    .drei div:first-child { grid-column: auto; }
+    .neues { padding-bottom: 64px; }
+    .neu { grid-template-columns: minmax(0, 1fr) 20px; gap: 4px 12px; padding: 16px 0; }
+    .neu time { grid-column: 1; grid-row: 1; }
+    .neu b { grid-column: 1; grid-row: 2; font-size: 19px; }
+    .neu .was { grid-column: 1; grid-row: 3; }
+    .neu .pfeil { grid-column: 2; grid-row: 2; }
     /* Am Handy derselbe Rhythmus zwischen den Abschnitten wie bei den Projekten (64 px) */
-    .kenntnisse { padding-bottom: 64px; }
-    .kontakt { padding-bottom: 40px; }
-    .reihe { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
-    .reihe dt { grid-column: auto; }
-    .reihe dd { font-size: 21px; }
-    .kontakt a { flex-direction: column; gap: 2px; }
+    .kenntnisse { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; padding-bottom: 64px; }
+    .reihe dd { font-size: 18px; margin-top: 8px; }
+    .kontakt { grid-template-columns: 1fr; padding-bottom: 40px; }
+    .kontakt a { gap: 2px; padding: 18px 0 20px; }
     .fuss { grid-template-columns: 1fr; padding-top: 40px; padding-bottom: 48px; }
     .fuss .sz { order: -1; }
   }
-  /* Die Pille muss auch auf kleinen Handys in die Breite passen: erst enger, unter 340 px ohne SZ */
+  /* Die Pille muss auch auf kleinen Handys in die Breite passen: erst ohne „Neues“ (folgt ohnehin
+     direkt auf die Projekte), dann enger, unter 340 px ohne SZ */
+  @media (max-width: 480px) { .leiste .neu-link { display: none; } }
   @media (max-width: 400px) {
     .leiste a:not(.marke) { padding-left: 8px; padding-right: 8px; font-size: 13.5px; }
     .leiste a.marke { padding-left: 10px; padding-right: 6px; }
@@ -214,6 +254,7 @@
   <nav aria-label="Abschnitte">
     <a class="marke" href="#" aria-label="Nach oben"><svg class="sz" viewBox="0 0 159 89"><use href="#sz"/></svg></a>
     <a href="#projekte">Projekte</a>
+    <a href="#neues" class="neu-link">Neues</a>
     <a href="#kenntnisse">Kenntnisse</a>
     <a href="#kontakt">Kontakt</a>
     <span class="trenner" aria-hidden="true"></span>

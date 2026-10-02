@@ -19,6 +19,9 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
 - **Projekte stehen nur in `projekte.mjs`.** Startseite, Docs, Docs-Kopfleiste und Profilkarte
   folgen daraus. Nie ein Projekt von Hand in `index.html` schreiben: Zwischen
   `<!-- projekte:anfang/ende -->` setzt der Bau ein, was dort steht, wird überschrieben.
+- **Versionen und „Neues“ kommen aus den CHANGELOGs** der Repos (`versionenAus()` in
+  `skripte/bau/einlesen.mjs`, Überschriften `## [x.y.z] – JJJJ-MM-TT`). Nie von Hand nachtragen;
+  ein falscher Eintrag wird im Repo des Projekts behoben.
 - **Docs-Texte gehören in die Projekt-Repos**, nicht hierher. Hier steht nur, welche Datei zu
   welcher Seite wird. Ein Fehler in einem Docs-Text wird im jeweiligen Repo behoben.
 - **Keine Anfragen nach außen**, kein CDN, keine Schriften von Google. `seite-pruefen.mjs` prüft das.
