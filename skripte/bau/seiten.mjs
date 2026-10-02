@@ -224,7 +224,7 @@ function projekteBauen(alle) {
   return gruppen.map(({ art, karten }) => `    <div class="karten${art === 'ohne' ? ' ohne-bild' : ''}">\n${karten.join('\n')}\n    </div>`).join('\n');
 }
 
-// Bühne unter dem Kopf: ein Band aus den Bildschirmfotos in buehne, abwechselnd aus den Projekten (erstes
+// Bühne unter dem Kopf: eine Wand aus den Bildschirmfotos in buehne, abwechselnd aus den Projekten (erstes
 // von jedem, dann das zweite …), höchstens sechs. Nur Schmuck (die Projekte stehen darunter mit Text),
 // deshalb aria-hidden und ohne Alternativtext.
 const BUEHNE_BILDER = 6;
@@ -237,8 +237,9 @@ function buehneBauen(alle) {
     const [b, h] = bildgroesse(join(lauf.wurzel, datei));
     return `<img src="${esc(datei)}" width="${b}" height="${h}" alt="">`;
   });
-  // Zweimal hintereinander, damit das Band nahtlos weiterläuft (index.html)
-  return bilder.length ? `<div class="kopf-buehne" aria-hidden="true"><div class="spur">${bilder.join('')}${bilder.join('')}</div></div>` : '';
+  // Spalten nach Anzahl, damit jede Reihe voll ist: 6 = 3 × 2, 4 = 2 × 2, sonst so viele wie Bilder (höchstens 3)
+  const n = bilder.length, spalten = n % 3 === 0 ? 3 : n % 2 === 0 ? 2 : Math.min(n, 3);
+  return n ? `<div class="kopf-buehne" aria-hidden="true" style="--spalten: ${spalten}">${bilder.join('')}</div>` : '';
 }
 
 export function startseiteBauen(alle) {

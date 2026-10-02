@@ -80,7 +80,8 @@
   .einleitung { margin: 24px auto 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 36ch; text-wrap: balance; }
   .einleitung span { color: var(--schiefer); }
   /* Ein schlichtes Quadratraster hinter dem Kopf, eine Linie genau auf der Mittelachse, zum Rand hin blasser */
-  .kopf-raster { position: relative; }
+  /* overflow: Die gekippte Wand wird unten durch die Perspektive breiter und darf nicht seitlich überstehen */
+  .kopf-raster { position: relative; overflow: hidden; }
   .kopf-raster::before {
     content: ""; position: absolute; inset: 0; pointer-events: none; --zelle: 56px;
     background: repeating-linear-gradient(90deg, var(--linie) 0 1px, transparent 1px var(--zelle)),
@@ -92,26 +93,19 @@
   .kopf-raster .kopf { position: relative; }
   .kopf-aktionen { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
   .kopf-aktionen .knopf { padding: 0 22px; }
-  /* Unter dem Kopf ein Band aus Bildschirmfotos (buehne in projekte.mjs), alle im selben Format. Es läuft
-     langsam durch, die Bilder stehen zweimal hintereinander, damit es nahtlos weitergeht; links und rechts
-     blendet es gleich aus. Über die ganze Breite, deshalb schneidet .kopf-raster ab, was übersteht. */
-  .kopf-raster { overflow: hidden; }
+  /* Unter dem Kopf eine Wand aus Bildschirmfotos (buehne in projekte.mjs), alle im selben Format, in gleich
+     breiten Spalten (--spalten schreibt der Bau nach der Anzahl: 6 = 3 × 2), leicht nach hinten gekippt.
+     Nach unten läuft sie aus und reicht bis an die Linie zum ersten Band, deshalb der negative Rand unten. */
   .kopf-buehne {
-    --bild: 520px; --luecke: 24px; position: relative; width: 100vw;
-    /* Über und unter den Bildern derselbe Abstand wie überall: --abstand (8 px oben sind Platz für den Schatten) */
-    margin: calc(var(--abstand) - 8px) 0 calc(-1 * var(--abstand)) calc(50% - 50vw);
-    padding: 8px 0 var(--abstand); overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+    display: grid; grid-template-columns: repeat(var(--spalten), minmax(0, 1fr)); gap: 20px; max-width: 1120px;
+    margin: var(--abstand) auto calc(-1 * var(--abstand)); padding-bottom: 40px;
+    transform: perspective(1800px) rotateX(16deg); transform-origin: 50% 0;
+    -webkit-mask-image: linear-gradient(#000 50%, transparent); mask-image: linear-gradient(#000 50%, transparent);
   }
-  .kopf-buehne .spur { display: flex; gap: var(--luecke); width: max-content; animation: band 80s linear infinite; }
-  .kopf-buehne:hover .spur { animation-play-state: paused; }
   .kopf-buehne img {
-    display: block; flex: none; width: var(--bild); height: auto; aspect-ratio: 120 / 76; object-fit: cover; object-position: left top;
+    display: block; width: 100%; height: auto; aspect-ratio: 120 / 76; object-fit: cover; object-position: left top;
     border-radius: 12px; border: 1px solid var(--linie); box-shadow: 0 1px 2px rgba(22, 22, 26, .06), 0 18px 40px rgba(22, 22, 26, .12);
   }
-  @keyframes band { to { transform: translateX(calc(-50% - var(--luecke) / 2)); } }
-  @media (prefers-reduced-motion: reduce) { .kopf-buehne .spur { animation: none; } }
 
   /* ---------- Abschnitte ---------- */
   /* Jeder Abschnitt ist ein Band über die ganze Breite, abwechselnd auf Grund und Fläche, oben eine
@@ -288,7 +282,8 @@
     .neu b { grid-column: 1; grid-row: 2; font-size: 19px; }
     .neu .was { grid-column: 1; grid-row: 3; }
     .neu .pfeil { grid-column: 2; grid-row: 2; }
-    .kopf-buehne { --bild: 280px; --luecke: 14px; }
+    /* Am Handy zwei Spalten (6 = 2 × 3) */
+    .kopf-buehne { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .kopf-buehne img { border-radius: 8px; }
     .kontakt { grid-template-columns: minmax(0, 1fr); gap: 12px; }
     .kontakt a { padding: 22px 20px 20px 22px; border-radius: 14px; }
