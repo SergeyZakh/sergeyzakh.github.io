@@ -102,7 +102,6 @@
   .einleitung { margin: 24px auto 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 36ch; text-wrap: balance; }
   .einleitung span { color: var(--schiefer); }
   /* Ein schlichtes Quadratraster hinter dem Kopf, eine Linie genau auf der Mittelachse, zum Rand hin blasser */
-  /* overflow: Die gekippte Wand wird unten durch die Perspektive breiter und darf nicht seitlich überstehen */
   .kopf-raster { position: relative; overflow: hidden; }
   .kopf-raster::before {
     content: ""; position: absolute; inset: 0; pointer-events: none; --zelle: 56px;
@@ -116,12 +115,12 @@
   .kopf-aktionen { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
   .kopf-aktionen .knopf { padding: 0 22px; }
   /* Unter dem Kopf eine Wand aus Bildschirmfotos (buehne in projekte.mjs), alle im selben Format, in gleich
-     breiten Spalten (--spalten schreibt der Bau nach der Anzahl: 6 = 3 × 2), leicht nach hinten gekippt.
+     breiten Spalten (--spalten schreibt der Bau nach der Anzahl: 6 = 3 × 2). Bewusst flach: Gekippt
+     (perspective, rotateX) zeichnet Chrome die Ebene in geringer Auflösung, die Bilder wurden pixelig.
      Nach unten läuft sie aus und reicht bis an die Linie zum ersten Band, deshalb der negative Rand unten. */
   .kopf-buehne {
     display: grid; grid-template-columns: repeat(var(--spalten), minmax(0, 1fr)); gap: 20px; max-width: 1120px;
     margin: var(--abstand) auto calc(-1 * var(--abstand)); padding-bottom: 40px;
-    transform: perspective(1800px) rotateX(16deg); transform-origin: 50% 0;
     -webkit-mask-image: linear-gradient(#000 50%, transparent); mask-image: linear-gradient(#000 50%, transparent);
   }
   .kopf-buehne img {

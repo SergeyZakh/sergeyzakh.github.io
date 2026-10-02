@@ -32,7 +32,7 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 ## Startseite
 
 `index.html` ist die Vorlage. Von oben: Titel, Name, ein Satz und zwei Knöpfe (mittig), darunter eine Wand
-aus Bildschirmfotos (3 × 2, leicht nach hinten gekippt, am Handy 2 × 3), dann Projekte, Neues, Kenntnisse und dunkel Kontakt und Fuß; die
+aus Bildschirmfotos (3 × 2, am Handy 2 × 3, flach: gekippt wurden sie in Chrome pixelig), dann Projekte, Neues, Kenntnisse und dunkel Kontakt und Fuß; die
 Leiste oben springt dorthin (unter 560 px ohne „Neues“, damit sie in die Breite passt); ihr letzter Knopf
 schaltet zwischen hell und dunkel, die Wahl gilt auch in den Docs.
 Kopf, Abschnittsköpfe und Fuß stehen mittig; hinter dem Kopf liegt ein schlichtes Raster. Die Kenntnisse
