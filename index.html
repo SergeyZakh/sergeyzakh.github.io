@@ -42,6 +42,7 @@
       --glas: rgba(17, 17, 20, .72); --glas-kante: rgba(255, 255, 255, .08);
       --schatten-bild: 0 1px 2px rgba(0, 0, 0, .5), 0 24px 60px rgba(0, 0, 0, .55);
     }
+    .nacht { background: #0A0A0C; }
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; scroll-padding-top: 88px; }
@@ -78,6 +79,16 @@
   }
   .einleitung { margin: 24px auto 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 36ch; text-wrap: balance; }
   .einleitung span { color: var(--schiefer); }
+  .kopf-aktionen { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+  .kopf-aktionen .knopf { padding: 0 22px; }
+  /* Unter dem Kopf Bildschirmfotos der ersten Projekte (buehne in projekte.mjs), überlappend; sie laufen
+     nach unten aus und reichen bis an die Linie zum ersten Band, deshalb der negative Rand unten */
+  .kopf-buehne { position: relative; max-width: 1080px; aspect-ratio: 16 / 7.2; margin: 64px auto calc(-1 * var(--abstand)); overflow: hidden;
+    -webkit-mask-image: linear-gradient(#000 55%, transparent); mask-image: linear-gradient(#000 55%, transparent); }
+  .kopf-buehne img { position: absolute; width: 66%; height: auto; border-radius: 12px; border: 1px solid var(--linie); box-shadow: var(--schatten-bild); }
+  .kopf-buehne img:first-child { left: 0; top: 0; }
+  .kopf-buehne img:nth-child(2) { right: 0; top: 16%; }
+  .kopf-buehne img:only-child { left: 17%; }
 
   /* ---------- Abschnitte ---------- */
   /* Jeder Abschnitt ist ein Band über die ganze Breite, abwechselnd auf Grund und Fläche, oben eine
@@ -148,6 +159,10 @@
   .neu time { font-size: 14px; color: var(--leise); font-variant-numeric: tabular-nums; }
   .neu b { font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
   .neu b span { font-weight: 400; color: var(--schiefer); }
+  /* Punkt in der Farbe des Stands wie bei den Projekten; gleiches Datum wie die Zeile davor steht nicht noch einmal */
+  .neu .punkt { display: inline-block; width: 7px; height: 7px; margin: 0 10px 0 0; border-radius: 50%; background: var(--gut); vertical-align: .18em; }
+  .neu .punkt.vorab { background: var(--bernstein); }
+  .neu.gleich time { visibility: hidden; }
   .neu .was { font-size: 15.5px; line-height: 1.5; color: var(--schiefer); }
   .neu .pfeil { justify-self: end; color: var(--leise); transition: transform .2s, color .2s; }
   a.neu:hover .pfeil { transform: translateX(4px); color: var(--text); }
@@ -158,8 +173,9 @@
   /* Die Linie oben an jeder Spalte, nicht unter dem Etikett: Bricht ein Etikett um, bleiben die Linien gleich hoch */
   .reihe { border-top: 1px solid var(--linie); padding-top: 14px; }
   .reihe dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
-  .reihe dd { margin: 12px 0 0; font-size: 20px; line-height: 1.5; letter-spacing: -.01em; font-weight: 500; }
-  .reihe .liste { display: flex; flex-direction: column; }
+  .reihe dd { margin: 14px 0 0; font-size: 15px; }
+  .reihe .liste { display: flex; flex-wrap: wrap; gap: 8px; }
+  .reihe .liste span { padding: 5px 12px; border: 1px solid var(--linie); border-radius: 999px; background: var(--grund); font-weight: 500; line-height: 1.4; }
 
   /* ---------- Kontakt ---------- */
   .kontakt { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
@@ -167,6 +183,13 @@
   .kontakt b { font-size: clamp(40px, 5vw, 72px); line-height: 1.05; font-weight: 600; letter-spacing: -.04em; transition: transform .25s; }
   .kontakt a:hover b { transform: translateX(10px); }
   .kontakt small { font-size: 15px; color: var(--schiefer); }
+  /* Dunkler Schluss für Kontakt und Fuß: dieselben Namen, andere Werte, so passt alles darin von selbst */
+  .nacht {
+    --text: #F3F2EE; --linie: rgba(243, 242, 238, .14); --linie-fest: rgba(243, 242, 238, .32);
+    --schiefer: rgba(243, 242, 238, .64); --leise: rgba(243, 242, 238, .46);
+    background: #16161A; color: var(--text);
+  }
+  .band.nacht { border-top-color: transparent; }
   .fuss-band { border-top: 1px solid var(--linie); }
   .fuss { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; padding-top: 56px; padding-bottom: 56px; color: var(--leise); font-size: 14px; }
   .fuss b { display: block; color: var(--text); font-weight: 600; font-size: 15px; }
@@ -220,7 +243,12 @@
     .neu .pfeil { grid-column: 2; grid-row: 2; }
     /* Am Handy derselbe Rhythmus zwischen den Abschnitten wie bei den Projekten (64 px) */
     .kenntnisse { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
-    .reihe dd { font-size: 18px; margin-top: 8px; }
+    .reihe dd { margin-top: 10px; }
+    .neu.gleich time { display: none; }
+    .kopf-buehne { aspect-ratio: 4 / 3; margin-top: 40px; }
+    .kopf-buehne img { width: 82%; border-radius: 8px; }
+    .kopf-buehne img:nth-child(2) { top: 22%; }
+    .kopf-buehne img:only-child { left: 9%; }
     .kontakt { grid-template-columns: 1fr; }
     .kontakt a + a { border-top: 0; }
     .kontakt a { gap: 2px; padding: 18px 0 20px; }
@@ -259,6 +287,8 @@
   <h1>Sergey<br>Zakharov</h1>
   <p class="einleitung">Ich baue Werkzeuge für Ausbildung und Betrieb, die man selbst betreibt. <span>Was man dort
     einträgt, bleibt im Browser oder im eigenen Netz.</span></p>
+  <div class="kopf-aktionen"><a class="knopf voll" href="#projekte">Projekte ansehen</a><a class="knopf" href="https://github.com/SergeyZakh">GitHub ↗</a></div>
+  <!-- buehne -->
 </header>
 
 <main>
@@ -279,7 +309,7 @@
     </dl>
   </div></section>
 
-  <section id="kontakt" class="band"><div class="breite">
+  <section id="kontakt" class="band nacht"><div class="breite">
     <header class="band-kopf"><h2>Kontakt</h2><p>Zu den Projekten am besten über GitHub, sonst über LinkedIn.</p></header>
     <div class="kontakt">
       <a href="https://github.com/SergeyZakh"><b>GitHub ↗</b><small>github.com/SergeyZakh</small></a>
@@ -288,7 +318,7 @@
   </div></section>
 </main>
 
-<div class="fuss-band"><footer class="fuss breite">
+<div class="fuss-band nacht"><footer class="fuss breite">
   <div>
     <b>Sergey Zakharov</b>
     <p>Fachinformatiker für Systemintegration in Ausbildung.</p>

@@ -166,15 +166,19 @@ function neuesBauen(alle) {
     .sort((a, b) => iso(b.v.datum).localeCompare(iso(a.v.datum)) || a.rang - b.rang || a.i - b.i)
     .slice(0, NEUES_INSGESAMT);
   if (!eintraege.length) return '';
+  let vorher = null;
   const zeilen = eintraege.map(({ p, v }) => {
+    const gleich = v.datum === vorher;
+    vorher = v.datum;
     // Anker der Version auf der Seite „Änderungen“, wie ihn der Bau dort vergeben hat
     const seite = p.nachDatei?.get('CHANGELOG.md');
     const anker = seite?.inhalt?.find((e) => e.text.startsWith(v.version))?.id;
     const href = seite ? `docs/${p.kurz}/${seite.pfad}/${anker ? '#' + anker : ''}` : null;
     const was = v.satz || v.punkte.slice(0, 3).join(' · ');
-    const innen = `<time>${esc(v.datum || '')}</time><b>${esc(p.name)} <span>${esc(v.version)}</span></b><span class="was">${esc(was)}</span>`;
-    return href ? `      <a class="neu" href="${esc(href)}">${innen}<span class="pfeil" aria-hidden="true">→</span></a>`
-      : `      <div class="neu">${innen}</div>`;
+    const innen = `<time>${esc(v.datum || '')}</time><b><i class="punkt${p.vorab ? ' vorab' : ''}"></i>${esc(p.name)} <span>${esc(v.version)}</span></b><span class="was">${esc(was)}</span>`;
+    const klasse = `neu${gleich ? ' gleich' : ''}`;
+    return href ? `      <a class="${klasse}" href="${esc(href)}">${innen}<span class="pfeil" aria-hidden="true">→</span></a>`
+      : `      <div class="${klasse}">${innen}</div>`;
   });
   return `  <section id="neues" class="band"><div class="breite">
     <header class="band-kopf"><h2>Neues</h2><p>Die letzten Versionen, aus den Änderungsprotokollen der Projekte. Jede Zeile führt zu den Einzelheiten.</p></header>
@@ -202,6 +206,18 @@ function projekteBauen(alle) {
   return teile.join('\n');
 }
 
+// Bühne unter dem Kopf: die Bildschirmfotos aus buehne der ersten beiden Projekte, die eines haben.
+// Nur Schmuck (die Projekte stehen darunter mit Text), deshalb aria-hidden und ohne Alternativtext.
+const BUEHNE_BILDER = 2;
+function buehneBauen(alle) {
+  const bilder = alle.filter((p) => p.buehne).slice(0, BUEHNE_BILDER).map((p) => {
+    if (!existsSync(join(lauf.wurzel, p.buehne))) throw new Error(`${p.name}: Bild ${p.buehne} fehlt (projekte.mjs)`);
+    const [b, h] = bildgroesse(join(lauf.wurzel, p.buehne));
+    return `<img src="${esc(p.buehne)}" width="${b}" height="${h}" alt="">`;
+  });
+  return bilder.length ? `<div class="kopf-buehne" aria-hidden="true">${bilder.join('')}</div>` : '';
+}
+
 export function startseiteBauen(alle) {
   const teil = `  <section id="projekte" class="band flaeche"><div class="breite">
     <header class="band-kopf"><h2>Projekte</h2><p>Werkzeuge aus der Ausbildung, quelloffen auf GitHub, mit Docs und, wo es geht, einer Demo im Browser.</p></header>
@@ -209,10 +225,12 @@ ${projekteBauen(alle)}
   </div></section>`;
   const muster = /(<!-- projekte:anfang -->)[\s\S]*?(\n\s*<!-- projekte:ende -->)/;
   if (!muster.test(lauf.startseite)) throw new Error('Markierungen <!-- projekte:anfang/ende --> fehlen in index.html');
+  if (!lauf.startseite.includes('<!-- buehne -->')) throw new Error('Markierung <!-- buehne --> fehlt in index.html');
   // Ersetzen über Funktionen: Ein „$“ in einem Text aus den Repos wäre sonst ein Platzhalter
   const neues = neuesBauen(alle);
   writeFileSync(join(lauf.ziel, 'index.html'), lauf.startseite
-    .replace(muster, (_, vor, nach) => `${vor}\n${teil}\n\n${neues}${nach}`));
+    .replace(muster, (_, vor, nach) => `${vor}\n${teil}\n\n${neues}${nach}`)
+    .replace('<!-- buehne -->', () => buehneBauen(alle)));
 }
 
 // ---------- 404, Sitemap ----------
