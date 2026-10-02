@@ -53,6 +53,8 @@ Projekt neu aufnehmen; `node skripte/bildschirmfoto.mjs` hilft unter Windows.
 Die Texte bleiben in den Projekt-Repos und werden dort gepflegt. `skripte/seite-bauen.mjs` setzt sie
 im Stil der Startseite:
 
+- Übersicht unter `docs/`: mittig Titel und Suche, je Projekt eine gleich große Karte (Bild, Stand,
+  Umfang mit Lesezeit, „Erste Schritte“), darunter alle Seiten nach Gruppen
 - Seitenleiste je Projekt, rechts ein Inhaltsverzeichnis, das beim Lesen mitläuft
 - Suche mit `Strg` + `K` über alle Docs; Treffer im Projekt, in dem man liest, zuerst. Den Index
   schreibt der Bau, er lädt erst beim Suchen.

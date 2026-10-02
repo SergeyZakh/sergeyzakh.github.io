@@ -54,6 +54,7 @@ ${weiterBlaettern(w, s)}
   }));
 
   s.inhalt = gebaut.inhalt;
+  s.woerter = woerter;
   const url = posix.relative('docs', ordner);
   for (const a of abschnitte(gebaut.html, titelText)) {
     lauf.suche.push({ k: w.kurz, w: w.name, s: s.titel, t: a.t, u: `${url ? url + '/' : ''}${a.a ? '#' + a.a : ''}`, x: a.x });
@@ -66,7 +67,31 @@ ${weiterBlaettern(w, s)}
 // Je Gruppe so viele Seiten, danach ein Verweis auf die nächste; das Fundus-Handbuch allein hat 16
 const UEBERSICHT_JE_GRUPPE = 8;
 
+// Lesezeit eines Projekts aus allen Seiten, wie auf den Seiten selbst 200 Wörter je Minute
+function lesezeit(w) {
+  const min = Math.round(w.seiten.reduce((n, s) => n + (s.woerter || 0), 0) / 200);
+  return min < 60 ? `${Math.max(1, min)} Min.` : `rund ${Math.round(min / 30) / 2} Std.`.replace('.5', ',5');
+}
+
+// Übersicht: oben mittig Titel, Satz und Suche; darunter je Projekt eine gleich große Karte (Bild, Name, Satz,
+// Umfang, Knöpfe); darunter alle Seiten, je Projekt die Gruppen in festen Spalten
 export function uebersicht(alle) {
+  const karten = alle.map((w) => {
+    const erste = w.seiten.find((s) => s.pfad === 'erste-schritte');
+    const bild = w.bild && existsSync(join(lauf.wurzel, w.bild.datei))
+      ? (([b, h]) => `<a class="karte-bild" href="${w.kurz}/" tabindex="-1" aria-hidden="true"><img src="../${esc(w.bild.datei)}" width="${b}" height="${h}" loading="lazy" alt=""></a>`)(bildgroesse(join(lauf.wurzel, w.bild.datei)))
+      : '<div class="karte-bild leer"></div>';
+    const knoepfe = erste
+      ? `<a class="knopf voll" href="${w.kurz}/${erste.pfad}/">Erste Schritte</a><a class="knopf" href="${w.kurz}/">Überblick</a>`
+      : `<a class="knopf voll" href="${w.kurz}/">Überblick</a>`;
+    return `<article class="karte">
+    ${bild}
+    <div class="karte-kopf"><h2><a href="${w.kurz}/">${esc(w.name)}</a></h2>${versionsMarke(w, true)}</div>
+    <p class="satz">${esc(w.satz)}</p>
+    <p class="umfang">${w.seiten.length} Seiten · ${lesezeit(w)} Lesezeit</p>
+    <div class="karte-knoepfe">${knoepfe}</div>
+  </article>`;
+  }).join('\n  ');
   const bloecke = alle.map((w) => {
     const gruppen = w.gruppen.map((g) => {
       const seiten = g.eintraege.filter((e) => e.datei);
@@ -77,21 +102,23 @@ export function uebersicht(alle) {
       return `<div><p class="gruppe">${esc(g.titel || 'Loslegen')}</p><ul>${links}</ul></div>`;
     }).join('\n      ');
     return `<section class="werkzeug-block">
-    <div class="werkzeug-zeile">
-      <h2><a href="${w.kurz}/">${esc(w.name)}</a></h2>
-      ${versionsMarke(w, true)}
-    </div>
-    <p class="satz">${esc(w.satz)}</p>
+    <h3><a href="${w.kurz}/">${esc(w.name)}</a></h3>
     <div class="spalten">
       ${gruppen}
     </div>
   </section>`;
   }).join('\n  ');
-  const haupt = `<p class="pfad"><a href="../">Startseite</a><span>/</span>Docs</p>
+  const haupt = `<div class="uebersicht-kopf">
+<p class="pfad"><a href="../">Startseite</a><span>/</span>Docs</p>
 <h1>Docs</h1>
 <p class="unterzeile">Anleitungen und Hintergründe zu meinen Projekten. Die Texte stammen aus den
   Repositories und werden jede Nacht neu gebaut, damit sie zum Code passen.</p>
 <button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Befehl, Einstellung oder Frage suchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
+</div>
+<div class="karten">
+  ${karten}
+</div>
+<h2 class="abschnitt">Alle Seiten</h2>
 <div class="werkzeug-liste">
   ${bloecke}
 </div>`;
@@ -228,12 +255,12 @@ ${projekteBauen(alle)}
 
 // GitHub Pages liefert 404.html unter jedem falschen Pfad aus; deshalb Pfade ab der Wurzel (rel = '')
 export function seite404() {
-  const haupt = `<p class="pfad"><a href="/">Startseite</a><span>/</span>404</p>
+  const haupt = `<div class="uebersicht-kopf"><p class="pfad"><a href="/">Startseite</a><span>/</span>404</p>
 <h1>Nicht gefunden</h1>
 <p class="unterzeile">Diese Seite gibt es nicht (mehr). Vielleicht ist sie umgezogen: Die Suche findet
   alles in den Docs.</p>
 <button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Docs durchsuchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
-<p class="meta"><span><a href="/">Zur Startseite</a></span><span class="trenner">·</span><span><a href="/docs/">Zu den Docs</a></span></p>`;
+<p class="meta"><span><a href="/">Zur Startseite</a></span><span class="trenner">·</span><span><a href="/docs/">Zu den Docs</a></span></p></div>`;
   writeFileSync(join(lauf.ziel, '404.html'), rahmen({
     titel: 'Nicht gefunden · Sergey Zakharov', beschreibung: 'Diese Seite gibt es nicht.', rel: '', haupt, klasse: 'uebersicht',
   }));
