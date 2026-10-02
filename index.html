@@ -171,13 +171,19 @@
   a.neu:hover .was { color: var(--text); }
 
   /* ---------- Kenntnisse: eine Spalte je Bereich ---------- */
-  .kenntnisse { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 40px 32px; margin: 0; }
-  /* Die Linie oben an jeder Spalte, nicht unter dem Etikett: Bricht ein Etikett um, bleiben die Linien gleich hoch */
-  .reihe { border-top: 1px solid var(--linie); padding-top: 14px; }
+  /* Am PC fünf Spalten in einer Reihe. Jede Spalte ist ein Subgrid aus zwei Zeilen, Etikett und Kacheln:
+     Bricht ein Etikett um, beginnen die Kacheln trotzdem überall auf derselben Höhe. */
+  .kenntnisse { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 32px; margin: 0; }
+  .reihe { display: grid; grid-row: span 2; grid-template-rows: subgrid; border-top: 1px solid var(--linie); padding-top: 14px; }
   .reihe dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
   .reihe dd { margin: 14px 0 0; font-size: 15px; }
-  .reihe .liste { display: flex; flex-wrap: wrap; gap: 8px; }
-  .reihe .liste span { padding: 5px 12px; border: 1px solid var(--linie); border-radius: 999px; background: var(--grund); font-weight: 500; line-height: 1.4; }
+  /* Kacheln in gleich breiten Spalten statt im Fluss: Alle Listen sind gleich breit, also liegen die Spalten
+     in jedem Bereich an denselben Stellen */
+  .reihe .liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 108px), 1fr)); gap: 8px; }
+  .reihe .liste span {
+    padding: 5px 6px; border: 1px solid var(--linie); border-radius: 999px; background: var(--grund);
+    font-weight: 500; line-height: 1.4; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
 
   /* ---------- Kontakt ---------- */
   /* Zwei gleich große Kacheln: Name und Adresse links, der Pfeil im Kreis rechts, alles auf denselben Linien */
@@ -214,7 +220,13 @@
   .fuss .sz { width: 112px; height: auto; color: var(--linie); }
 
   @media (max-width: 1100px) {
-    .kenntnisse { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    /* Für fünf Spalten zu schmal, und drei plus zwei wäre schief: eine Tabelle, links das Etikett in fester
+       Breite, rechts die Kacheln, jede Zeile zwischen zwei Linien */
+    .kenntnisse { grid-template-columns: minmax(0, 1fr); }
+    .reihe { grid-row: auto; grid-template-rows: none; grid-template-columns: 200px minmax(0, 1fr); column-gap: 24px; padding: 16px 0; }
+    .reihe:last-child { border-bottom: 1px solid var(--linie); }
+    .reihe dt { padding-top: 8px; }
+    .reihe dd { margin: 0; }
     .neu { grid-template-columns: 96px minmax(0, 1fr) 24px; row-gap: 4px; }
     .neu .was { grid-column: 2; grid-row: 2; }
     .neu .pfeil { grid-column: 3; grid-row: 1; }
@@ -248,8 +260,12 @@
     .neu .was { grid-column: 1; grid-row: 3; }
     .neu .pfeil { grid-column: 2; grid-row: 2; }
     /* Am Handy derselbe Rhythmus zwischen den Abschnitten wie bei den Projekten (64 px) */
-    .kenntnisse { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
-    .reihe dd { margin-top: 10px; }
+    .reihe { grid-template-columns: 116px minmax(0, 1fr); column-gap: 16px; padding: 14px 0; }
+  }
+  /* Handy: Etikett über den Kacheln, damit drei nebeneinander passen */
+  @media (max-width: 560px) {
+    .reihe { grid-template-columns: minmax(0, 1fr); row-gap: 10px; }
+    .reihe dt { padding-top: 0; }
     .neu.gleich time { display: none; }
     .kopf-buehne { aspect-ratio: 4 / 3; margin-top: 40px; }
     .kopf-buehne img { width: 82%; border-radius: 8px; }
