@@ -31,6 +31,9 @@
   --sans: "Instrument Sans", system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, "Cascadia Code", Consolas, Menlo, "DejaVu Sans Mono", monospace;
   --kopf: 60px;
+  /* Seitenrand wie auf der Startseite: wächst von 20 auf 40 px. Kopfleiste und Raster nehmen ihn
+     beide, damit Logo, Seitenleiste und Text auf einer Linie stehen. */
+  --rand: clamp(20px, 4vw, 40px);
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -62,19 +65,21 @@ kbd {
   display: inline-block; min-width: 22px; padding: 0 6px; border: 1px solid var(--linie); border-radius: 6px;
   background: var(--flaeche); font: 500 11.5px/1.7 var(--sans); color: var(--schiefer); text-align: center;
 }
-.springen { position: absolute; left: 12px; top: -48px; z-index: 50; padding: 8px 14px; border-radius: 999px; background: var(--text); color: var(--flaeche); }
+.springen { position: absolute; left: var(--rand); top: -48px; z-index: 50; padding: 8px 14px; border-radius: 999px; background: var(--text); color: var(--flaeche); }
 .springen:focus { top: 10px; }
 
 /* ---------- Kopfleiste ---------- */
 .kopf {
-  position: sticky; top: 0; z-index: 20; height: var(--kopf); display: flex; align-items: center; gap: 4px; padding: 0 20px;
+  position: sticky; top: 0; z-index: 20; height: var(--kopf);
   background: var(--glas); border-bottom: 1px solid var(--glas-kante);
   backdrop-filter: blur(16px) saturate(1.5); -webkit-backdrop-filter: blur(16px) saturate(1.5);
 }
+/* Gleiche Breite und gleicher Rand wie .raster darunter */
+.kopf-innen { max-width: 1440px; height: 100%; margin: 0 auto; padding: 0 var(--rand); display: flex; align-items: center; gap: 4px; }
 .kopf a { text-decoration: none; }
-.marke { padding: 8px 10px 8px 4px; }
+.marke { padding: 8px 10px 8px 0; }
 .marke .sz { width: 30px; height: auto; }
-.docs-name { font-weight: 600; font-size: 16px; padding: 6px 14px 6px 4px; margin-right: 6px; border-right: 1px solid var(--linie); line-height: 1.2; }
+.docs-name { font-weight: 600; font-size: 16px; padding: 9px 14px 9px 4px; margin-right: 6px; border-right: 1px solid var(--linie); line-height: 1.2; }
 .umschalter { display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--hauch); margin-left: 8px; }
 .umschalter a { padding: 5px 14px; border-radius: 999px; font-size: 14px; color: var(--schiefer); }
 .umschalter a:hover { color: var(--text); }
@@ -107,15 +112,19 @@ kbd {
 .menueknopf { display: none; }
 
 /* ---------- Raster ---------- */
-.raster { max-width: 1440px; margin: 0 auto; padding: 0 28px; display: grid; grid-template-columns: 264px minmax(0, 1fr) 224px; gap: 56px; }
+.raster { max-width: 1440px; margin: 0 auto; padding: 0 var(--rand); display: grid; grid-template-columns: 264px minmax(0, 1fr) 224px; gap: 56px; }
 .seiten, .toc {
   position: sticky; top: var(--kopf); height: calc(100vh - var(--kopf)); overflow-y: auto; scrollbar-width: thin;
-  padding: 36px 0 48px; overscroll-behavior: contain;
+  padding: 40px 0 48px; overscroll-behavior: contain;
 }
+/* Die Einträge haben 12 px Innenabstand für die Fläche beim Zeigen; die Leiste ragt dafür 12 px in den
+   Rand, damit der Text trotzdem auf der Linie von Logo und Kopf steht. Links überstehende Kinder
+   würde die scrollende Leiste abschneiden, deshalb der Innenabstand an ihr selbst. */
+.seiten { margin-left: -12px; padding-left: 12px; }
 .haupt { min-width: 0; max-width: 780px; width: 100%; justify-self: center; padding: 40px 0 88px; }
 
 /* ---------- Seitenleiste ---------- */
-.werkzeug { padding: 0 12px 20px; border-bottom: 1px solid var(--linie); margin-bottom: 14px; }
+.werkzeug { padding: 0 0 20px; border-bottom: 1px solid var(--linie); margin-bottom: 14px; }
 .werkzeug-name { font-weight: 600; font-size: 22px; letter-spacing: -.02em; text-decoration: none; margin-right: 8px; }
 .werkzeug p { margin: 8px 0 0; font-size: 14px; color: var(--schiefer); line-height: 1.5; }
 .werkzeug .werkzeug-links { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; }
@@ -127,23 +136,26 @@ kbd {
 .stand.gut { color: var(--gut); }
 .stand.vorab { color: var(--bernstein); }
 .seiten ul { list-style: none; margin: 0 0 6px; padding: 0; }
-.seiten li a { display: block; padding: 6px 12px; border-radius: 8px; font-size: 14.5px; line-height: 1.4; color: var(--schiefer); text-decoration: none; }
+.seiten li a { display: block; margin-left: -12px; padding: 6px 12px; border-radius: 8px; font-size: 14.5px; line-height: 1.4; color: var(--schiefer); text-decoration: none; }
 .seiten li a:hover { color: var(--text); background: var(--hauch); }
 .seiten li a[aria-current] { color: var(--text); background: var(--flaeche); font-weight: 500; box-shadow: var(--schatten); }
-.gruppe { margin: 22px 12px 6px; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
-.seiten li.unter { padding: 10px 12px 2px; font-size: 12.5px; color: var(--leise); }
-.anderes { margin: 22px 0 0; padding: 16px 12px 0; border-top: 1px solid var(--linie); font-size: 13.5px; color: var(--leise); }
+.gruppe { margin: 22px 0 6px; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
+.seiten li.unter { padding: 10px 0 2px; font-size: 12.5px; color: var(--leise); }
+.anderes { margin: 22px 0 0; padding: 16px 0 0; border-top: 1px solid var(--linie); font-size: 13.5px; color: var(--leise); }
 .anderes a { margin-left: 6px; }
 
 /* ---------- Kopf des Textes ---------- */
 .pfad { margin: 0; font-size: 13.5px; color: var(--leise); }
+/* Größere Tippfläche ohne Folgen fürs Layout: Innenabstand und gleich großer negativer Außenabstand,
+   das gilt auch in der Meta-Zeile, die ein Flex-Container ist */
+.pfad a, .meta a, .fuss a { padding: 10px 0; margin: -10px 0; }
 .pfad a { color: var(--schiefer); text-decoration: none; }
 .pfad a:hover { color: var(--text); }
 .pfad span { margin: 0 8px; }
 h1 { margin: 12px 0 0; font-size: clamp(36px, 4.2vw, 54px); line-height: 1.04; font-weight: 600; letter-spacing: -.035em; }
 .unterzeile { margin: 16px 0 0; font-size: 20px; line-height: 1.42; letter-spacing: -.01em; color: var(--schiefer); max-width: 40ch; }
 .meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin: 18px 0 0; font-size: 13.5px; color: var(--leise); }
-.meta a { color: var(--schiefer); text-decoration: none; border-bottom: 1px solid var(--linie); }
+.meta a { color: var(--schiefer); text-decoration: underline; text-decoration-color: var(--linie-fest); text-underline-offset: 4px; }
 .meta a:hover { color: var(--text); }
 .fakten { margin: 28px 0 0; border-top: 1px solid var(--linie); }
 .fakten div { display: grid; grid-template-columns: 190px 1fr; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--linie); font-size: 14.5px; }
@@ -248,7 +260,7 @@ h1 { margin: 12px 0 0; font-size: clamp(36px, 4.2vw, 54px); line-height: 1.04; f
 
 /* ---------- Übersicht unter docs/ ---------- */
 .uebersicht .raster { grid-template-columns: minmax(0, 1fr); }
-.uebersicht .haupt { max-width: 1040px; padding-top: 72px; }
+.uebersicht .haupt { max-width: 1040px; justify-self: start; padding-top: 72px; }
 .uebersicht h1 { font-size: clamp(56px, 9vw, 112px); line-height: .92; letter-spacing: -.05em; }
 .suchfeld {
   display: flex; align-items: center; gap: 12px; width: 100%; max-width: 560px; height: 54px; margin: 36px 0 0; padding: 0 12px 0 20px;
@@ -266,7 +278,7 @@ h1 { margin: 12px 0 0; font-size: clamp(36px, 4.2vw, 54px); line-height: 1.04; f
 .spalten { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 28px; }
 .spalten .gruppe { margin: 0 0 8px; }
 .spalten ul { list-style: none; margin: 0; padding: 0; }
-.spalten a { display: inline-block; padding: 3px 0; font-size: 15.5px; text-decoration: none; border-bottom: 1px solid transparent; }
+.spalten a { display: inline-block; padding: 6px 0; font-size: 15.5px; text-decoration: none; border-bottom: 1px solid transparent; }
 .spalten a:hover { border-color: currentColor; }
 .spalten .mehr { color: var(--schiefer); }
 
@@ -306,14 +318,16 @@ dialog.suche::backdrop { background: rgba(22, 22, 26, .25); backdrop-filter: blu
 }
 /* Unter 900px wird die Seitenleiste zur Schublade, die der Knopf „Seiten“ öffnet */
 @media (max-width: 900px) {
-  .raster { grid-template-columns: minmax(0, 1fr); padding: 0 18px; }
+  .raster { grid-template-columns: minmax(0, 1fr); }
+  /* Ohne Seitenleiste steht der Text am Rand, auf einer Linie mit dem Logo */
+  .haupt { justify-self: start; }
   .menueknopf {
     display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px 0 11px; margin-left: 6px;
     border: 1px solid var(--linie); border-radius: 999px; background: var(--flaeche); cursor: pointer; font-size: 14px;
   }
   .seiten {
     position: fixed; top: var(--kopf); left: 0; bottom: 0; z-index: 30; height: auto; width: min(330px, 88vw);
-    padding: 24px 16px 40px; background: var(--grund); border-right: 1px solid var(--linie); box-shadow: var(--schatten-hoch);
+    margin-left: 0; padding: 24px var(--rand) 40px; background: var(--grund); border-right: 1px solid var(--linie); box-shadow: var(--schatten-hoch);
     transform: translateX(-105%); visibility: hidden; transition: transform .22s ease, visibility .22s;
   }
   .menue-offen .seiten { transform: none; visibility: visible; }
@@ -321,9 +335,8 @@ dialog.suche::backdrop { background: rgba(22, 22, 26, .25); backdrop-filter: blu
   .haupt { padding: 28px 0 64px; }
 }
 @media (max-width: 640px) {
-  .kopf { padding: 0 12px; }
   .umschalter { display: none; }
-  .projektwahl nav { position: fixed; top: calc(var(--kopf) + 6px); left: 12px; right: 12px; width: auto; }
+  .projektwahl nav { position: fixed; top: calc(var(--kopf) + 6px); left: var(--rand); right: var(--rand); width: auto; }
   .docs-name { border-right: 0; }
   .suchknopf { width: 38px; padding: 0; justify-content: center; }
   .suchknopf span, .suchknopf kbd, .suche-fuss { display: none; }
@@ -331,6 +344,9 @@ dialog.suche::backdrop { background: rgba(22, 22, 26, .25); backdrop-filter: blu
   .uebersicht h1 { font-size: 64px; }
   .uebersicht .haupt { padding-top: 40px; }
   .unterzeile { font-size: 18px; }
+  /* Bricht die Meta-Zeile um, hinge ein „·“ allein am Zeilenende; hier trennt der Abstand */
+  .meta { gap: 4px 16px; }
+  .meta > span { display: none; }
   .text { font-size: 16px; margin-top: 32px; }
   .text h2 { font-size: 24px; }
   .text h3 { font-size: 18.5px; }

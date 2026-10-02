@@ -32,6 +32,10 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
 - **Anker wie auf GitHub** (`anker()` in `skripte/bau/aufbereiten.mjs`), damit Verweise aus den Repos
   (`START.md#weg-2-für-mehrere-…`) auch hier treffen. Ids im Seitenrahmen (`hauptteil`,
   `seitenleiste`) so wählen, dass keine Überschrift sie trifft.
+- **Ein Seitenrand für alles:** `--rand` (20 bis 40 px, wächst mit der Breite) steht in `index.html`
+  und `docs/docs.css` gleich; Kopfleiste und Inhalt der Docs nehmen beide denselben Rahmen
+  (`.kopf-innen`, `.raster`), damit Logo, Seitenleiste und Text auf einer Linie stehen. Ein Innenabstand
+  auf `.breite` oder `.fuss` nur als `padding-top`/`padding-bottom`, sonst verschluckt er den Rand.
 - **Stil:** Farben, Schrift und Maße wie Berichtsheft und Fundus (warmes Grau, Instrument Sans,
   Haarlinien). Farbe trägt Bedeutung: Grün veröffentlicht, Bernstein Vorabversion; daneben steht
   immer ein Wort. Browser-JavaScript mit `var` und Funktionen, Skripte unter `skripte/` modernes Node.

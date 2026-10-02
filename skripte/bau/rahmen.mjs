@@ -50,11 +50,13 @@ export function rahmen({ titel, beschreibung, rel, aktiv = '', haupt, seitenleis
 <svg width="0" height="0" style="position: absolute" aria-hidden="true">${lauf.sz}</svg>
 <a class="springen" href="#hauptteil">Zum Inhalt</a>
 <header class="kopf">
+  <div class="kopf-innen">
   <a class="marke" href="${rel}/" aria-label="Zur Startseite"><svg class="sz" viewBox="0 0 159 89"><use href="#sz"/></svg></a>
   <a class="docs-name" href="${rel}/docs/">Docs</a>
   ${projektwahl(rel, aktiv)}
   <button class="suchknopf" type="button" data-suche aria-label="Suchen">${symbol('lupe')}<span>Docs durchsuchen</span><kbd>Strg</kbd><kbd>K</kbd></button>
   ${seitenleiste ? `<button class="menueknopf" type="button" data-menue aria-controls="seitenleiste" aria-expanded="false">${symbol('menue')}<span>Seiten</span></button>` : ''}
+  </div>
 </header>
 <div class="raster">
 ${seitenleiste}
