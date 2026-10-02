@@ -167,19 +167,15 @@ function neuesBauen(alle) {
     .sort((a, b) => iso(b.v.datum).localeCompare(iso(a.v.datum)) || a.rang - b.rang || a.i - b.i)
     .slice(0, NEUES_INSGESAMT);
   if (!eintraege.length) return '';
-  let vorher = null;
   const zeilen = eintraege.map(({ p, v }) => {
-    const gleich = v.datum === vorher;
-    vorher = v.datum;
     // Anker der Version auf der Seite „Änderungen“, wie ihn der Bau dort vergeben hat
     const seite = p.nachDatei?.get('CHANGELOG.md');
     const anker = seite?.inhalt?.find((e) => e.text.startsWith(v.version))?.id;
     const href = seite ? `docs/${p.kurz}/${seite.pfad}/${anker ? '#' + anker : ''}` : null;
     const was = v.satz || v.punkte.slice(0, 3).join(' · ');
     const innen = `<time>${esc(v.datum || '')}</time><b><i class="punkt${p.vorab ? ' vorab' : ''}"></i>${esc(p.name)} <span>${esc(v.version)}</span></b><span class="was">${esc(was)}</span>`;
-    const klasse = `neu${gleich ? ' gleich' : ''}`;
-    return href ? `      <a class="${klasse}" href="${esc(href)}">${innen}<span class="pfeil" aria-hidden="true">→</span></a>`
-      : `      <div class="${klasse}">${innen}</div>`;
+    return href ? `      <a class="neu" href="${esc(href)}">${innen}<span class="pfeil" aria-hidden="true">→</span></a>`
+      : `      <div class="neu">${innen}</div>`;
   });
   return `  <section id="neues" class="band"><div class="breite">
     <header class="band-kopf"><h2>Neues</h2><p>Die letzten Versionen, aus den Änderungsprotokollen der Projekte. Jede Zeile führt zu den Einzelheiten.</p></header>

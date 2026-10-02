@@ -45,9 +45,11 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
   Haarlinien). Farbe trägt Bedeutung: Grün veröffentlicht, Bernstein Vorabversion; daneben steht
   immer ein Wort. Browser-JavaScript mit `var` und Funktionen, Skripte unter `skripte/` modernes Node.
 - **Symmetrie ist Pflicht, nicht Geschmack:** Gleichartige Container stehen gleich groß nebeneinander
-  (Projektkarten, Kontaktkacheln), und Linien zwischen Angaben liegen in allen Karten auf derselben
+  (Projektkarten, Kontaktkacheln, Kenntnis-Kacheln, Zeilen unter „Neues“, Segmente des Docs-Umschalters,
+  Blättern-Kacheln), und Linien zwischen Angaben liegen in allen Karten auf derselben
   y-Koordinate. Die Projektkarten sind dafür Subgrids mit 1fr-Zeilen für die Punkte. Nach jeder
-  Änderung messen statt schätzen, von 1920 bis 360 px: Breite, Höhe und die y der Linien je Karte.
+  Änderung messen statt schätzen, von 1920 bis 320 px: Breite, Höhe und die y der Linien je Karte.
+  Zeilenhöhen in Reihen gleicher Höhe in ganzen Pixeln, sonst liegen Linien um halbe Pixel versetzt.
 - **Generiert, nicht von Hand ändern:** `karte/*.svg`, die Blöcke zwischen den Markierungen in
   `index.html`, alles in `_site/`.
 - **Keine Links auf Claude-Sitzungen** in Commits oder Kommentaren; `Co-Authored-By` darf bleiben.

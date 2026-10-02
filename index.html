@@ -153,19 +153,22 @@
   .bild.schmal img { max-width: 760px; }
 
   /* ---------- Neues aus den CHANGELOGs ---------- */
-  .neues { border-top: 1px solid var(--linie); }
+  /* Alle Zeilen so hoch wie die höchste, Inhalt oben: Die Linien liegen gleich weit auseinander, und Datum
+     und Name stehen in jeder Zeile gleich weit unter ihrer Linie */
+  .neues { display: grid; grid-auto-rows: 1fr; border-top: 1px solid var(--linie); }
   .neu {
-    display: grid; grid-template-columns: 112px minmax(0, 5fr) minmax(0, 8fr) 24px; gap: 24px; align-items: baseline;
+    display: grid; grid-template-columns: 112px minmax(0, 5fr) minmax(0, 8fr) 24px; gap: 24px; align-items: baseline; align-content: start;
     padding: 20px 0; border-bottom: 1px solid var(--linie);
   }
-  .neu time { font-size: 14px; color: var(--leise); font-variant-numeric: tabular-nums; }
-  .neu b { font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
+  /* Zeilenhöhen in ganzen Pixeln: Sonst werden die gleich hohen Zeilen krumm hoch und die Linien liegen um
+     halbe Pixel versetzt */
+  .neu time { font-size: 14px; line-height: 22px; color: var(--leise); font-variant-numeric: tabular-nums; }
+  .neu b { font-size: 20px; line-height: 30px; font-weight: 600; letter-spacing: -.015em; }
   .neu b span { font-weight: 400; color: var(--schiefer); }
-  /* Punkt in der Farbe des Stands wie bei den Projekten; gleiches Datum wie die Zeile davor steht nicht noch einmal */
+  /* Punkt in der Farbe des Stands wie bei den Projekten */
   .neu .punkt { display: inline-block; width: 7px; height: 7px; margin: 0 10px 0 0; border-radius: 50%; background: var(--gut); vertical-align: .18em; }
   .neu .punkt.vorab { background: var(--bernstein); }
-  .neu.gleich time { visibility: hidden; }
-  .neu .was { font-size: 15.5px; line-height: 1.5; color: var(--schiefer); }
+  .neu .was { font-size: 15.5px; line-height: 24px; color: var(--schiefer); }
   .neu .pfeil { justify-self: end; color: var(--leise); transition: transform .2s, color .2s; }
   a.neu:hover .pfeil { transform: translateX(4px); color: var(--text); }
   a.neu:hover .was { color: var(--text); }
@@ -266,7 +269,6 @@
   @media (max-width: 560px) {
     .reihe { grid-template-columns: minmax(0, 1fr); row-gap: 10px; }
     .reihe dt { padding-top: 0; }
-    .neu.gleich time { display: none; }
     .kopf-buehne { aspect-ratio: 4 / 3; margin-top: 40px; }
     .kopf-buehne img { width: 82%; border-radius: 8px; }
     .kopf-buehne img:nth-child(2) { top: 22%; }
