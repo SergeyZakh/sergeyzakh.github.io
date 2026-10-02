@@ -43,7 +43,7 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
   und unten in jedem Band. Kopf und Projekte stehen ohne Linie auf demselben Grund, dazwischen steht er nur einmal. Gemessen wird, was man sieht: im Kopf oben ab der Leiste, nicht ab dem Seitenrand.
 - **Stil:** Farben, Schrift und Maße wie Berichtsheft und Fundus (warmes Grau, Instrument Sans,
   Haarlinien). Farbe trägt Bedeutung: Grün veröffentlicht, Bernstein Vorabversion; daneben steht
-  immer ein Wort. Graue Schrift (`--schiefer`, `--leise`) hält auf jedem Grund, hell wie dunkel, mindestens
+  immer ein Wort. Markenfarben nur in den Zeichen unter Kontakt (LinkedIn-Blau). Graue Schrift (`--schiefer`, `--leise`) hält auf jedem Grund, hell wie dunkel, mindestens
   4,5 : 1 Kontrast; wer ein Grau oder einen Grund ändert, rechnet das nach. Browser-JavaScript mit `var` und Funktionen, Skripte unter `skripte/` modernes Node.
 - **Hell und dunkel über `data-theme` an `<html>`**, nicht über `prefers-color-scheme` im CSS: Ein kleines
   Skript im Kopf (`index.html` und `THEMA` in `rahmen.mjs`, beide gleich) setzt die gespeicherte Wahl oder die

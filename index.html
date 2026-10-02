@@ -206,28 +206,31 @@
   }
 
   /* ---------- Kontakt ---------- */
-  /* Zwei gleich große Kacheln: Name und Adresse links, der Pfeil im Kreis rechts, alles auf denselben Linien */
-  .kontakt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  /* Zwei gleich große Kacheln: links das Zeichen, daneben Name und Adresse, rechts der Pfeil im Kreis, alles auf
+     denselben Linien. Das Zeichen in der Farbe des Dienstes, das Wort steht daneben. */
+  .kontakt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 16px; }
   .kontakt a {
-    display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 24px; align-items: center;
-    padding: 32px 32px 30px; border: 1px solid var(--linie); border-radius: 18px; transition: background .2s, border-color .2s;
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: 24px; align-items: center;
+    padding: 32px 32px 30px; border: 1px solid var(--linie); border-radius: 18px; background: var(--grund); transition: border-color .2s;
   }
-  .kontakt a:hover { background: rgba(243, 242, 238, .04); border-color: var(--linie-fest); }
-  .kontakt b { grid-column: 1; font-size: clamp(32px, 3.4vw, 44px); line-height: 1.05; font-weight: 600; letter-spacing: -.035em; }
-  .kontakt small { grid-column: 1; margin-top: 8px; font-size: 15px; color: var(--schiefer); overflow-wrap: anywhere; }
+  .kontakt a:hover { border-color: var(--linie-fest); }
+  .kontakt .zeichen { grid-column: 1; grid-row: 1 / span 2; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 14px; }
+  .kontakt .zeichen svg { width: 28px; height: 28px; fill: currentColor; }
+  .kontakt .github { background: var(--text); color: var(--flaeche); }
+  .kontakt .linkedin { background: #0A66C2; color: #FFFFFF; }
+  .kontakt b { grid-column: 2; font-size: clamp(32px, 3.4vw, 44px); line-height: 1.05; font-weight: 600; letter-spacing: -.035em; }
+  .kontakt small { grid-column: 2; margin-top: 8px; font-size: 15px; color: var(--schiefer); overflow-wrap: anywhere; }
   .kontakt .pfeil {
-    grid-column: 2; grid-row: 1 / span 2; display: grid; place-items: center; width: 52px; height: 52px;
+    grid-column: 3; grid-row: 1 / span 2; display: grid; place-items: center; width: 52px; height: 52px;
     border: 1px solid var(--linie-fest); border-radius: 50%; font-size: 20px; transition: background .2s, color .2s, border-color .2s;
   }
-  .kontakt a:hover .pfeil { background: var(--text); border-color: var(--text); color: #16161A; }
-  /* Dunkler Schluss für Kontakt und Fuß: dieselben Namen, andere Werte, so passt alles darin von selbst */
+  .kontakt a:hover .pfeil { background: var(--text); border-color: var(--text); color: var(--grund); }
+  /* Dunkler Schluss im Fuß: dieselben Namen, andere Werte, so passt alles darin von selbst */
   .nacht {
     --text: #F3F2EE; --linie: rgba(243, 242, 238, .14); --linie-fest: rgba(243, 242, 238, .32);
     --schiefer: rgba(243, 242, 238, .64); --leise: rgba(243, 242, 238, .5);
     background: #16161A; color: var(--text);
   }
-  .band.nacht { border-top-color: transparent; }
-  .fuss-band { border-top: 1px solid var(--linie); }
   /* Logo, Name, Zeile und Verweise mittig untereinander */
   .fuss { display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; padding-top: 56px; padding-bottom: 56px; color: var(--leise); font-size: 14px; }
   .fuss b { display: block; color: var(--text); font-weight: 600; font-size: 15px; }
@@ -276,7 +279,9 @@
     .neu .was { grid-column: 1; grid-row: 3; }
     .neu .pfeil { grid-column: 2; grid-row: 2; }
     .kontakt { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-    .kontakt a { padding: 22px 20px 20px 22px; border-radius: 14px; }
+    .kontakt a { column-gap: 16px; padding: 22px 20px 20px 22px; border-radius: 14px; }
+    .kontakt .zeichen { width: 48px; height: 48px; border-radius: 12px; }
+    .kontakt .zeichen svg { width: 24px; height: 24px; }
     .kontakt b { font-size: 30px; }
     .kontakt small { margin-top: 4px; }
     .kontakt .pfeil { width: 44px; height: 44px; font-size: 18px; }
@@ -306,11 +311,18 @@
   }
   @media (max-width: 400px) { .leiste a.marke, .leiste .trenner { display: none; } }
   @media (max-width: 340px) { .leiste a:not(.marke) { padding-left: 6px; padding-right: 6px; font-size: 13px; } .leiste .thema { width: 30px; } }
+  /* Sonst bricht „sergey-zakharov-jr“ um und die LinkedIn-Kachel wird höher als die von GitHub */
+  @media (max-width: 340px) {
+    .kontakt a { column-gap: 12px; padding-left: 18px; padding-right: 16px; }
+    .kontakt .zeichen { width: 40px; height: 40px; border-radius: 10px; }
+    .kontakt .zeichen svg { width: 20px; height: 20px; }
+    .kontakt .pfeil { width: 40px; height: 40px; }
+  }
 
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position: absolute" aria-hidden="true"><symbol id="sz" viewBox="0 0 159 89"><rect x="10" y="0" width="9" height="9"/><rect x="20" y="0" width="9" height="9"/><rect x="30" y="0" width="9" height="9"/><rect x="40" y="0" width="9" height="9"/><rect x="50" y="0" width="9" height="9"/><rect x="60" y="0" width="9" height="9"/><rect x="90" y="0" width="9" height="9"/><rect x="100" y="0" width="9" height="9"/><rect x="110" y="0" width="9" height="9"/><rect x="120" y="0" width="9" height="9"/><rect x="130" y="0" width="9" height="9"/><rect x="140" y="0" width="9" height="9"/><rect x="150" y="0" width="9" height="9"/><rect x="0" y="10" width="9" height="9"/><rect x="10" y="10" width="9" height="9"/><rect x="20" y="10" width="9" height="9"/><rect x="30" y="10" width="9" height="9"/><rect x="40" y="10" width="9" height="9"/><rect x="50" y="10" width="9" height="9"/><rect x="60" y="10" width="9" height="9"/><rect x="90" y="10" width="9" height="9"/><rect x="100" y="10" width="9" height="9"/><rect x="110" y="10" width="9" height="9"/><rect x="120" y="10" width="9" height="9"/><rect x="130" y="10" width="9" height="9"/><rect x="140" y="10" width="9" height="9"/><rect x="150" y="10" width="9" height="9"/><rect x="0" y="20" width="9" height="9"/><rect x="10" y="20" width="9" height="9"/><rect x="130" y="20" width="9" height="9"/><rect x="140" y="20" width="9" height="9"/><rect x="150" y="20" width="9" height="9"/><rect x="0" y="30" width="9" height="9"/><rect x="10" y="30" width="9" height="9"/><rect x="120" y="30" width="9" height="9"/><rect x="130" y="30" width="9" height="9"/><rect x="140" y="30" width="9" height="9"/><rect x="0" y="40" width="9" height="9"/><rect x="10" y="40" width="9" height="9"/><rect x="20" y="40" width="9" height="9"/><rect x="30" y="40" width="9" height="9"/><rect x="40" y="40" width="9" height="9"/><rect x="50" y="40" width="9" height="9"/><rect x="110" y="40" width="9" height="9"/><rect x="120" y="40" width="9" height="9"/><rect x="130" y="40" width="9" height="9"/><rect x="10" y="50" width="9" height="9"/><rect x="20" y="50" width="9" height="9"/><rect x="30" y="50" width="9" height="9"/><rect x="40" y="50" width="9" height="9"/><rect x="50" y="50" width="9" height="9"/><rect x="60" y="50" width="9" height="9"/><rect x="100" y="50" width="9" height="9"/><rect x="110" y="50" width="9" height="9"/><rect x="120" y="50" width="9" height="9"/><rect x="50" y="60" width="9" height="9"/><rect x="60" y="60" width="9" height="9"/><rect x="90" y="60" width="9" height="9"/><rect x="100" y="60" width="9" height="9"/><rect x="110" y="60" width="9" height="9"/><rect x="0" y="70" width="9" height="9"/><rect x="10" y="70" width="9" height="9"/><rect x="20" y="70" width="9" height="9"/><rect x="30" y="70" width="9" height="9"/><rect x="40" y="70" width="9" height="9"/><rect x="50" y="70" width="9" height="9"/><rect x="60" y="70" width="9" height="9"/><rect x="90" y="70" width="9" height="9"/><rect x="100" y="70" width="9" height="9"/><rect x="110" y="70" width="9" height="9"/><rect x="120" y="70" width="9" height="9"/><rect x="130" y="70" width="9" height="9"/><rect x="140" y="70" width="9" height="9"/><rect x="150" y="70" width="9" height="9"/><rect x="0" y="80" width="9" height="9"/><rect x="10" y="80" width="9" height="9"/><rect x="20" y="80" width="9" height="9"/><rect x="30" y="80" width="9" height="9"/><rect x="40" y="80" width="9" height="9"/><rect x="50" y="80" width="9" height="9"/><rect x="90" y="80" width="9" height="9"/><rect x="100" y="80" width="9" height="9"/><rect x="110" y="80" width="9" height="9"/><rect x="120" y="80" width="9" height="9"/><rect x="130" y="80" width="9" height="9"/><rect x="140" y="80" width="9" height="9"/><rect x="150" y="80" width="9" height="9"/></symbol></svg>
+<svg width="0" height="0" style="position: absolute" aria-hidden="true"><symbol id="sz" viewBox="0 0 159 89"><rect x="10" y="0" width="9" height="9"/><rect x="20" y="0" width="9" height="9"/><rect x="30" y="0" width="9" height="9"/><rect x="40" y="0" width="9" height="9"/><rect x="50" y="0" width="9" height="9"/><rect x="60" y="0" width="9" height="9"/><rect x="90" y="0" width="9" height="9"/><rect x="100" y="0" width="9" height="9"/><rect x="110" y="0" width="9" height="9"/><rect x="120" y="0" width="9" height="9"/><rect x="130" y="0" width="9" height="9"/><rect x="140" y="0" width="9" height="9"/><rect x="150" y="0" width="9" height="9"/><rect x="0" y="10" width="9" height="9"/><rect x="10" y="10" width="9" height="9"/><rect x="20" y="10" width="9" height="9"/><rect x="30" y="10" width="9" height="9"/><rect x="40" y="10" width="9" height="9"/><rect x="50" y="10" width="9" height="9"/><rect x="60" y="10" width="9" height="9"/><rect x="90" y="10" width="9" height="9"/><rect x="100" y="10" width="9" height="9"/><rect x="110" y="10" width="9" height="9"/><rect x="120" y="10" width="9" height="9"/><rect x="130" y="10" width="9" height="9"/><rect x="140" y="10" width="9" height="9"/><rect x="150" y="10" width="9" height="9"/><rect x="0" y="20" width="9" height="9"/><rect x="10" y="20" width="9" height="9"/><rect x="130" y="20" width="9" height="9"/><rect x="140" y="20" width="9" height="9"/><rect x="150" y="20" width="9" height="9"/><rect x="0" y="30" width="9" height="9"/><rect x="10" y="30" width="9" height="9"/><rect x="120" y="30" width="9" height="9"/><rect x="130" y="30" width="9" height="9"/><rect x="140" y="30" width="9" height="9"/><rect x="0" y="40" width="9" height="9"/><rect x="10" y="40" width="9" height="9"/><rect x="20" y="40" width="9" height="9"/><rect x="30" y="40" width="9" height="9"/><rect x="40" y="40" width="9" height="9"/><rect x="50" y="40" width="9" height="9"/><rect x="110" y="40" width="9" height="9"/><rect x="120" y="40" width="9" height="9"/><rect x="130" y="40" width="9" height="9"/><rect x="10" y="50" width="9" height="9"/><rect x="20" y="50" width="9" height="9"/><rect x="30" y="50" width="9" height="9"/><rect x="40" y="50" width="9" height="9"/><rect x="50" y="50" width="9" height="9"/><rect x="60" y="50" width="9" height="9"/><rect x="100" y="50" width="9" height="9"/><rect x="110" y="50" width="9" height="9"/><rect x="120" y="50" width="9" height="9"/><rect x="50" y="60" width="9" height="9"/><rect x="60" y="60" width="9" height="9"/><rect x="90" y="60" width="9" height="9"/><rect x="100" y="60" width="9" height="9"/><rect x="110" y="60" width="9" height="9"/><rect x="0" y="70" width="9" height="9"/><rect x="10" y="70" width="9" height="9"/><rect x="20" y="70" width="9" height="9"/><rect x="30" y="70" width="9" height="9"/><rect x="40" y="70" width="9" height="9"/><rect x="50" y="70" width="9" height="9"/><rect x="60" y="70" width="9" height="9"/><rect x="90" y="70" width="9" height="9"/><rect x="100" y="70" width="9" height="9"/><rect x="110" y="70" width="9" height="9"/><rect x="120" y="70" width="9" height="9"/><rect x="130" y="70" width="9" height="9"/><rect x="140" y="70" width="9" height="9"/><rect x="150" y="70" width="9" height="9"/><rect x="0" y="80" width="9" height="9"/><rect x="10" y="80" width="9" height="9"/><rect x="20" y="80" width="9" height="9"/><rect x="30" y="80" width="9" height="9"/><rect x="40" y="80" width="9" height="9"/><rect x="50" y="80" width="9" height="9"/><rect x="90" y="80" width="9" height="9"/><rect x="100" y="80" width="9" height="9"/><rect x="110" y="80" width="9" height="9"/><rect x="120" y="80" width="9" height="9"/><rect x="130" y="80" width="9" height="9"/><rect x="140" y="80" width="9" height="9"/><rect x="150" y="80" width="9" height="9"/></symbol><symbol id="github" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></symbol><symbol id="linkedin" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 4.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol></svg>
 
 <div class="leiste">
   <nav aria-label="Abschnitte">
@@ -349,11 +361,11 @@
     </dl>
   </div></section>
 
-  <section id="kontakt" class="band nacht"><div class="breite">
+  <section id="kontakt" class="band flaeche"><div class="breite">
     <header class="band-kopf"><h2>Kontakt</h2><p>Zu den Projekten am besten über GitHub, sonst über LinkedIn.</p></header>
     <div class="kontakt">
-      <a href="https://github.com/SergeyZakh"><b>GitHub</b><small>SergeyZakh</small><span class="pfeil" aria-hidden="true">↗</span></a>
-      <a href="https://www.linkedin.com/in/sergey-zakharov-jr/"><b>LinkedIn</b><small>sergey-zakharov-jr</small><span class="pfeil" aria-hidden="true">↗</span></a>
+      <a href="https://github.com/SergeyZakh"><span class="zeichen github" aria-hidden="true"><svg><use href="#github"/></svg></span><b>GitHub</b><small>SergeyZakh</small><span class="pfeil" aria-hidden="true">↗</span></a>
+      <a href="https://www.linkedin.com/in/sergey-zakharov-jr/"><span class="zeichen linkedin" aria-hidden="true"><svg><use href="#linkedin"/></svg></span><b>LinkedIn</b><small>sergey-zakharov-jr</small><span class="pfeil" aria-hidden="true">↗</span></a>
     </div>
   </div></section>
 </main>
