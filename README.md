@@ -33,8 +33,8 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 `index.html` ist die Vorlage. Von oben: Titel, Name, ein Satz und zwei Knöpfe (mittig), darunter die Bühne mit
 Bildschirmfotos, dann Projekte, Neues, Kenntnisse und dunkel Kontakt und Fuß; die
 Leiste oben springt dorthin (unter 480 px ohne „Neues“, damit sie in die Breite passt).
-Alles steht auf der Mittelachse; hinter dem Kopf liegt ein schlichtes Raster. Die Kenntnisse stehen nur
-in `angaben.mjs`: Nach einer
+Kopf, Abschnittsköpfe und Fuß stehen mittig; hinter dem Kopf liegt ein schlichtes Raster. Die Kenntnisse
+stehen nur in `angaben.mjs`: Nach einer
 Änderung schreibt `node skripte/erzeugen.mjs` sie in die Seite und in die Karte unter `karte/`, die
 das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Den Projektteil zwischen
 `<!-- projekte:… -->` setzt erst der Bau ein, zusammen mit „Neues“; die fertige Seite liegt danach

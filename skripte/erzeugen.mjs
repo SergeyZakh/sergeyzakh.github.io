@@ -176,22 +176,13 @@ const AUSGESCHRIEBEN = { TS: 'TypeScript', JS: 'JavaScript', ASM: 'Assembler' };
 // Werkzeuge stehen in der Karte vorn, auf der Seite zuletzt
 const reihenfolge = Object.values(KENNTNISSE);
 
-// Spalten nach Anzahl: volle Reihen und möglichst quadratisch (4 = 2 × 2, 6 = 3 × 2); geht es nicht auf
-// (Primzahlen wie 5 und 7), stehen die Reihen gespiegelt um die Mitte (7 = 4 über 3)
-function spalten(n) {
-  if (n <= 3) return n;
-  for (let c = 2; c <= 4; c++) if (n % c === 0 && n / c <= c) return c;
-  return Math.min(4, Math.ceil(n / 2));
-}
-
 const kenntnisse = angaben
   .filter((a) => a && KENNTNISSE[a[0]])
   .sort((a, b) => reihenfolge.indexOf(KENNTNISSE[a[0]]) - reihenfolge.indexOf(KENNTNISSE[b[0]]))
   .map(([k, v]) => {
     // Jede Kenntnis ein eigenes Element, das CSS setzt sie als Kacheln
     const eintraege = v.split(',').map((e) => `<span>${esc(AUSGESCHRIEBEN[e.trim()] || e.trim())}</span>`);
-    const stil = `--n: ${eintraege.length}; --sp: ${spalten(eintraege.length)}`;
-    return `      <div class="reihe" style="${stil}"><dt>${esc(KENNTNISSE[k])}</dt><dd><span class="liste">${eintraege.join('')}</span></dd></div>`;
+    return `      <div class="reihe"><dt>${esc(KENNTNISSE[k])}</dt><dd><span class="liste">${eintraege.join('')}</span></dd></div>`;
   }).join('\n');
 
 const datei = join(wurzel, 'index.html');

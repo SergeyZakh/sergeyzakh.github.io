@@ -186,22 +186,19 @@
   a.neu:hover .was { color: var(--text); }
 
   /* ---------- Kenntnisse: eine Spalte je Bereich ---------- */
-  /* Jeder Bereich mittig, das Etikett über den Kacheln, jede Kachelreihe für sich auf der Mittelachse.
-     Am PC alle Kacheln eines Bereichs in einer Reihe (--n), schmaler nach Teilbarkeit (--sp aus erzeugen.mjs:
-     6 = 3 × 2, 4 = 2 × 2, 7 = 4 über 3), am Handy höchstens drei nebeneinander. Alle Kacheln gleich breit. */
-  .kenntnisse { display: flex; flex-direction: column; align-items: center; gap: 40px; margin: 0; }
-  .reihe { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; text-align: center; }
+  /* Am PC fünf Spalten in einer Reihe. Jede Spalte ist ein Subgrid aus zwei Zeilen, Etikett und Kacheln:
+     Bricht ein Etikett um, beginnen die Kacheln trotzdem überall auf derselben Höhe. */
+  .kenntnisse { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 32px; margin: 0; }
+  .reihe { display: grid; grid-row: span 2; grid-template-rows: subgrid; border-top: 1px solid var(--linie); padding-top: 14px; }
   .reihe dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
-  .reihe dd { margin: 0; width: 100%; font-size: 15px; }
-  .reihe .liste {
-    --k: 112px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 auto; max-width: 100%;
-    width: calc(var(--n) * var(--k) + (var(--n) - 1) * 8px);
-  }
+  .reihe dd { margin: 14px 0 0; font-size: 15px; }
+  /* Kacheln in gleich breiten Spalten statt im Fluss: Alle Listen sind gleich breit, also liegen die Spalten
+     in jedem Bereich an denselben Stellen */
+  .reihe .liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 108px), 1fr)); gap: 8px; }
   .reihe .liste span {
-    flex: 0 0 var(--k); padding: 5px 6px; border: 1px solid var(--linie); border-radius: 999px; background: var(--grund);
+    padding: 5px 6px; border: 1px solid var(--linie); border-radius: 999px; background: var(--grund);
     font-weight: 500; line-height: 1.4; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  @media (max-width: 999px) { .reihe .liste { width: calc(var(--sp) * var(--k) + (var(--sp) - 1) * 8px); } }
 
   /* ---------- Kontakt ---------- */
   /* Zwei gleich große Kacheln: Name und Adresse links, der Pfeil im Kreis rechts, alles auf denselben Linien */
@@ -239,6 +236,13 @@
   .fuss .sz { order: -1; width: 112px; height: auto; color: var(--linie); }
 
   @media (max-width: 1100px) {
+    /* Für fünf Spalten zu schmal, und drei plus zwei wäre schief: eine Tabelle, links das Etikett in fester
+       Breite, rechts die Kacheln, jede Zeile zwischen zwei Linien */
+    .kenntnisse { grid-template-columns: minmax(0, 1fr); }
+    .reihe { grid-row: auto; grid-template-rows: none; grid-template-columns: 200px minmax(0, 1fr); column-gap: 24px; padding: 16px 0; }
+    .reihe:last-child { border-bottom: 1px solid var(--linie); }
+    .reihe dt { padding-top: 8px; }
+    .reihe dd { margin: 0; }
     .neu { grid-template-columns: 96px minmax(0, 1fr) 24px; row-gap: 4px; }
     .neu .was { grid-column: 2; grid-row: 2; }
     .neu .pfeil { grid-column: 3; grid-row: 1; }
@@ -282,13 +286,13 @@
     .kontakt small { margin-top: 4px; }
     .kontakt .pfeil { width: 44px; height: 44px; font-size: 18px; }
     .fuss { padding-top: 40px; padding-bottom: 48px; }
+    .reihe { grid-template-columns: 116px minmax(0, 1fr); column-gap: 16px; padding: 14px 0; }
   }
-  /* Handy: höchstens drei Kacheln nebeneinander (7 wird 3, 3, 1), auf sehr schmalen etwas kleiner beschriftet */
+  /* Handy: Etikett über den Kacheln, damit drei nebeneinander passen */
   @media (max-width: 560px) {
-    .reihe { --spm: min(var(--sp), 3); }
-    .reihe .liste { --k: min(112px, (100vw - 2 * var(--rand) - 16px) / 3); width: calc(var(--spm) * var(--k) + (var(--spm) - 1) * 8px); }
+    .reihe { grid-template-columns: minmax(0, 1fr); row-gap: 10px; }
+    .reihe dt { padding-top: 0; }
   }
-  @media (max-width: 380px) { .reihe .liste span { font-size: 13px; padding: 5px 3px; } }
   /* Auf dem Handy passen vier Knöpfe nicht in eine Zeile: dann zwei gleich breite Spalten statt einer
      ausgefransten zweiten Zeile */
   @media (max-width: 560px) {
@@ -342,11 +346,11 @@
     <header class="band-kopf"><h2>Kenntnisse</h2><p>Womit ich in der Ausbildung und in den Projekten arbeite, nach Bereichen.</p></header>
     <dl class="kenntnisse">
       <!-- kenntnisse:anfang -->
-      <div class="reihe" style="--n: 7; --sp: 4"><dt>Programmieren</dt><dd><span class="liste"><span>TypeScript</span><span>JavaScript</span><span>PHP</span><span>Python</span><span>C</span><span>Java</span><span>Assembler</span></span></dd></div>
-      <div class="reihe" style="--n: 2; --sp: 2"><dt>Skripte</dt><dd><span class="liste"><span>Bash</span><span>PowerShell</span></span></dd></div>
-      <div class="reihe" style="--n: 6; --sp: 3"><dt>Auszeichnung und Daten</dt><dd><span class="liste"><span>HTML</span><span>CSS</span><span>SQL</span><span>YAML</span><span>HCL</span><span>LaTeX</span></span></dd></div>
-      <div class="reihe" style="--n: 4; --sp: 2"><dt>Infrastruktur</dt><dd><span class="liste"><span>Docker</span><span>Kubernetes</span><span>Terraform</span><span>Azure</span></span></dd></div>
-      <div class="reihe" style="--n: 3; --sp: 3"><dt>Werkzeuge</dt><dd><span class="liste"><span>VS Code</span><span>IntelliJ</span><span>Claude Code</span></span></dd></div>
+      <div class="reihe"><dt>Programmieren</dt><dd><span class="liste"><span>TypeScript</span><span>JavaScript</span><span>PHP</span><span>Python</span><span>C</span><span>Java</span><span>Assembler</span></span></dd></div>
+      <div class="reihe"><dt>Skripte</dt><dd><span class="liste"><span>Bash</span><span>PowerShell</span></span></dd></div>
+      <div class="reihe"><dt>Auszeichnung und Daten</dt><dd><span class="liste"><span>HTML</span><span>CSS</span><span>SQL</span><span>YAML</span><span>HCL</span><span>LaTeX</span></span></dd></div>
+      <div class="reihe"><dt>Infrastruktur</dt><dd><span class="liste"><span>Docker</span><span>Kubernetes</span><span>Terraform</span><span>Azure</span></span></dd></div>
+      <div class="reihe"><dt>Werkzeuge</dt><dd><span class="liste"><span>VS Code</span><span>IntelliJ</span><span>Claude Code</span></span></dd></div>
       <!-- kenntnisse:ende -->
     </dl>
   </div></section>
