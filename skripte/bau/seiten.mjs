@@ -227,7 +227,7 @@ function neuesBauen(alle) {
     return href ? `      <a class="neu" href="${esc(href)}">${innen}<span class="pfeil" aria-hidden="true">→</span></a>`
       : `      <div class="neu">${innen}</div>`;
   });
-  return `  <section id="neues" class="band"><div class="breite">
+  return `  <section id="neues" class="band flaeche"><div class="breite">
     <header class="band-kopf"><h2>Neues</h2><p>Die letzten Versionen, aus den Änderungsprotokollen der Projekte. Jede Zeile führt zu den Einzelheiten.</p></header>
     <div class="neues">
 ${zeilen.join('\n')}
@@ -248,7 +248,7 @@ function projekteBauen(alle) {
 }
 
 export function startseiteBauen(alle) {
-  const teil = `  <section id="projekte" class="band flaeche"><div class="breite">
+  const teil = `  <section id="projekte" class="band"><div class="breite">
     <header class="band-kopf"><h2>Projekte</h2><p>Werkzeuge aus der Ausbildung, quelloffen auf GitHub, mit Docs und, wo es geht, einer Demo im Browser.</p></header>
 ${projekteBauen(alle)}
   </div></section>`;

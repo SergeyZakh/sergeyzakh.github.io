@@ -93,7 +93,9 @@
 
   /* ---------- Kopf: Titel, Name und ein Satz, mittig ---------- */
   /* Oben zählt der Abstand ab der Leiste, nicht ab dem Seitenrand: Sie steht 16 px tiefer, als sie Platz nimmt */
-  .kopf { padding-top: calc(var(--abstand) + 16px); padding-bottom: var(--abstand); text-align: center; }
+  /* Unten kein Abstand: Der Kopf geht ohne Linie und auf demselben Grund in die Projekte über, deren Band
+     oben --abstand hat */
+  .kopf { padding-top: calc(var(--abstand) + 16px); padding-bottom: 0; text-align: center; }
   /* Statt des Namens das SZ aus Quadraten, groß und mittig; der Name steht für Vorleser und Suchmaschinen
      im Bild (aria-label) */
   h1 { margin: 0; line-height: 0; }
@@ -108,6 +110,8 @@
      Haarlinie. Kopf des Bands: Titel links, ein Satz dazu rechts. Der Inhalt fängt mit einer Linie an. */
   .band { border-top: 1px solid var(--linie); padding: var(--abstand) 0; }
   .band.flaeche { background: var(--flaeche); }
+  /* Das erste Band folgt direkt auf den Kopf, auf demselben Grund und ohne Linie */
+  #projekte { border-top: 0; }
   /* Titel und Satz mittig untereinander: alles auf der Mittelachse */
   .band-kopf { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; margin-bottom: 56px; }
   .band-kopf h2 { margin: 0; font-size: clamp(36px, 4vw, 52px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
@@ -127,7 +131,7 @@
   .karten + .karten { margin-top: 64px; }
   .projekt {
     display: grid; grid-row: span 7; grid-template-rows: subgrid; margin-bottom: 32px; padding-bottom: 32px;
-    border: 1px solid var(--linie); border-radius: 20px; background: var(--grund); overflow: hidden;
+    border: 1px solid var(--linie); border-radius: 20px; background: var(--flaeche); overflow: hidden;
   }
   .ohne-bild .projekt { grid-row: span 6; }
   .projekt-kopf { padding: 28px 32px 0; }
@@ -198,7 +202,7 @@
      in jedem Bereich an denselben Stellen */
   .reihe .liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 108px), 1fr)); gap: 8px; }
   .reihe .liste span {
-    padding: 5px 6px; border: 1px solid var(--linie); border-radius: 999px; background: var(--grund);
+    padding: 5px 6px; border: 1px solid var(--linie); border-radius: 999px; background: var(--flaeche);
     font-weight: 500; line-height: 1.4; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
@@ -334,7 +338,7 @@
   <!-- Entsteht beim Bauen aus projekte.mjs (skripte/seite-bauen.mjs), Vorschau unter _site/ -->
   <!-- projekte:ende -->
 
-  <section id="kenntnisse" class="band flaeche"><div class="breite">
+  <section id="kenntnisse" class="band"><div class="breite">
     <header class="band-kopf"><h2>Kenntnisse</h2><p>Womit ich in der Ausbildung und in den Projekten arbeite, nach Bereichen.</p></header>
     <dl class="kenntnisse">
       <!-- kenntnisse:anfang -->
