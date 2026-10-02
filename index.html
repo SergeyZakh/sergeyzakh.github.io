@@ -100,23 +100,8 @@
   h1 .sz { width: clamp(176px, 26vw, 320px); height: auto; margin: 0 auto; }
   .einleitung { margin: 40px auto 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 36ch; text-wrap: balance; }
   .einleitung span { color: var(--schiefer); }
-  /* Hülle um den Kopf: schneidet ab, was von der Wand seitlich übersteht */
-  .kopf-hulle { overflow: hidden; }
   .kopf-aktionen { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
   .kopf-aktionen .knopf { padding: 0 22px; }
-  /* Unter dem Kopf eine Wand aus Bildschirmfotos (buehne in projekte.mjs), alle im selben Format, in gleich
-     breiten Spalten (--spalten schreibt der Bau nach der Anzahl: 6 = 3 × 2). Bewusst flach: Gekippt
-     (perspective, rotateX) zeichnet Chrome die Ebene in geringer Auflösung, die Bilder wurden pixelig.
-     Nach unten läuft sie aus und reicht bis an die Linie zum ersten Band, deshalb der negative Rand unten. */
-  .kopf-buehne {
-    display: grid; grid-template-columns: repeat(var(--spalten), minmax(0, 1fr)); gap: 20px; max-width: 1120px;
-    margin: var(--abstand) auto calc(-1 * var(--abstand)); padding-bottom: 40px;
-    -webkit-mask-image: linear-gradient(#000 50%, transparent); mask-image: linear-gradient(#000 50%, transparent);
-  }
-  .kopf-buehne img {
-    display: block; width: 100%; height: auto; aspect-ratio: 120 / 76; object-fit: cover; object-position: left top;
-    border-radius: 12px; border: 1px solid var(--linie); box-shadow: 0 1px 2px rgba(22, 22, 26, .06), 0 18px 40px rgba(22, 22, 26, .12);
-  }
 
   /* ---------- Abschnitte ---------- */
   /* Jeder Abschnitt ist ein Band über die ganze Breite, abwechselnd auf Grund und Fläche, oben eine
@@ -287,9 +272,6 @@
     .neu b { grid-column: 1; grid-row: 2; font-size: 19px; }
     .neu .was { grid-column: 1; grid-row: 3; }
     .neu .pfeil { grid-column: 2; grid-row: 2; }
-    /* Am Handy zwei Spalten (6 = 2 × 3) */
-    .kopf-buehne { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .kopf-buehne img { border-radius: 8px; }
     .kontakt { grid-template-columns: minmax(0, 1fr); gap: 12px; }
     .kontakt a { padding: 22px 20px 20px 22px; border-radius: 14px; }
     .kontakt b { font-size: 30px; }
@@ -340,13 +322,12 @@
   </nav>
 </div>
 
-<div class="kopf-hulle"><header class="kopf breite">
+<header class="kopf breite">
   <h1><svg class="sz" viewBox="0 0 159 89" role="img" aria-label="Sergey Zakharov"><use href="#sz"/></svg></h1>
   <p class="einleitung">Ich baue Werkzeuge für Ausbildung und Betrieb, die man selbst betreibt. <span>Was man dort
     einträgt, bleibt im Browser oder im eigenen Netz.</span></p>
   <div class="kopf-aktionen"><a class="knopf voll" href="#projekte">Projekte ansehen</a><a class="knopf" href="https://github.com/SergeyZakh">GitHub ↗</a></div>
-  <!-- buehne -->
-</header></div>
+</header>
 
 <main>
   <!-- projekte:anfang -->

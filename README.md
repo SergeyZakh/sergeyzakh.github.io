@@ -10,8 +10,7 @@ Ein Eintrag in `projekte.mjs`, mehr nicht. Was daraus folgt:
 
 - **Startseite:** eine Karte mit Name, Stand, Satz, Knöpfen (die Demo dunkel, sonst die Docs) und den
   Punkten; mit `bild` oben das Bildschirmfoto. Alle Karten sind gleich groß, und Bild, Kopf, Knöpfe und
-  jeder Punkt stehen in allen auf derselben Linie. Mit `buehne` (ein zweites Bildschirmfoto) steht das
-  Projekt zusätzlich unter dem Kopf; dort ist Platz für die ersten zwei.
+  jeder Punkt stehen in allen auf derselben Linie.
 - **Version und Datum:** aus der ersten Überschrift `## [x.y.z] – JJJJ-MM-TT` im `CHANGELOG.md` des
   Repos, bei jedem Bau neu.
 - **Neues:** die letzten Versionen aus den CHANGELOGs, je Projekt höchstens zwei, zusammen vier. Als
@@ -32,8 +31,7 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 ## Startseite
 
 `index.html` ist die Vorlage. Von oben: das SZ aus Quadraten statt des Namens (der steht für Vorleser im Bild), ein Satz und
-zwei Knöpfe (mittig), darunter eine Wand
-aus Bildschirmfotos (3 × 2, am Handy 2 × 3, flach: gekippt wurden sie in Chrome pixelig), dann Projekte, Neues, Kenntnisse und dunkel Kontakt und Fuß; die
+zwei Knöpfe (mittig), dann Projekte, Neues, Kenntnisse und dunkel Kontakt und Fuß; die
 Leiste oben springt dorthin (unter 560 px ohne „Neues“, damit sie in die Breite passt); ihr letzter Knopf
 schaltet zwischen hell und dunkel, die Wahl gilt auch in den Docs.
 Kopf, Abschnittsköpfe und Fuß stehen mittig. Die Kenntnisse
@@ -48,9 +46,7 @@ bei 1200 × 760 und doppelter Auflösung, damit man auf der Startseite etwas les
 `bilder/berichtsheft-tag.jpg` ist die Tagesansicht der Demo mit dem Beispielheft (Helfer aus
 `test/hilfen.js` im Berichtsheft-Repo), `bilder/fundus-frag.jpg` ein Artikel mit „Frag Fundus“ aus dem
 lokalen Stapel nach `einrichten.py --beispiele`, aufgenommen wie die Handbuch-Bilder
-(`skripte/handbuch-bilder/aufnehmen.mjs`), nur ohne Markierungen. Für die Wand unter dem Kopf (`buehne`)
-gilt dasselbe Format: Wochenansicht, Jahresübersicht und Import-Dialog des Berichtshefts, Frag Fundus im
-Vollbild, Schnellsuche und eine Artikelseite. Nach sichtbaren Änderungen an einem
+(`skripte/handbuch-bilder/aufnehmen.mjs`), nur ohne Markierungen. Nach sichtbaren Änderungen an einem
 Projekt neu aufnehmen; `node skripte/bildschirmfoto.mjs` hilft unter Windows.
 
 ## Docs

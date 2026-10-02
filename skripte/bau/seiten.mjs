@@ -247,24 +247,6 @@ function projekteBauen(alle) {
   return gruppen.map(({ art, karten }) => `    <div class="karten${art === 'ohne' ? ' ohne-bild' : ''}">\n${karten.join('\n')}\n    </div>`).join('\n');
 }
 
-// Bühne unter dem Kopf: eine Wand aus den Bildschirmfotos in buehne, abwechselnd aus den Projekten (erstes
-// von jedem, dann das zweite …), höchstens sechs. Nur Schmuck (die Projekte stehen darunter mit Text),
-// deshalb aria-hidden und ohne Alternativtext.
-const BUEHNE_BILDER = 6;
-function buehneBauen(alle) {
-  const listen = alle.map((p) => [].concat(p.buehne || []).map((datei) => ({ p, datei })));
-  const reihe = [];
-  for (let i = 0; listen.some((l) => l[i]); i++) for (const l of listen) if (l[i]) reihe.push(l[i]);
-  const bilder = reihe.slice(0, BUEHNE_BILDER).map(({ p, datei }) => {
-    if (!existsSync(join(lauf.wurzel, datei))) throw new Error(`${p.name}: Bild ${datei} fehlt (projekte.mjs)`);
-    const [b, h] = bildgroesse(join(lauf.wurzel, datei));
-    return `<img src="${esc(datei)}" width="${b}" height="${h}" alt="">`;
-  });
-  // Spalten nach Anzahl, damit jede Reihe voll ist: 6 = 3 × 2, 4 = 2 × 2, sonst so viele wie Bilder (höchstens 3)
-  const n = bilder.length, spalten = n % 3 === 0 ? 3 : n % 2 === 0 ? 2 : Math.min(n, 3);
-  return n ? `<div class="kopf-buehne" aria-hidden="true" style="--spalten: ${spalten}">${bilder.join('')}</div>` : '';
-}
-
 export function startseiteBauen(alle) {
   const teil = `  <section id="projekte" class="band flaeche"><div class="breite">
     <header class="band-kopf"><h2>Projekte</h2><p>Werkzeuge aus der Ausbildung, quelloffen auf GitHub, mit Docs und, wo es geht, einer Demo im Browser.</p></header>
@@ -272,12 +254,10 @@ ${projekteBauen(alle)}
   </div></section>`;
   const muster = /(<!-- projekte:anfang -->)[\s\S]*?(\n\s*<!-- projekte:ende -->)/;
   if (!muster.test(lauf.startseite)) throw new Error('Markierungen <!-- projekte:anfang/ende --> fehlen in index.html');
-  if (!lauf.startseite.includes('<!-- buehne -->')) throw new Error('Markierung <!-- buehne --> fehlt in index.html');
   // Ersetzen über Funktionen: Ein „$“ in einem Text aus den Repos wäre sonst ein Platzhalter
   const neues = neuesBauen(alle);
   writeFileSync(join(lauf.ziel, 'index.html'), lauf.startseite
-    .replace(muster, (_, vor, nach) => `${vor}\n${teil}\n\n${neues}${nach}`)
-    .replace('<!-- buehne -->', () => buehneBauen(alle)));
+    .replace(muster, (_, vor, nach) => `${vor}\n${teil}\n\n${neues}${nach}`));
 }
 
 // ---------- 404, Sitemap ----------
