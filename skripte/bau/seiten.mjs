@@ -126,7 +126,7 @@ function projektAbschnitt(p, nr, gespiegelt) {
   // untereinander mit dem Bild vor den Punkten.
   const kopf = `      <div class="projekt-kopf">
         <span class="nr">${String(nr).padStart(2, '0')}</span>
-        <h2>${esc(p.name)}</h2>
+        <h3>${esc(p.name)}</h3>
         ${stand ? `<span class="stand ${p.vorab ? 'vorab' : 'gut'}">${esc(stand)}</span>` : ''}
         <p class="satz">${esc(p.satz)}</p>
       </div>
@@ -176,12 +176,12 @@ function neuesBauen(alle) {
     return href ? `      <a class="neu" href="${esc(href)}">${innen}<span class="pfeil" aria-hidden="true">→</span></a>`
       : `      <div class="neu">${innen}</div>`;
   });
-  return `  <section id="neues" class="breite">
-    <div class="abschnitt-kopf"><span class="versal">Neues</span><span class="versal">aus den Änderungen</span></div>
+  return `  <section id="neues" class="band"><div class="breite">
+    <header class="band-kopf"><h2>Neues</h2><p>Die letzten Versionen, aus den Änderungsprotokollen der Projekte. Jede Zeile führt zu den Einzelheiten.</p></header>
     <div class="neues">
 ${zeilen.join('\n')}
     </div>
-  </section>`;
+  </div></section>`;
 }
 
 // Eckdaten oben auf der Startseite: die neueste Version über alle Projekte, damit sichtbar ist,
@@ -213,10 +213,10 @@ function projekteBauen(alle) {
 }
 
 export function startseiteBauen(alle) {
-  const teil = `  <section id="projekte" class="breite">
-    <div class="abschnitt-kopf"><span class="versal">Projekte</span><span class="versal">${String(alle.length).padStart(2, '0')}</span></div>
+  const teil = `  <section id="projekte" class="band flaeche"><div class="breite">
+    <header class="band-kopf"><h2>Projekte</h2><p>Werkzeuge aus der Ausbildung, quelloffen auf GitHub, mit Docs und, wo es geht, einer Demo im Browser.</p></header>
 ${projekteBauen(alle)}
-  </section>`;
+  </div></section>`;
   const muster = /(<!-- projekte:anfang -->)[\s\S]*?(\n\s*<!-- projekte:ende -->)/;
   if (!muster.test(lauf.startseite)) throw new Error('Markierungen <!-- projekte:anfang/ende --> fehlen in index.html');
   if (!lauf.startseite.includes('<!-- zuletzt -->')) throw new Error('Markierung <!-- zuletzt --> fehlt in index.html');

@@ -28,8 +28,8 @@ export const projekte = [
     demo: 'https://sergeyzakh.github.io/Ausbildungs-Berichtsheft/',
     download: { adresse: 'https://github.com/SergeyZakh/Ausbildungs-Berichtsheft/releases/latest', name: 'Berichtsheft.html' },
     bild: {
-      datei: 'bilder/berichtsheft-woche.jpg',
-      alt: 'Wochenansicht des Berichtshefts: oben die Tage als Reiter, darunter der Ausbildungsnachweis der Woche als Blatt',
+      datei: 'bilder/berichtsheft-tag.jpg',
+      alt: 'Tagesansicht des Berichtshefts: links der Text für das Heft, farbig unterstrichen nach der Buchung, aus der jedes Wort stammt; rechts die Buchungen des Tages',
     },
     punkte: {
       'Was es kann': 'Liest Clockify, Harvest, Jira mit Tempo, Kimai, Toggl Track oder Excel und schreibt Wochenblätter nach IHK-Vordruck.',
@@ -65,8 +65,8 @@ export const projekte = [
     satz: 'Firmenwiki mit KI-Suche zum Selbstbetreiben. Die Inhalte verlassen das eigene Netz nicht.',
     vorab: true,
     bild: {
-      datei: 'bilder/fundus.jpg',
-      alt: 'Frag Fundus beantwortet eine Frage und nennt die Artikel, aus denen die Antwort stammt',
+      datei: 'bilder/fundus-frag.jpg',
+      alt: 'Ein Artikel im Wiki, rechts daneben beantwortet Frag Fundus eine Frage dazu und nennt die Artikel, aus denen die Antwort stammt',
     },
     punkte: {
       'Was es kann': '„Frag Fundus“ antwortet nur aus Artikeln, die die fragende Person lesen darf, und nennt die Quellen.',

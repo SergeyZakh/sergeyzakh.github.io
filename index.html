@@ -33,7 +33,7 @@
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --text: #ECEBE7; --linie: #2E2E34; --linie-fest: #4B4B53; --grund: #111114; --flaeche: #1B1B1F; --buehne: #1B1B1F;
+      --text: #ECEBE7; --linie: #2E2E34; --linie-fest: #4B4B53; --grund: #111114; --flaeche: #1B1B1F; --buehne: #26262C;
       --hauch: rgba(255, 255, 255, .07); --voll-hover: #D2D1CC;
       --schiefer: #A3A29B; --leise: #6E6D68; --gut: #4CB86B; --bernstein: #D8AE5E;
       --glas: rgba(17, 17, 20, .72); --glas-kante: rgba(255, 255, 255, .08);
@@ -95,7 +95,13 @@
   }
 
   /* ---------- Abschnitte ---------- */
-  .abschnitt-kopf { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--linie); }
+  /* Jeder Abschnitt ist ein Band über die ganze Breite, abwechselnd auf Grund und Fläche, oben eine
+     Haarlinie. Kopf des Bands: Titel links, ein Satz dazu rechts. Der Inhalt fängt mit einer Linie an. */
+  .band { border-top: 1px solid var(--linie); padding: 104px 0 112px; }
+  .band.flaeche { background: var(--flaeche); }
+  .band-kopf { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: 64px; align-items: end; margin-bottom: 48px; }
+  .band-kopf h2 { margin: 0; font-size: clamp(36px, 4vw, 52px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
+  .band-kopf p { margin: 0; font-size: 18px; line-height: 1.5; color: var(--schiefer); max-width: 52ch; }
 
   /* ---------- Projekte als Fallstudien ----------
      Text und Bild nebeneinander, von Projekt zu Projekt abwechselnd links und rechts. Kopf, Aktionen,
@@ -104,12 +110,13 @@
   .projekt {
     display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: 64px; align-items: start;
     grid-template-rows: auto auto 1fr; grid-template-areas: "kopf bild" "aktionen bild" "punkte bild";
-    padding: 48px 0 112px;
+    padding: 56px 0 96px; border-top: 1px solid var(--linie);
   }
+  .projekt:last-child { padding-bottom: 0; }
   .projekt.gespiegelt { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "bild kopf" "bild aktionen" "bild punkte"; }
   .projekt-kopf { grid-area: kopf; }
   .nr { display: block; margin-bottom: 14px; font-size: 14px; color: var(--leise); font-variant-numeric: tabular-nums; }
-  h2 { margin: 0; font-size: clamp(40px, 4.6vw, 64px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
+  .projekt h3 { margin: 0; font-size: clamp(40px, 4.6vw, 64px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
   .stand { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 14px; }
   .stand::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
   .stand.gut { color: var(--gut); }
@@ -140,15 +147,15 @@
   .bild.schmal img { max-width: 760px; }
 
   /* Ohne Bildschirmfoto: nebeneinander im Raster, je Spalte mindestens 300 px, am Handy untereinander */
-  .weitere { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); column-gap: 48px; padding-bottom: 96px; }
+  .weitere { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); column-gap: 48px; }
   .weitere .projekt.kurz { display: block; padding: 32px 0 40px; border-top: 1px solid var(--linie); }
-  .projekt.kurz h2 { font-size: clamp(32px, 3.2vw, 40px); }
+  .projekt.kurz h3 { font-size: clamp(32px, 3.2vw, 40px); }
   .projekt.kurz .satz { font-size: 18px; }
   .projekt.kurz .aktionen { margin-top: 24px; }
   .projekt.kurz .punkte { margin-top: 28px; }
 
   /* ---------- Neues aus den CHANGELOGs ---------- */
-  .neues { padding-bottom: 112px; }
+  .neues { border-top: 1px solid var(--linie); }
   .neu {
     display: grid; grid-template-columns: 112px minmax(0, 5fr) minmax(0, 8fr) 24px; gap: 24px; align-items: baseline;
     padding: 20px 0; border-bottom: 1px solid var(--linie);
@@ -162,7 +169,7 @@
   a.neu:hover .was { color: var(--text); }
 
   /* ---------- Kenntnisse: eine Spalte je Bereich ---------- */
-  .kenntnisse { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 40px 32px; margin: 0; padding: 12px 0 112px; }
+  .kenntnisse { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 40px 32px; margin: 0; }
   /* Die Linie oben an jeder Spalte, nicht unter dem Etikett: Bricht ein Etikett um, bleiben die Linien gleich hoch */
   .reihe { border-top: 1px solid var(--linie); padding-top: 14px; }
   .reihe dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
@@ -170,12 +177,13 @@
   .reihe .liste { display: flex; flex-direction: column; }
 
   /* ---------- Kontakt ---------- */
-  .kontakt { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; padding-bottom: 80px; }
-  .kontakt a { display: flex; flex-direction: column; gap: 6px; padding: 22px 0 26px; border-bottom: 1px solid var(--linie); }
+  .kontakt { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
+  .kontakt a { display: flex; flex-direction: column; gap: 6px; padding: 22px 0 26px; border-top: 1px solid var(--linie); border-bottom: 1px solid var(--linie); }
   .kontakt b { font-size: clamp(40px, 5vw, 72px); line-height: 1.05; font-weight: 600; letter-spacing: -.04em; transition: transform .25s; }
   .kontakt a:hover b { transform: translateX(10px); }
   .kontakt small { font-size: 15px; color: var(--schiefer); }
-  .fuss { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; padding-top: 48px; padding-bottom: 56px; color: var(--leise); font-size: 14px; }
+  .fuss-band { border-top: 1px solid var(--linie); }
+  .fuss { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; padding-top: 56px; padding-bottom: 56px; color: var(--leise); font-size: 14px; }
   .fuss b { display: block; color: var(--text); font-weight: 600; font-size: 15px; }
   .fuss p { margin: 6px 0 0; }
   .fuss nav { display: flex; flex-wrap: wrap; gap: 0 24px; margin-top: 12px; }
@@ -209,9 +217,11 @@
     /* Untereinander: Kopf, Aktionen, Bild, dann die Punkte */
     .projekt, .projekt.gespiegelt {
       grid-template-columns: minmax(0, 1fr); grid-template-rows: none;
-      grid-template-areas: "kopf" "aktionen" "bild" "punkte"; padding: 32px 0 64px;
+      grid-template-areas: "kopf" "aktionen" "bild" "punkte"; padding: 32px 0 56px;
     }
-    .weitere { padding-bottom: 48px; }
+    .band { padding: 64px 0; }
+    .band-kopf { grid-template-columns: minmax(0, 1fr); row-gap: 12px; margin-bottom: 32px; }
+    .band-kopf p { font-size: 16.5px; }
     .weitere .projekt.kurz { padding: 28px 0 36px; }
     .nr { margin-bottom: 10px; }
     .aktionen { margin-top: 22px; gap: 8px; }
@@ -221,16 +231,16 @@
     .satz { font-size: 19px; }
     .bild { border-radius: 14px; }
     .bild img { border-radius: 6px 6px 0 0; }
-    .neues { padding-bottom: 64px; }
     .neu { grid-template-columns: minmax(0, 1fr) 20px; gap: 4px 12px; padding: 16px 0; }
     .neu time { grid-column: 1; grid-row: 1; }
     .neu b { grid-column: 1; grid-row: 2; font-size: 19px; }
     .neu .was { grid-column: 1; grid-row: 3; }
     .neu .pfeil { grid-column: 2; grid-row: 2; }
     /* Am Handy derselbe Rhythmus zwischen den Abschnitten wie bei den Projekten (64 px) */
-    .kenntnisse { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; padding-bottom: 64px; }
+    .kenntnisse { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
     .reihe dd { font-size: 18px; margin-top: 8px; }
-    .kontakt { grid-template-columns: 1fr; padding-bottom: 40px; }
+    .kontakt { grid-template-columns: 1fr; }
+    .kontakt a + a { border-top: 0; }
     .kontakt a { gap: 2px; padding: 18px 0 20px; }
     .fuss { grid-template-columns: 1fr; padding-top: 40px; padding-bottom: 48px; }
     .fuss .sz { order: -1; }
@@ -284,8 +294,8 @@
   <!-- Entsteht beim Bauen aus projekte.mjs (skripte/seite-bauen.mjs), Vorschau unter _site/ -->
   <!-- projekte:ende -->
 
-  <section id="kenntnisse" class="breite">
-    <div class="abschnitt-kopf"><span class="versal">Kenntnisse</span></div>
+  <section id="kenntnisse" class="band flaeche"><div class="breite">
+    <header class="band-kopf"><h2>Kenntnisse</h2><p>Womit ich in der Ausbildung und in den Projekten arbeite, nach Bereichen.</p></header>
     <dl class="kenntnisse">
       <!-- kenntnisse:anfang -->
       <div class="reihe"><dt>Programmieren</dt><dd><span class="liste"><span>TypeScript</span><span>JavaScript</span><span>PHP</span><span>Python</span><span>C</span><span>Java</span><span>Assembler</span></span></dd></div>
@@ -295,18 +305,18 @@
       <div class="reihe"><dt>Werkzeuge</dt><dd><span class="liste"><span>VS Code</span><span>IntelliJ</span><span>Claude Code</span></span></dd></div>
       <!-- kenntnisse:ende -->
     </dl>
-  </section>
+  </div></section>
 
-  <section id="kontakt" class="breite">
-    <div class="abschnitt-kopf"><span class="versal">Kontakt</span></div>
+  <section id="kontakt" class="band"><div class="breite">
+    <header class="band-kopf"><h2>Kontakt</h2><p>Zu den Projekten am besten über GitHub, sonst über LinkedIn.</p></header>
     <div class="kontakt">
       <a href="https://github.com/SergeyZakh"><b>GitHub ↗</b><small>github.com/SergeyZakh</small></a>
       <a href="https://www.linkedin.com/in/sergey-zakharov-jr/"><b>LinkedIn ↗</b><small>linkedin.com/in/sergey-zakharov-jr</small></a>
     </div>
-  </section>
+  </div></section>
 </main>
 
-<footer class="fuss breite">
+<div class="fuss-band"><footer class="fuss breite">
   <div>
     <b>Sergey Zakharov</b>
     <p>Fachinformatiker für Systemintegration in Ausbildung. Keine Anfrage nach außen, auch nicht für die
@@ -319,7 +329,7 @@
     </nav>
   </div>
   <svg class="sz" viewBox="0 0 159 89" role="img" aria-label="SZ"><use href="#sz"/></svg>
-</footer>
+</footer></div>
 
 <script>
   // Die Leiste zeigt, in welchem Abschnitt man gerade ist

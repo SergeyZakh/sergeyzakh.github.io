@@ -37,10 +37,14 @@ Eckdaten und Kenntnisse stehen nur in `angaben.mjs`: Nach einer
 das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Den Projektteil zwischen
 `<!-- projekte:… -->` setzt erst der Bau ein, zusammen mit „Neues“; die fertige Seite liegt danach
 in `_site/`.
-`node skripte/bildschirmfoto.mjs` nimmt Vorschaubilder neu auf. Aufgenommen wird nicht zu breit, damit
-man auf der Startseite etwas lesen kann: `bilder/berichtsheft-woche.jpg` ist die Wochenansicht der
-Demo mit dem Beispielheft bei 1200 × 760 und doppelter Auflösung, `bilder/fundus.jpg` stammt aus
-`handbuch/bilder/fundus-vollbild.png` im Fundus-Repo, ohne die orangen Markierungen.
+
+Die Bildschirmfotos zeigen den aktuellen Stand der Projekte mit ihren ausgedachten Beispielinhalten,
+bei 1200 × 760 und doppelter Auflösung, damit man auf der Startseite etwas lesen kann:
+`bilder/berichtsheft-tag.jpg` ist die Tagesansicht der Demo mit dem Beispielheft (Helfer aus
+`test/hilfen.js` im Berichtsheft-Repo), `bilder/fundus-frag.jpg` ein Artikel mit „Frag Fundus“ aus dem
+lokalen Stapel nach `einrichten.py --beispiele`, aufgenommen wie die Handbuch-Bilder
+(`skripte/handbuch-bilder/aufnehmen.mjs`), nur ohne Markierungen. Nach sichtbaren Änderungen an einem
+Projekt neu aufnehmen; `node skripte/bildschirmfoto.mjs` hilft unter Windows.
 
 ## Docs
 
