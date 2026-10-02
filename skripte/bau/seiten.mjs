@@ -105,16 +105,30 @@ export function uebersicht(alle) {
       if (i < 0) titel.splice(++davor, 0, g.titel); else davor = i;
     }
   }
-  const vergleich = titel.map((t) => `<section class="vergleich-gruppe">
+  const link = (w, e) => `<li><a href="${esc(posix.join(w.kurz, e.pfad))}/">${esc(e.titel)}</a></li>`;
+  const vergleich = titel.map((t) => {
+    const mit = alle.filter((w) => gruppenVon(w).some((x) => x.titel === t));
+    // Hat nur ein Projekt die Gruppe (und es gibt mehrere), steht sie über die volle Breite in Vierern
+    if (alle.length > 1 && mit.length === 1) {
+      const w = mit[0], seiten = gruppenVon(w).find((x) => x.titel === t).seiten, n = seiten.length;
+      const sp = n % 4 === 0 ? 4 : n % 3 === 0 ? 3 : Math.min(n, 4);
+      return `<section class="vergleich-gruppe vergleich-voll">
+    <h3 class="gruppe"><span>${esc(t)}</span></h3>
+    <p class="spalten-name">${esc(w.name)}</p>
+    <ul style="--sp: ${sp}">${seiten.map((e) => link(w, e)).join('')}</ul>
+  </section>`;
+    }
+    return `<section class="vergleich-gruppe">
     <h3 class="gruppe"><span>${esc(t)}</span></h3>
     <div class="vergleich-spalten">
       ${alle.map((w) => {
         const g = gruppenVon(w).find((x) => x.titel === t);
-        const zeilen = g ? g.seiten.map((e) => `<li><a href="${esc(posix.join(w.kurz, e.pfad))}/">${esc(e.titel)}</a></li>`).join('') : '<li class="leer">—</li>';
+        const zeilen = g ? g.seiten.map((e) => link(w, e)).join('') : '<li class="leer">—</li>';
         return `<div><p class="spalten-name">${esc(w.name)}</p><ul>${zeilen}</ul></div>`;
       }).join('\n      ')}
     </div>
-  </section>`).join('\n  ');
+  </section>`;
+  }).join('\n  ');
   const haupt = `<div class="uebersicht-kopf">
   <div>
     <p class="pfad"><a href="../">Startseite</a><span>/</span>Docs</p>

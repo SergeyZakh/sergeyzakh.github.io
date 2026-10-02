@@ -82,13 +82,6 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") setzen(false); });
   }
 
-  // ---------- Projektmenü (ab vier Projekten statt des Umschalters) ----------
-  var wahl = document.querySelector(".projektwahl");
-  if (wahl) {
-    document.addEventListener("click", function (e) { if (wahl.open && !wahl.contains(e.target)) wahl.open = false; });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") wahl.open = false; });
-  }
-
   // ---------- Suche ----------
   var dialog, feld, liste, index = null, treffer = [], gewaehlt = 0;
   var LUPE = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';

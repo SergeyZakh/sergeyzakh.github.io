@@ -1,38 +1,22 @@
-// Der Rahmen jeder Docs-Seite: Kopfleiste mit Projektwahl und Suche, Seitenleiste, Inhaltsverzeichnis,
-// Blättern.
+// Der Rahmen jeder Docs-Seite: Kopfleiste mit Suche und hell/dunkel, Seitenleiste, Inhaltsverzeichnis,
+// Blättern. Zwischen den Projekten wechselt man über die Übersicht unter docs/ und „Auch hier“ in der
+// Seitenleiste; in der Kopfleiste wäre für viele Projekte kein Platz.
 import { lauf } from './lauf.mjs';
 import { esc, symbol } from './werkzeug.mjs';
 import { seitenOrdner, seitenVerweis } from './aufbereiten.mjs';
 
 // Ids im Rahmen (hauptteil, seitenleiste) heißen so, dass keine Überschrift aus den Repos sie trifft.
 
-// Bis zu so vielen Projekten mit Docs steht ein Umschalter in der Kopfleiste, darüber ein Menü
-const UMSCHALTER_BIS = 3;
+// Bis zu so vielen anderen Projekten stehen sie mit Namen unter „Auch hier“, darüber ein Verweis auf alle
+const NAMEN_BIS = 3;
 
-// mitDatum: „v0.5.0 · 01.10.2026“ in der Übersicht; in Seitenleiste und Menü ist dafür kein Platz
+// mitDatum: „v0.5.0 · 01.10.2026“ in der Übersicht; in der Seitenleiste ist dafür kein Platz
 export const versionsMarke = (w, mitDatum) => {
   const datum = mitDatum && w.datum ? ` · ${esc(w.datum)}` : '';
   return w.vorab
     ? `<span class="stand vorab">Vorabversion${w.version ? ' ' + esc(w.version) : ''}${datum}</span>`
     : `<span class="stand gut">${w.version ? 'v' + esc(w.version) : 'veröffentlicht'}${datum}</span>`;
 };
-
-// Wenige Projekte: Umschalter wie ein Segment. Viele: ein Menü mit Stand und Satz je Projekt.
-function projektwahl(rel, aktiv) {
-  const link = (w, innen) => `<a href="${rel}/docs/${w.kurz}/"${w.kurz === aktiv ? ' aria-current="true"' : ''}>${innen}</a>`;
-  if (lauf.mitDocs.length <= UMSCHALTER_BIS) {
-    return `<nav class="umschalter" aria-label="Projekte">
-    ${lauf.mitDocs.map((w) => link(w, esc(w.name))).join('\n    ')}
-  </nav>`;
-  }
-  const jetzt = lauf.mitDocs.find((w) => w.kurz === aktiv);
-  return `<details class="projektwahl">
-    <summary>${esc(jetzt ? jetzt.name : 'Projekte')}${symbol('runter')}</summary>
-    <nav aria-label="Projekte">
-      ${lauf.mitDocs.map((w) => link(w, `<b>${esc(w.name)}</b>${versionsMarke(w)}<small>${esc(w.satz)}</small>`)).join('\n      ')}
-    </nav>
-  </details>`;
-}
 
 // Hell oder dunkel (siehe auch index.html, dort dasselbe Skript)
 const THEMA = `<script>
@@ -72,7 +56,6 @@ ${THEMA}
   <div class="kopf-innen">
   <a class="marke" href="${rel}/" aria-label="Zur Startseite"><svg class="sz" viewBox="0 0 159 89"><use href="#sz"/></svg></a>
   <a class="docs-name" href="${rel}/docs/">Docs</a>
-  ${projektwahl(rel, aktiv)}
   <button class="suchknopf" type="button" data-suche aria-label="Suchen">${symbol('lupe')}<span>Docs durchsuchen</span><kbd>Strg</kbd><kbd>K</kbd></button>
   <button class="themaknopf" type="button" data-thema aria-label="Hell oder dunkel" title="Hell oder dunkel"><span class="mond">${symbol('mond')}</span><span class="sonne">${symbol('sonne')}</span></button>
   ${seitenleiste ? `<button class="menueknopf" type="button" data-menue aria-controls="seitenleiste" aria-expanded="false">${symbol('menue')}<span>Seiten</span></button>` : ''}
@@ -103,7 +86,7 @@ export function seitenleiste(w, aktuell, rel) {
     </ul>`;
   }).join('\n    ');
   const andere = lauf.mitDocs.filter((x) => x.kurz !== w.kurz);
-  const anderes = !andere.length ? '' : andere.length < UMSCHALTER_BIS
+  const anderes = !andere.length ? '' : andere.length < NAMEN_BIS
     ? `<p class="anderes">Auch hier: ${andere.map((x) => `<a href="${rel}/docs/${x.kurz}/">${esc(x.name)}</a>`).join('')}</p>`
     : `<p class="anderes"><a href="${rel}/docs/">Alle ${lauf.mitDocs.length} Projekte</a></p>`;
   const links = [w.demo && `<a href="${esc(w.demo)}">Demo ↗</a>`, `<a href="https://github.com/${esc(w.repo)}">Code ↗</a>`,

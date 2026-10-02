@@ -16,7 +16,7 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
 
 ## Was man sonst erst durch Stolpern lernt
 
-- **Projekte stehen nur in `projekte.mjs`.** Startseite, Docs, Docs-Kopfleiste und Profilkarte
+- **Projekte stehen nur in `projekte.mjs`.** Startseite, Docs und Profilkarte
   folgen daraus. Nie ein Projekt von Hand in `index.html` schreiben: Zwischen
   `<!-- projekte:anfang/ende -->` setzt der Bau ein, was dort steht, wird überschrieben.
 - **Versionen und „Neues“ kommen aus den CHANGELOGs** der Repos (`versionenAus()` in
@@ -50,8 +50,8 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
 - **Auf der Mittelachse:** Kopf, Abschnittsköpfe (Titel und Satz untereinander) und Fuß stehen mittig.
   Die Kenntnisse bleiben ein Raster aus gleich breiten Spalten (am PC fünf Subgrid-Spalten, darunter eine Tabelle).
 - **Symmetrie ist Pflicht, nicht Geschmack:** Gleichartige Container stehen gleich groß nebeneinander
-  (Projektkarten, Kontaktkacheln, Kenntnis-Kacheln, Zeilen unter „Neues“, Segmente des Docs-Umschalters,
-  Blättern-Kacheln), und Linien zwischen Angaben liegen in allen Karten auf derselben
+  (Projektkarten, Kontaktkacheln, Kenntnis-Kacheln, Zeilen unter „Neues“, Karten und Vergleich der
+  Docs-Übersicht, Blättern-Kacheln), und Linien zwischen Angaben liegen in allen Karten auf derselben
   y-Koordinate. Die Projektkarten sind dafür Subgrids mit 1fr-Zeilen für die Punkte. Nach jeder
   Änderung messen statt schätzen, von 1920 bis 320 px: Breite, Höhe und die y der Linien je Karte.
   Zeilenhöhen in Reihen gleicher Höhe in ganzen Pixeln, sonst liegen Linien um halbe Pixel versetzt.

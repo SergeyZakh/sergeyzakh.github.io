@@ -19,7 +19,8 @@ Ein Eintrag in `projekte.mjs`, mehr nicht. Was daraus folgt:
   führt auf die Version in den Docs.
 - **Docs:** ohne weitere Angaben findet der Bau README, `docs/*.md`, CONTRIBUTING, SECURITY und
   CHANGELOG. Eine eigene Gliederung geht mit `docs: { gruppen }`, keine Docs mit `docs: false`.
-- **Kopfleiste der Docs:** bis drei Projekte ein Umschalter, ab vier ein Menü mit Stand und Satz.
+- **Docs:** Zwischen den Projekten wechselt man über die Übersicht unter `docs/` und „Auch hier“ in der
+  Seitenleiste (ab drei anderen Projekten ein Verweis auf alle); die Kopfleiste bleibt für jede Zahl gleich.
 - **Profilkarte:** die Zeile „Projects“ nach `node skripte/erzeugen.mjs`; passen die Namen nicht
   mehr hinein, steht der Rest als „+n“ da.
 - **Bau:** Die Action holt jedes Repo aus der Liste selbst. Private Repos brauchen ein Secret
@@ -58,7 +59,8 @@ im Stil der Startseite:
 
 - Übersicht unter `docs/`: Titel links, Suche rechts, je Projekt eine gleich große Karte (Bild, Stand,
   Umfang mit Lesezeit, „Erste Schritte“), darunter alle Seiten als Vergleich: eine Spalte je Projekt unter
-  seiner Karte, gleichnamige Seiten nebeneinander, ein Strich, wo eine Gruppe fehlt
+  seiner Karte, gleichnamige Seiten nebeneinander, ein Strich, wo eine Gruppe fehlt; eine Gruppe, die nur
+  ein Projekt hat (Handbuch), über die volle Breite in Vierern
 - Seitenleiste und Inhaltsverzeichnis auf einem etwas dunkleren Ton; hell und dunkel umschaltbar
 - Seitenleiste je Projekt, rechts ein Inhaltsverzeichnis, das beim Lesen mitläuft
 - Suche mit `Strg` + `K` über alle Docs; Treffer im Projekt, in dem man liest, zuerst. Den Index
