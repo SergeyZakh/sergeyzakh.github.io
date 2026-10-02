@@ -1,5 +1,5 @@
-// Erzeugt aus angaben.mjs die Profilkarte (karte/dark_mode.svg, karte/light_mode.svg) und den
-// neofetch-Block in index.html zwischen den Markierungen <!-- angaben:anfang --> und <!-- angaben:ende -->.
+// Erzeugt aus angaben.mjs die Profilkarte (karte/dark_mode.svg, karte/light_mode.svg) und auf der
+// Startseite die Eckdaten und Kenntnisse zwischen den Markierungen <!-- eckdaten:… --> und <!-- kenntnisse:… -->.
 // Aufruf: node skripte/erzeugen.mjs
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -148,19 +148,40 @@ for (const modus of ['dark', 'light']) {
   writeFileSync(join(wurzel, 'karte', `${modus}_mode.svg`), karte(modus));
 }
 
-// ---------- neofetch-Block in index.html ----------
+// ---------- Eckdaten und Kenntnisse in index.html ----------
 
-const html = [...angaben, ['GitHub', `${zahlen.beitraege} Beiträge im letzten Jahr`]].map((a) => {
-  if (a === null) return '          <div class="luecke"></div>';
-  const [k, v, kurz] = a;
-  return `          <div class="zeile"><span class="k"${kurz ? ` data-kurz="${esc(kurz)}"` : ''}>${esc(k)}</span>` +
-    `<span class="p"></span><span class="v">${esc(v)}</span></div>`;
-}).join('\n');
+// Die Startseite hat Platz: deutsche Überschriften und ausgeschriebene Namen statt der kurzen aus
+// neofetch. Was hier fehlt (Uptime, Kernel, Shell), steht nur in der Karte.
+const ECKDATEN = { OS: 'System', 'Languages.Real': 'Sprachen' };
+const KENNTNISSE = {
+  'Languages.Programming': 'Programmieren', 'Languages.Scripting': 'Skripte',
+  'Languages.Computer': 'Auszeichnung und Daten', Infra: 'Infrastruktur', IDE: 'Werkzeuge',
+};
+const AUSGESCHRIEBEN = { TS: 'TypeScript', JS: 'JavaScript', ASM: 'Assembler' };
+// Werkzeuge stehen in der Karte vorn, auf der Seite zuletzt
+const reihenfolge = Object.values(KENNTNISSE);
+
+const wert = (schluessel) => angaben.find((a) => a && a[0] === schluessel)?.[1];
+const eckdaten = [
+  ...Object.entries(ECKDATEN).map(([k, titel]) => [titel, wert(k)]),
+  ['GitHub', `${zahlen.beitraege} Beiträge im letzten Jahr`],
+].map(([titel, v]) => `      <div><dt>${esc(titel)}</dt><dd>${esc(v)}</dd></div>`).join('\n');
+
+const kenntnisse = angaben
+  .filter((a) => a && KENNTNISSE[a[0]])
+  .sort((a, b) => reihenfolge.indexOf(KENNTNISSE[a[0]]) - reihenfolge.indexOf(KENNTNISSE[b[0]]))
+  .map(([k, v]) => {
+    const eintraege = v.split(',').map((e) => esc(AUSGESCHRIEBEN[e.trim()] || e.trim()));
+    return `      <div class="reihe"><dt>${esc(KENNTNISSE[k])}</dt><dd>${eintraege.join(' <i>·</i> ')}</dd></div>`;
+  }).join('\n');
 
 const datei = join(wurzel, 'index.html');
-const alt = readFileSync(datei, 'utf8');
-const muster = /(<!-- angaben:anfang -->\n)[\s\S]*?(\n\s*<!-- angaben:ende -->)/;
-if (!muster.test(alt)) throw new Error('Markierungen <!-- angaben:anfang/ende --> fehlen in index.html');
-writeFileSync(datei, alt.replace(muster, `$1${html}$2`));
+let seite = readFileSync(datei, 'utf8');
+for (const [name, inhalt] of [['eckdaten', eckdaten], ['kenntnisse', kenntnisse]]) {
+  const muster = new RegExp(`(<!-- ${name}:anfang -->)[\\s\\S]*?(\\n\\s*<!-- ${name}:ende -->)`);
+  if (!muster.test(seite)) throw new Error(`Markierungen <!-- ${name}:anfang/ende --> fehlen in index.html`);
+  seite = seite.replace(muster, `$1\n${inhalt}$2`);
+}
+writeFileSync(datei, seite);
 
-console.log('geschrieben: karte/dark_mode.svg, karte/light_mode.svg, neofetch-Block in index.html');
+console.log('geschrieben: karte/dark_mode.svg, karte/light_mode.svg, Eckdaten und Kenntnisse in index.html');

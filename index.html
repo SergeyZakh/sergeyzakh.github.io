@@ -3,440 +3,251 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>sz@github</title>
+<title>Sergey Zakharov</title>
 <meta name="description" content="Sergey Zakharov, Fachinformatiker für Systemintegration in Ausbildung. Projekte, Kenntnisse und Kontakt.">
 <meta name="color-scheme" content="light dark">
 <style>
-  /* Akzent ist das Blau #004680 → #4484BA, sparsam eingesetzt: SZ, Statusleiste, gewähltes Projekt,
-     Links und Prompt. Rahmen, Titel und Schlüssel bleiben neutral. Im dunklen Modus tragen
-     die Links eine hellere Stufe desselben Blaus, weil #004680 auf Schwarz kaum lesbar ist. */
+  /* Ruhig und typografisch: keine Karten, nur Haarlinien, große Schrift und die Bildschirmfotos als
+     einzige Flächen. Farben und Schrift wie in Berichtsheft und Fundus; die Docs unter docs/ nehmen
+     dieselben Werte (docs.css). Farbe trägt Bedeutung: Grün veröffentlicht, Bernstein Vorabversion. */
+  @font-face {
+    font-family: 'Instrument Sans'; font-style: normal; font-weight: 400 600; font-display: swap;
+    src: url(schrift/instrument-sans-latin-ext.woff2) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face {
+    font-family: 'Instrument Sans'; font-style: normal; font-weight: 400 600; font-display: swap;
+    src: url(schrift/instrument-sans-latin.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
   :root {
-    --blau-dunkel: #004680; --blau-hell: #4484BA;
-    --grund: #ffffff; --text: #24292f; --leise: #6e7781; --punkte: #c2cfde;
-    --key: var(--text); --value: #57606a; --host: var(--leise); --link: var(--blau-dunkel);
-    --akzent: var(--blau-dunkel); --aktiv: #d0d7de; --leiste-text: #ffffff;
-    --oben: #1f639f; --unten: #5b9bd0; --schatten: #d0d7de;
+    --text: #16161A; --linie: #DEDCD6; --grund: #F3F2EE; --flaeche: #FFFFFF; --buehne: #E9E8E2;
+    --schiefer: #62615C; --leise: #9A9891; --gut: #1A7F37; --bernstein: #8A5300;
+    --glas: rgba(243, 242, 238, .72); --glas-kante: rgba(22, 22, 26, .08);
+    --schatten-bild: 0 1px 2px rgba(22, 22, 26, .06), 0 24px 60px rgba(22, 22, 26, .14);
+    --sans: "Instrument Sans", system-ui, -apple-system, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --grund: #0d1117; --text: #e6edf3; --leise: #6e7681; --punkte: #484f58;
-      --value: #9198a1; --link: #7fb0db; --akzent: #7fb0db; --aktiv: #30363d;
-      --schatten: #21262d;
+      --text: #ECEBE7; --linie: #2E2E34; --grund: #111114; --flaeche: #1B1B1F; --buehne: #1B1B1F;
+      --schiefer: #A3A29B; --leise: #6E6D68; --gut: #4CB86B; --bernstein: #D8AE5E;
+      --glas: rgba(17, 17, 20, .72); --glas-kante: rgba(255, 255, 255, .08);
+      --schatten-bild: 0 1px 2px rgba(0, 0, 0, .5), 0 24px 60px rgba(0, 0, 0, .55);
     }
   }
   * { box-sizing: border-box; }
-  [hidden] { display: none !important; }
-  html, body { height: 100%; }
-  body {
-    margin: 0; background: var(--grund); color: var(--text);
-    font: 14px/1.6 ui-monospace, Consolas, Menlo, "DejaVu Sans Mono", monospace;
-  }
-  a { color: var(--link); text-decoration: none; }
-  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  body { margin: 0; background: var(--grund); color: var(--text); font: 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+  .breite { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+  .versal { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--schiefer); }
+  .sz { display: block; fill: currentColor; }
 
-  /* Fenster wie tmux: jedes mit demselben grünen Rahmen und dem Titel in der oberen Linie */
-  .tmux {
-    height: 100%; min-height: 640px; max-width: 1280px; margin: 0 auto; padding: 20px 24px;
-    display: flex; flex-direction: column; gap: 12px;
+  /* ---------- Leiste: eine Glaspille, die beim Scrollen oben bleibt ---------- */
+  .leiste { position: sticky; top: 16px; z-index: 5; display: flex; justify-content: center; pointer-events: none; }
+  .leiste nav {
+    pointer-events: auto; display: flex; align-items: center; gap: 2px; padding: 5px; border-radius: 999px;
+    background: var(--glas); border: 1px solid var(--glas-kante);
+    backdrop-filter: blur(16px) saturate(1.5); -webkit-backdrop-filter: blur(16px) saturate(1.5);
   }
-  .fenster-raster {
-    flex: 1; min-height: 0; display: grid; grid-template-columns: 1.15fr 1fr; grid-template-rows: auto minmax(0, 1fr);
-    gap: 12px;
+  .leiste a { padding: 7px 14px; border-radius: 999px; font-size: 14px; color: var(--schiefer); }
+  .leiste a:hover { color: var(--text); }
+  .leiste a.marke { padding: 7px 12px 7px 14px; color: var(--text); }
+  .leiste .sz { width: 30px; height: auto; }
+
+  /* ---------- Kopf ---------- */
+  .kopf { padding-top: 120px; padding-bottom: 88px; }
+  h1 {
+    margin: 22px 0 0; font-size: clamp(60px, 12.4vw, 172px); line-height: .9; font-weight: 600; letter-spacing: -.05em;
+    margin-left: -.06em;
   }
-  .fenster {
-    position: relative; border: 1px solid var(--aktiv); padding: 24px 3ch 16px; min-width: 0;
-    display: flex; flex-direction: column;
-  }
-  /* Links neofetch über der Shell, rechts projekte über die volle Höhe. neofetch ist so hoch wie sein
-     Inhalt, die Shell bekommt den Rest; minmax(0, …) hält ihre Ausgabe im Fenster, statt es zu strecken. */
-  .fenster.projekte-fenster { grid-column: 2; grid-row: 1 / 3; }
-  .fenster-titel {
-    position: absolute; top: -0.8em; left: 2ch; padding: 0 1ch;
-    background: var(--grund); color: var(--leise);
-  }
+  .einleitung { display: grid; grid-template-columns: 7fr 5fr; gap: 40px; margin-top: 64px; align-items: end; }
+  .einleitung p { margin: 0; font-size: 26px; line-height: 1.32; letter-spacing: -.015em; max-width: 30ch; }
+  .einleitung p span { color: var(--schiefer); }
+  .eckdaten { margin: 0; border-top: 1px solid var(--linie); }
+  .eckdaten div { display: grid; grid-template-columns: 110px 1fr; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--linie); align-items: baseline; }
+  .eckdaten dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
+  .eckdaten dd { margin: 0; font-size: 15px; }
 
-  /* Eingabezeile */
-  .befehl { white-space: nowrap; overflow: hidden; margin-bottom: 12px; }
-  .befehl + .befehl, .ausgabe + .befehl { margin-top: 16px; }
-  .nutzer { color: var(--akzent); }
-  .pfad { color: var(--host); }
-  .dollar { color: var(--leise); }
+  /* ---------- Abschnitte ---------- */
+  .abschnitt-kopf { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--linie); }
+  .projekt { padding: 40px 0 96px; }
+  .projekt-zeile { display: grid; grid-template-columns: 64px 1fr auto; gap: 0 24px; align-items: baseline; }
+  .nr { font-size: 15px; color: var(--leise); font-variant-numeric: tabular-nums; }
+  h2 { margin: 0; font-size: clamp(40px, 5.6vw, 72px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
+  .stand { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+  .stand::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .stand.gut { color: var(--gut); }
+  .stand.vorab { color: var(--bernstein); }
+  .satz { grid-column: 2; margin: 16px 0 0; font-size: 22px; line-height: 1.38; color: var(--schiefer); max-width: 34ch; letter-spacing: -.01em; }
+  .verweise { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 22px; font-size: 16px; font-weight: 500; }
+  .verweise a { border-bottom: 1px solid var(--linie); padding-bottom: 2px; transition: border-color .15s; }
+  .verweise a:hover { border-color: currentColor; }
+  .verweise a::after { content: " ↗"; color: var(--leise); }
+  .verweise a.laden::after { content: " ↓"; }
+  .verweise a.intern::after { content: " →"; }
 
-  /* neofetch */
-  .neofetch { display: flex; gap: 3ch; align-items: flex-start; }
-  /* Höhe setzt das Skript unten passend zum Textblock daneben */
-  .neofetch svg { flex: none; margin-top: 4px; }
-  .neofetch svg.quer { display: none; }
-  .werte { flex: 1; min-width: 0; }
-  h1 { font: inherit; font-weight: 700; color: var(--akzent); margin: 0; }
-  .unterstrich { color: var(--punkte); margin-bottom: 6px; white-space: nowrap; overflow: hidden; }
-  .zeile { display: flex; align-items: baseline; gap: 1ch; }
-  .k { color: var(--key); font-weight: 700; white-space: nowrap; }
-  .p { flex: 1; min-width: 2ch; overflow: hidden; color: var(--punkte); white-space: nowrap; }
-  .p::before { content: "................................................................................"; }
-  .v { color: var(--value); text-align: right; white-space: nowrap; }
-  .luecke { height: 1em; }
+  /* Das Bild liegt auf einer ruhigen Fläche, damit helle Bildschirmfotos auch im dunklen Modus nicht blenden */
+  .bild { margin: 44px 0 0; padding: clamp(20px, 5vw, 64px) clamp(20px, 5vw, 64px) 0; background: var(--buehne); border-radius: 18px; overflow: hidden; }
+  .bild img { display: block; width: 100%; max-width: 980px; height: auto; margin: 0 auto; border-radius: 10px 10px 0 0; box-shadow: var(--schatten-bild); }
+  .bild.schmal img { max-width: 760px; }
+  .drei { display: grid; grid-template-columns: 64px repeat(3, 1fr); gap: 24px; margin-top: 36px; }
+  .drei div:first-child { grid-column: 2; }
+  .drei h3 { margin: 0 0 8px; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
+  .drei p { margin: 0; font-size: 15.5px; max-width: 34ch; }
 
+  /* ---------- Kenntnisse als Tabelle ---------- */
+  .kenntnisse { padding: 8px 0 96px; }
+  .reihe { display: grid; grid-template-columns: 88px 240px 1fr; gap: 24px; padding: 20px 0; border-top: 1px solid var(--linie); align-items: baseline; }
+  .reihe:first-child { border-top: 0; }
+  .reihe dt { font-size: 15px; color: var(--schiefer); grid-column: 2; }
+  .reihe dd { margin: 0; font-size: 28px; line-height: 1.3; letter-spacing: -.02em; font-weight: 500; }
+  .reihe dd i { font-style: normal; color: var(--leise); font-weight: 400; }
 
-  /* ls projekte/ mit Vorschau darunter, wie in den Dateimanagern ranger oder lf */
-  .eintrag { cursor: pointer; }
-  .eintrag + .eintrag { margin-top: 16px; }
-  .name { color: var(--text); font-weight: 700; padding: 0 1ch; margin-left: -1ch; }
-  .eintrag.gewaehlt .name { background: var(--blau-dunkel); color: #ffffff; }
-  .vorschau-bereich { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 24px; }
-  .vorschau-kopf { display: flex; align-items: center; gap: 1ch; color: var(--leise); white-space: nowrap; }
-  .vorschau-kopf::after { content: ""; flex: 1; border-top: 1px solid var(--punkte); }
-  .vorschau-bereich img {
-    flex: 1; min-height: 0; width: 100%; object-fit: contain; object-position: top left; margin-top: 12px;
-  }
-  .keine-vorschau { flex: 1; display: grid; place-items: center; color: var(--leise); margin-top: 12px;
-    border: 1px dashed var(--punkte); min-height: 120px; }
-  .eintrag p { margin: 2px 0 0 2ch; }
-  .leise { color: var(--leise); }
-  .links { margin: 4px 0 0 2ch; }
-  .links a { margin-right: 2ch; }
-  .links a::before { content: "["; color: var(--leise); }
-  .links a::after { content: "]"; color: var(--leise); }
+  /* ---------- Kontakt ---------- */
+  .kontakt { padding: 8px 0 72px; }
+  .kontakt a { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--linie); }
+  .kontakt b { font-size: clamp(40px, 6.4vw, 84px); line-height: 1.05; font-weight: 600; letter-spacing: -.04em; transition: transform .25s; }
+  .kontakt a:hover b { transform: translateX(10px); }
+  .kontakt small { font-size: 16px; color: var(--schiefer); }
+  .fuss { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 40px 0 48px; color: var(--leise); font-size: 14px; }
+  .fuss .sz { width: 112px; height: auto; color: var(--linie); }
+  .fuss a { color: var(--schiefer); border-bottom: 1px solid var(--linie); }
+  .fuss a:hover { color: var(--text); }
 
-  /* Shell: feste Höhe, ältere Ausgabe rutscht nach oben weg und bleibt im Fenster scrollbar.
-     Die Eingabezeile steht wie im Terminal direkt hinter der letzten Ausgabe. */
-  .shell-fenster { min-height: 186px; }
-  .verlauf { flex: 1; min-height: 0; overflow-y: auto; }
-  .verlauf .befehl { margin-bottom: 4px; }
-  .verlauf .ausgabe { margin-bottom: 12px; white-space: pre-wrap; }
-  .kontakt { display: grid; grid-template-columns: 10ch 1fr; white-space: normal; }
-  .eingabe { display: flex; gap: 1ch; margin: 0; }
-  .eingabe input {
-    flex: 1; min-width: 0; padding: 0; border: 0; outline: 0; background: transparent;
-    font: inherit; color: var(--text); caret-color: var(--text);
-  }
-  .eingabe input::placeholder { color: var(--leise); }
-  .fehler { color: var(--value); }
-
-  /* Statusleiste wie tmux */
-  .statusleiste {
-    display: flex; gap: 2ch; color: var(--leiste-text);
-    background: var(--blau-dunkel); background: linear-gradient(to top, var(--blau-hell), var(--blau-dunkel));
-    padding: 0 1ch; white-space: nowrap; overflow: hidden;
-  }
-  .statusleiste .rechts { margin-left: auto; }
-
-  /* Wird die Textspalte am PC eng, stehen die kurzen Schlüssel wie auf dem Handy */
-  .werte { container-type: inline-size; }
-  @container (max-width: 470px) {
-    .k[data-kurz] { font-size: 0; }
-    .k[data-kurz]::after { content: attr(data-kurz); font-size: 14px; }
-  }
-
-  /* Bis 1100px stehen die Fenster untereinander, darunter reichen zwei Spalten nicht */
-  @media (max-width: 1100px) {
-    body { font-size: 13px; }
-    .tmux { height: auto; min-height: 100%; padding: 16px; }
-    .fenster-raster { grid-template-columns: 1fr; grid-template-rows: none; }
-    .fenster.projekte-fenster { grid-column: auto; grid-row: auto; }
-    .fenster { padding: 24px 2ch 20px; }
-    /* Auf dem Handy S und Z nebeneinander über den Angaben, darunter eine Tabelle mit kurzen
-       Schlüsseln; lange Werte brechen in ihrer Spalte um. */
-    .neofetch { flex-direction: column; gap: 16px; }
-    /* container-type nimmt dem Textblock die eigene Breite, deshalb ausdrücklich strecken */
-    .werte { align-self: stretch; }
-    /* container-type nimmt dem Textblock die eigene Breite, deshalb ausdrücklich strecken */
-    .werte { align-self: stretch; }
-    .neofetch svg.hoch { display: none; }
-    .neofetch svg.quer { display: block; width: 132px; height: auto; }
-    .zeile { display: grid; grid-template-columns: 12ch 1fr; gap: 0; }
-    .k[data-kurz] { font-size: 0; }
-    .k[data-kurz]::after { content: attr(data-kurz); font-size: 13px; }
-    .p { display: none; }
-    .v { text-align: left; white-space: normal; }
-    .luecke { height: 0.8em; }
-    .vorschau-bereich img { flex: none; height: auto; }
-    .shell-fenster { height: 280px; min-height: 0; }
-    /* Unter 16px zoomt Safari beim Antippen ins Eingabefeld */
-    .eingabe input { font-size: 16px; }
-    .statusleiste .fenster-liste { display: none; }
+  @media (prefers-reduced-motion: reduce) { .kontakt b { transition: none; } }
+  @media (max-width: 860px) {
+    .breite { padding: 0 20px; }
+    .leiste a:not(.marke) { padding: 7px 10px; }
+    .kopf { padding-top: 76px; padding-bottom: 56px; }
+    h1 { font-size: clamp(56px, 17vw, 120px); }
+    .einleitung { grid-template-columns: 1fr; gap: 28px; margin-top: 36px; }
+    .einleitung p { font-size: 21px; }
+    .projekt { padding: 28px 0 64px; }
+    .projekt-zeile { grid-template-columns: 1fr auto; }
+    .nr { grid-column: 1 / -1; margin-bottom: 6px; }
+    .satz, .verweise { grid-column: 1 / -1; }
+    .satz { font-size: 19px; }
+    .bild { margin-top: 32px; border-radius: 14px; }
+    .bild img { border-radius: 6px 6px 0 0; }
+    .drei { grid-template-columns: 1fr; gap: 20px; }
+    .drei div:first-child { grid-column: auto; }
+    .reihe { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
+    .reihe dt { grid-column: auto; }
+    .reihe dd { font-size: 21px; }
+    .kontakt a { flex-direction: column; gap: 2px; }
+    .fuss { flex-direction: column-reverse; align-items: flex-start; }
   }
 </style>
 </head>
 <body>
-<div class="tmux">
-  <div class="fenster-raster">
+<svg width="0" height="0" style="position: absolute" aria-hidden="true"><symbol id="sz" viewBox="0 0 159 89"><rect x="10" y="0" width="9" height="9"/><rect x="20" y="0" width="9" height="9"/><rect x="30" y="0" width="9" height="9"/><rect x="40" y="0" width="9" height="9"/><rect x="50" y="0" width="9" height="9"/><rect x="60" y="0" width="9" height="9"/><rect x="90" y="0" width="9" height="9"/><rect x="100" y="0" width="9" height="9"/><rect x="110" y="0" width="9" height="9"/><rect x="120" y="0" width="9" height="9"/><rect x="130" y="0" width="9" height="9"/><rect x="140" y="0" width="9" height="9"/><rect x="150" y="0" width="9" height="9"/><rect x="0" y="10" width="9" height="9"/><rect x="10" y="10" width="9" height="9"/><rect x="20" y="10" width="9" height="9"/><rect x="30" y="10" width="9" height="9"/><rect x="40" y="10" width="9" height="9"/><rect x="50" y="10" width="9" height="9"/><rect x="60" y="10" width="9" height="9"/><rect x="90" y="10" width="9" height="9"/><rect x="100" y="10" width="9" height="9"/><rect x="110" y="10" width="9" height="9"/><rect x="120" y="10" width="9" height="9"/><rect x="130" y="10" width="9" height="9"/><rect x="140" y="10" width="9" height="9"/><rect x="150" y="10" width="9" height="9"/><rect x="0" y="20" width="9" height="9"/><rect x="10" y="20" width="9" height="9"/><rect x="130" y="20" width="9" height="9"/><rect x="140" y="20" width="9" height="9"/><rect x="150" y="20" width="9" height="9"/><rect x="0" y="30" width="9" height="9"/><rect x="10" y="30" width="9" height="9"/><rect x="120" y="30" width="9" height="9"/><rect x="130" y="30" width="9" height="9"/><rect x="140" y="30" width="9" height="9"/><rect x="0" y="40" width="9" height="9"/><rect x="10" y="40" width="9" height="9"/><rect x="20" y="40" width="9" height="9"/><rect x="30" y="40" width="9" height="9"/><rect x="40" y="40" width="9" height="9"/><rect x="50" y="40" width="9" height="9"/><rect x="110" y="40" width="9" height="9"/><rect x="120" y="40" width="9" height="9"/><rect x="130" y="40" width="9" height="9"/><rect x="10" y="50" width="9" height="9"/><rect x="20" y="50" width="9" height="9"/><rect x="30" y="50" width="9" height="9"/><rect x="40" y="50" width="9" height="9"/><rect x="50" y="50" width="9" height="9"/><rect x="60" y="50" width="9" height="9"/><rect x="100" y="50" width="9" height="9"/><rect x="110" y="50" width="9" height="9"/><rect x="120" y="50" width="9" height="9"/><rect x="50" y="60" width="9" height="9"/><rect x="60" y="60" width="9" height="9"/><rect x="90" y="60" width="9" height="9"/><rect x="100" y="60" width="9" height="9"/><rect x="110" y="60" width="9" height="9"/><rect x="0" y="70" width="9" height="9"/><rect x="10" y="70" width="9" height="9"/><rect x="20" y="70" width="9" height="9"/><rect x="30" y="70" width="9" height="9"/><rect x="40" y="70" width="9" height="9"/><rect x="50" y="70" width="9" height="9"/><rect x="60" y="70" width="9" height="9"/><rect x="90" y="70" width="9" height="9"/><rect x="100" y="70" width="9" height="9"/><rect x="110" y="70" width="9" height="9"/><rect x="120" y="70" width="9" height="9"/><rect x="130" y="70" width="9" height="9"/><rect x="140" y="70" width="9" height="9"/><rect x="150" y="70" width="9" height="9"/><rect x="0" y="80" width="9" height="9"/><rect x="10" y="80" width="9" height="9"/><rect x="20" y="80" width="9" height="9"/><rect x="30" y="80" width="9" height="9"/><rect x="40" y="80" width="9" height="9"/><rect x="50" y="80" width="9" height="9"/><rect x="90" y="80" width="9" height="9"/><rect x="100" y="80" width="9" height="9"/><rect x="110" y="80" width="9" height="9"/><rect x="120" y="80" width="9" height="9"/><rect x="130" y="80" width="9" height="9"/><rect x="140" y="80" width="9" height="9"/><rect x="150" y="80" width="9" height="9"/></symbol></svg>
 
-    <section class="fenster" aria-label="Kurzprofil">
-      <span class="fenster-titel">0: neofetch</span>
-      <div class="befehl"><span class="nutzer">sz@github</span><span class="dollar">:</span><span class="pfad">~</span><span class="dollar">$</span> neofetch</div>
-      <div class="ausgabe neofetch">
-        <svg class="sz hoch" role="img" aria-label="SZ als Pixelbild"></svg>
-        <svg class="sz quer" role="img" aria-label="SZ als Pixelbild"></svg>
-        <div class="werte">
-          <h1>Sergey Zakharov</h1>
-          <div class="unterstrich" aria-hidden="true">───────────────</div>
-          <!-- angaben:anfang -->
-          <div class="zeile"><span class="k">OS</span><span class="p"></span><span class="v">Windows 11, Linux in Docker</span></div>
-          <div class="zeile"><span class="k">Uptime</span><span class="p"></span><span class="v">26 years</span></div>
-          <div class="zeile"><span class="k">Kernel</span><span class="p"></span><span class="v">Fachinformatiker Systemintegration</span></div>
-          <div class="zeile"><span class="k">Shell</span><span class="p"></span><span class="v">leidenschaftliche Neugier</span></div>
-          <div class="zeile"><span class="k">IDE</span><span class="p"></span><span class="v">VS Code, IntelliJ, Claude Code</span></div>
-          <div class="luecke"></div>
-          <div class="zeile"><span class="k" data-kurz="Lang.Code">Languages.Programming</span><span class="p"></span><span class="v">TS, JS, PHP, Python, C, Java, ASM</span></div>
-          <div class="zeile"><span class="k" data-kurz="Lang.Script">Languages.Scripting</span><span class="p"></span><span class="v">Bash, PowerShell</span></div>
-          <div class="zeile"><span class="k" data-kurz="Lang.Comp">Languages.Computer</span><span class="p"></span><span class="v">HTML, CSS, SQL, YAML, HCL, LaTeX</span></div>
-          <div class="zeile"><span class="k" data-kurz="Lang.Real">Languages.Real</span><span class="p"></span><span class="v">Deutsch, Russisch, Englisch</span></div>
-          <div class="luecke"></div>
-          <div class="zeile"><span class="k">Infra</span><span class="p"></span><span class="v">Docker, Kubernetes, Terraform, Azure</span></div>
-          <div class="zeile"><span class="k">GitHub</span><span class="p"></span><span class="v">315 Beiträge im letzten Jahr</span></div>
-          <!-- angaben:ende -->
-        </div>
-      </div>
-    </section>
-
-    <section class="fenster projekte-fenster" aria-label="Projekte">
-      <span class="fenster-titel">1: projekte</span>
-      <div class="befehl"><span class="nutzer">sz@github</span><span class="dollar">:</span><span class="pfad">~</span><span class="dollar">$</span> ls projekte/</div>
-      <div class="ausgabe">
-        <div class="eintrag gewaehlt" tabindex="0" data-name="berichtsheft" data-bild="bilder/berichtsheft.jpg"
-          data-alt="Wochenansicht des Berichtshefts mit der Vorschau eines fertigen Ausbildungsnachweises">
-          <span class="name">berichtsheft/</span>
-          <p>Macht aus dem CSV-Export einer Zeiterfassung den IHK-Ausbildungsnachweis als Word-Datei
-            oder PDF, im Browser oder mit eigenem Server.</p>
-          <div class="links"><a href="https://sergeyzakh.github.io/Ausbildungs-Berichtsheft/">demo</a><a href="https://github.com/SergeyZakh/Ausbildungs-Berichtsheft">code</a><a href="https://github.com/SergeyZakh/Ausbildungs-Berichtsheft/releases/latest">download</a></div>
-        </div>
-        <div class="eintrag" tabindex="0" data-name="fundus" data-bild="">
-          <span class="name">fundus/</span>
-          <p>Firmenwiki mit KI-Suche zum Selbstbetreiben, gebaut als Theme für BookStack.</p>
-          <div class="links leise">erscheint in Kürze</div>
-        </div>
-      </div>
-      <div class="vorschau-bereich">
-        <div class="vorschau-kopf" id="vorschau-kopf">vorschau berichtsheft/</div>
-        <img id="vorschau-bild" src="bilder/berichtsheft.jpg" width="2880" height="1800"
-          alt="Wochenansicht des Berichtshefts mit der Vorschau eines fertigen Ausbildungsnachweises">
-        <div class="keine-vorschau" id="keine-vorschau" hidden>keine vorschau, erscheint in kürze</div>
-      </div>
-    </section>
-
-    <section class="fenster shell-fenster" aria-label="Shell mit Kontakt">
-      <span class="fenster-titel">2: shell</span>
-      <div class="verlauf" id="verlauf">
-        <div id="anfang">
-          <div class="befehl"><span class="nutzer">sz@github</span><span class="dollar">:</span><span class="pfad">~</span><span class="dollar">$</span> cat kontakt</div>
-          <div class="ausgabe kontakt">
-            <span class="k">github</span><a href="https://github.com/SergeyZakh">github.com/SergeyZakh</a>
-            <span class="k">linkedin</span><a href="https://www.linkedin.com/in/sergey-zakharov-jr/">linkedin.com/in/sergey-zakharov-jr</a>
-          </div>
-        </div>
-        <div id="ausgaben" aria-live="polite"></div>
-        <form class="eingabe" id="eingabe">
-          <span><span class="nutzer">sz@github</span><span class="dollar">:</span><span class="pfad">~</span><span class="dollar">$</span></span>
-          <input id="befehl-eingabe" type="text" autocomplete="off" autocapitalize="off" autocorrect="off"
-            spellcheck="false" enterkeyhint="send" aria-label="Befehl eingeben" placeholder="tippe help">
-        </form>
-      </div>
-    </section>
-
-  </div>
-  <div class="statusleiste" aria-hidden="true">
-    <span>[0] sz@github</span>
-    <span class="fenster-liste">0:neofetch  1:projekte  2:shell*</span>
-    <span class="rechts" id="uhr"></span>
-  </div>
+<div class="leiste">
+  <nav aria-label="Abschnitte">
+    <a class="marke" href="#" aria-label="Nach oben"><svg class="sz" viewBox="0 0 159 89"><use href="#sz"/></svg></a>
+    <a href="#projekte">Projekte</a>
+    <a href="#kenntnisse">Kenntnisse</a>
+    <a href="#kontakt">Kontakt</a>
+    <a href="docs/">Docs</a>
+  </nav>
 </div>
 
-<script>
-  // SZ als Pixelbild wie in der Profilkarte, je 7 × 9. Die Diagonale im Z ist drei Pixel breit,
-  // damit sie oben rechts und unten links an die Balken anschließt.
-  // Am PC steht S über Z, auf dem Handy nebeneinander.
-  (function () {
-    var S = [".######", "#######", "##.....", "##.....", "######.", ".######", ".....##", "#######", "######."];
-    var Z = ["#######", "#######", "....###", "...###.", "..###..", ".###...", "###....", "#######", "#######"];
-    var P = 20, A = 2;
+<header class="kopf breite">
+  <div class="versal">Fachinformatiker für Systemintegration · in Ausbildung</div>
+  <h1>Sergey<br>Zakharov</h1>
+  <div class="einleitung">
+    <p>Ich baue Werkzeuge für Ausbildung und Betrieb, die man selbst betreibt. <span>Was man dort einträgt,
+      bleibt im Browser oder im eigenen Netz.</span></p>
+    <dl class="eckdaten">
+      <!-- eckdaten:anfang -->
+      <div><dt>System</dt><dd>Windows 11, Linux in Docker</dd></div>
+      <div><dt>Sprachen</dt><dd>Deutsch, Russisch, Englisch</dd></div>
+      <div><dt>GitHub</dt><dd>315 Beiträge im letzten Jahr</dd></div>
+      <!-- eckdaten:ende -->
+    </dl>
+  </div>
+</header>
 
-    function zeichne(svg, bild, id) {
-      var schatten = "", koerper = "";
-      bild.forEach(function (reihe, r) {
-        reihe.split("").forEach(function (p, s) {
-          if (p !== "#") return;
-          var x = s * (P + A), y = r * (P + A);
-          schatten += '<rect x="' + (x + 4) + '" y="' + (y + 4) + '" width="' + P + '" height="' + P + '"/>';
-          koerper += '<rect x="' + x + '" y="' + y + '" width="' + P + '" height="' + P + '"/>';
-        });
-      });
-      var h = bild.length * (P + A) + 4, b = bild[0].length * (P + A) + 4;
-      svg.setAttribute("viewBox", "0 0 " + b + " " + h);
-      // var() wirkt nur in style, nicht in SVG-Attributen
-      svg.innerHTML =
-        '<defs><linearGradient id="' + id + '" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="' + h + '">' +
-        '<stop offset="0" style="stop-color: var(--oben)"/><stop offset="1" style="stop-color: var(--unten)"/></linearGradient></defs>' +
-        '<g style="fill: var(--schatten)">' + schatten + '</g><g fill="url(#' + id + ')">' + koerper + '</g>';
-      return b / h;
-    }
+<main>
+  <section id="projekte" class="breite">
+    <div class="abschnitt-kopf"><span class="versal">Projekte</span><span class="versal">02</span></div>
 
-    var hoch = document.querySelector("svg.sz.hoch");
-    var seitenverhaeltnis = zeichne(hoch, S.concat([".......", "......."], Z), "verlauf-hoch");
-    zeichne(document.querySelector("svg.sz.quer"), S.map(function (reihe, r) { return reihe + ".." + Z[r]; }), "verlauf-quer");
+    <article class="projekt">
+      <div class="projekt-zeile">
+        <span class="nr">01</span>
+        <h2>Berichtsheft</h2>
+        <span class="stand gut">v0.5.0</span>
+        <p class="satz">Der IHK-Ausbildungsnachweis aus dem CSV-Export der Zeiterfassung, als Word oder PDF.</p>
+        <div class="verweise">
+          <a href="https://sergeyzakh.github.io/Ausbildungs-Berichtsheft/">Demo</a>
+          <a class="intern" href="docs/berichtsheft/">Docs</a>
+          <a href="https://github.com/SergeyZakh/Ausbildungs-Berichtsheft">Code</a>
+          <a class="laden" href="https://github.com/SergeyZakh/Ausbildungs-Berichtsheft/releases/latest">Berichtsheft.html</a>
+        </div>
+      </div>
+      <figure class="bild">
+        <picture>
+          <!-- Am Handy wäre die ganze App zu klein, dort nur Blatt und Reiter -->
+          <source media="(max-width: 860px)" srcset="bilder/berichtsheft-ausschnitt.jpg" width="2000" height="1250">
+          <img src="bilder/berichtsheft.jpg" width="2880" height="1800" loading="lazy" alt="Wochenansicht des Berichtshefts mit der Vorschau eines fertigen Ausbildungsnachweises">
+        </picture>
+      </figure>
+      <div class="drei">
+        <div><h3>Was es kann</h3><p>Liest Clockify, Harvest, Jira mit Tempo, Kimai, Toggl Track oder Excel und schreibt Wochenblätter nach IHK-Vordruck.</p></div>
+        <div><h3>Wie es läuft</h3><p>Eine HTML-Datei, auch offline. Auf Wunsch mit Server, Konten und einer Ansicht für Ausbilder.</p></div>
+        <div><h3>Gebaut mit</h3><p>JavaScript ohne Framework, docx, Node, PostgreSQL, OIDC. Getestet mit Playwright.</p></div>
+      </div>
+    </article>
 
-    // Das hohe SZ bekommt genau die Höhe des Textblocks daneben, vom Namen bis zur letzten Zeile.
-    var werte = document.querySelector(".werte");
-    function anpassen() {
-      var hoehe = werte.offsetHeight - 8;
-      hoch.style.height = hoehe + "px";
-      hoch.style.width = Math.round(hoehe * seitenverhaeltnis) + "px";
-    }
-    anpassen();
-    new ResizeObserver(anpassen).observe(werte);
-  })();
+    <article class="projekt">
+      <div class="projekt-zeile">
+        <span class="nr">02</span>
+        <h2>Fundus</h2>
+        <span class="stand vorab">Vorabversion</span>
+        <p class="satz">Firmenwiki mit KI-Suche zum Selbstbetreiben. Die Inhalte verlassen das eigene Netz nicht.</p>
+        <div class="verweise">
+          <a class="intern" href="docs/fundus/">Docs</a>
+          <a href="https://github.com/SergeyZakh/fundus">Code</a>
+        </div>
+      </div>
+      <figure class="bild schmal">
+        <img src="bilder/fundus.jpg" width="836" height="596" loading="lazy" alt="Frag Fundus beantwortet eine Frage und nennt die Artikel, aus denen die Antwort stammt">
+      </figure>
+      <div class="drei">
+        <div><h3>Was es kann</h3><p>„Frag Fundus“ antwortet nur aus Artikeln, die die fragende Person lesen darf, und nennt die Quellen.</p></div>
+        <div><h3>Wie es läuft</h3><p>Fertiger Docker-Stapel: BookStack, MariaDB, draw.io, Texterkennung, Ollama und nächtliche Sicherung.</p></div>
+        <div><h3>Gebaut mit</h3><p>Theme für BookStack in PHP und JavaScript, Einrichtung in Python, Anmeldung über Keycloak.</p></div>
+      </div>
+    </article>
+  </section>
 
-  // Vorschau: gewählt wird mit Maus, Tippen, Tastatur oder aus der Shell mit cat
-  var eintraege = document.querySelectorAll(".eintrag");
-  function projektWaehlen(e) {
-    var bild = document.getElementById("vorschau-bild");
-    var leer = document.getElementById("keine-vorschau");
-    eintraege.forEach(function (x) { x.classList.toggle("gewaehlt", x === e); });
-    document.getElementById("vorschau-kopf").textContent = "vorschau " + e.dataset.name + "/";
-    if (e.dataset.bild) {
-      bild.src = e.dataset.bild;
-      bild.alt = e.dataset.alt;
-    }
-    bild.hidden = !e.dataset.bild;
-    leer.hidden = !!e.dataset.bild;
-  }
-  eintraege.forEach(function (e) {
-    e.addEventListener("mouseenter", function () { projektWaehlen(e); });
-    e.addEventListener("focus", function () { projektWaehlen(e); });
-    e.addEventListener("click", function () { projektWaehlen(e); });
-  });
+  <section id="kenntnisse" class="breite">
+    <div class="abschnitt-kopf"><span class="versal">Kenntnisse</span></div>
+    <dl class="kenntnisse">
+      <!-- kenntnisse:anfang -->
+      <div class="reihe"><dt>Programmieren</dt><dd>TypeScript <i>·</i> JavaScript <i>·</i> PHP <i>·</i> Python <i>·</i> C <i>·</i> Java <i>·</i> Assembler</dd></div>
+      <div class="reihe"><dt>Skripte</dt><dd>Bash <i>·</i> PowerShell</dd></div>
+      <div class="reihe"><dt>Auszeichnung und Daten</dt><dd>HTML <i>·</i> CSS <i>·</i> SQL <i>·</i> YAML <i>·</i> HCL <i>·</i> LaTeX</dd></div>
+      <div class="reihe"><dt>Infrastruktur</dt><dd>Docker <i>·</i> Kubernetes <i>·</i> Terraform <i>·</i> Azure</dd></div>
+      <div class="reihe"><dt>Werkzeuge</dt><dd>VS Code <i>·</i> IntelliJ <i>·</i> Claude Code</dd></div>
+      <!-- kenntnisse:ende -->
+    </dl>
+  </section>
 
-  // Shell. Eingaben landen nur über textContent in der Seite, nie als HTML.
-  (function () {
-    var verlauf = document.getElementById("verlauf");
-    var ausgaben = document.getElementById("ausgaben");
-    var anfang = document.getElementById("anfang");
-    var feld = document.getElementById("befehl-eingabe");
-    var fruehere = [], position = 0;
+  <section id="kontakt" class="breite">
+    <div class="abschnitt-kopf"><span class="versal">Kontakt</span></div>
+    <div class="kontakt">
+      <a href="https://github.com/SergeyZakh"><b>GitHub ↗</b><small>github.com/SergeyZakh</small></a>
+      <a href="https://www.linkedin.com/in/sergey-zakharov-jr/"><b>LinkedIn ↗</b><small>linkedin.com/in/sergey-zakharov-jr</small></a>
+    </div>
+  </section>
+</main>
 
-    var projekte = {};
-    eintraege.forEach(function (e) { projekte[e.dataset.name] = e; });
-    var ziele = {
-      github: "https://github.com/SergeyZakh",
-      linkedin: "https://www.linkedin.com/in/sergey-zakharov-jr/"
-    };
-
-    function element(tag, klasse, text) {
-      var el = document.createElement(tag);
-      if (klasse) el.className = klasse;
-      if (text !== undefined) el.textContent = text;
-      return el;
-    }
-    function zeile(text, klasse) { return element("div", "ausgabe" + (klasse ? " " + klasse : ""), text); }
-    function kontakt() {
-      var k = anfang.querySelector(".kontakt").cloneNode(true);
-      return k;
-    }
-    function projektAusgabe(e) {
-      var box = element("div", "ausgabe");
-      box.appendChild(element("div", "", e.querySelector("p").textContent.replace(/\s+/g, " ").trim()));
-      box.appendChild(e.querySelector(".links").cloneNode(true));
-      box.lastChild.style.marginLeft = "0";
-      return box;
-    }
-    function oeffnen(url) { window.open(url, "_blank", "noopener"); }
-
-    var befehle = {
-      help: function () {
-        return zeile(
-          "help            diese Übersicht\n" +
-          "ls              Projekte auflisten\n" +
-          "cat <name>      Projekt oder kontakt anzeigen\n" +
-          "open <name>     Demo, github oder linkedin öffnen\n" +
-          "whoami          wer hier wohnt\n" +
-          "clear           Fenster leeren\n\n" +
-          "Tab ergänzt, Pfeil nach oben holt frühere Befehle.");
-      },
-      ls: function () { return zeile(Object.keys(projekte).map(function (n) { return n + "/"; }).join("  ")); },
-      cat: function (name) {
-        name = (name || "").replace(/\/$/, "");
-        if (name === "kontakt") return kontakt();
-        if (projekte[name]) { projektWaehlen(projekte[name]); return projektAusgabe(projekte[name]); }
-        return zeile("cat: " + (name || "?") + ": nicht gefunden. Versuch ls oder cat kontakt.", "fehler");
-      },
-      open: function (name) {
-        name = (name || "").replace(/\/$/, "");
-        if (ziele[name]) { oeffnen(ziele[name]); return zeile("öffne " + name + " in einem neuen Tab"); }
-        var p = projekte[name];
-        if (p) {
-          var demo = p.querySelector(".links a");
-          if (!demo) return zeile(name + "/ erscheint in Kürze, noch gibt es nichts zu öffnen.");
-          oeffnen(demo.href);
-          return zeile("öffne die Demo von " + name + "/ in einem neuen Tab");
-        }
-        return zeile("open: was denn? Zum Beispiel open berichtsheft, open github oder open linkedin.", "fehler");
-      },
-      whoami: function () { return zeile("Sergey Zakharov"); },
-      kontakt: function () { return kontakt(); },
-      clear: function () { ausgaben.textContent = ""; return null; }
-    };
-
-    function ausfuehren(eingabe) {
-      var teile = eingabe.trim().split(/\s+/), name = teile[0];
-      if (name !== "clear") {
-        var echo = element("div", "befehl");
-        echo.appendChild(feld.previousElementSibling.cloneNode(true));
-        echo.appendChild(document.createTextNode(" " + eingabe));
-        ausgaben.appendChild(echo);
-      }
-      if (!name) return;
-      var befehl = befehle[name.toLowerCase()];
-      var ergebnis = befehl ? befehl(teile[1]) : zeile(name + ": Befehl nicht gefunden. Tippe help.", "fehler");
-      if (ergebnis) ausgaben.appendChild(ergebnis);
-    }
-
-    // Tab ergänzt Befehle und danach Projekt- oder Zielnamen
-    function ergaenzen() {
-      var wert = feld.value, teile = wert.split(" ");
-      var kandidaten = teile.length === 1 ? Object.keys(befehle)
-        : Object.keys(projekte).concat(teile[0] === "open" ? Object.keys(ziele) : ["kontakt"]);
-      var letzter = teile[teile.length - 1];
-      var treffer = kandidaten.filter(function (k) { return k.indexOf(letzter) === 0; });
-      if (treffer.length === 1) {
-        teile[teile.length - 1] = treffer[0];
-        feld.value = teile.join(" ") + " ";
-      }
-    }
-
-    document.getElementById("eingabe").addEventListener("submit", function (ereignis) {
-      ereignis.preventDefault();
-      var eingabe = feld.value;
-      if (eingabe.trim()) { fruehere.push(eingabe); }
-      position = fruehere.length;
-      feld.value = "";
-      ausfuehren(eingabe);
-      verlauf.scrollTop = verlauf.scrollHeight;
-    });
-    feld.addEventListener("keydown", function (ereignis) {
-      if (ereignis.key === "Tab" && feld.value) { ereignis.preventDefault(); ergaenzen(); }
-      else if (ereignis.key === "ArrowUp" && position > 0) { ereignis.preventDefault(); feld.value = fruehere[--position]; }
-      else if (ereignis.key === "ArrowDown" && position < fruehere.length) {
-        ereignis.preventDefault(); feld.value = fruehere[++position] || "";
-      }
-    });
-    // Klick ins Fenster setzt den Cursor in die Eingabe, außer auf Links oder beim Markieren
-    verlauf.addEventListener("click", function (ereignis) {
-      if (ereignis.target.closest("a") || String(window.getSelection())) return;
-      feld.focus();
-    });
-  })();
-
-  // Uhr in der Statusleiste, wie bei tmux rechts unten
-  (function () {
-    var uhr = document.getElementById("uhr");
-    function stellen() {
-      var d = new Date();
-      uhr.textContent = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) + " " +
-        d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" });
-    }
-    stellen();
-    setInterval(stellen, 15000);
-  })();
-</script>
+<footer class="fuss breite">
+  <span>Keine Anfrage nach außen, auch nicht für die Schrift (Instrument Sans).
+    <a href="https://github.com/SergeyZakh/sergeyzakh.github.io">Quelltext</a></span>
+  <svg class="sz" viewBox="0 0 159 89" role="img" aria-label="SZ"><use href="#sz"/></svg>
+</footer>
 </body>
 </html>
