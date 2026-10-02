@@ -92,14 +92,26 @@
   .kopf-raster .kopf { position: relative; }
   .kopf-aktionen { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
   .kopf-aktionen .knopf { padding: 0 22px; }
-  /* Unter dem Kopf Bildschirmfotos der ersten Projekte (buehne in projekte.mjs), überlappend; sie laufen
-     nach unten aus und reichen bis an die Linie zum ersten Band, deshalb der negative Rand unten */
-  .kopf-buehne { position: relative; max-width: 1080px; aspect-ratio: 16 / 7.2; margin: 64px auto calc(-1 * var(--abstand)); overflow: hidden;
-    -webkit-mask-image: linear-gradient(#000 55%, transparent); mask-image: linear-gradient(#000 55%, transparent); }
-  .kopf-buehne img { position: absolute; width: 66%; height: auto; border-radius: 12px; border: 1px solid var(--linie); box-shadow: var(--schatten-bild); }
-  .kopf-buehne img:first-child { left: 0; top: 0; }
-  .kopf-buehne img:nth-child(2) { right: 0; top: 16%; }
-  .kopf-buehne img:only-child { left: 17%; }
+  /* Unter dem Kopf ein Band aus Bildschirmfotos (buehne in projekte.mjs), alle im selben Format. Es läuft
+     langsam durch, die Bilder stehen zweimal hintereinander, damit es nahtlos weitergeht; links und rechts
+     blendet es gleich aus. Über die ganze Breite, deshalb schneidet .kopf-raster ab, was übersteht. */
+  .kopf-raster { overflow: hidden; }
+  .kopf-buehne {
+    --bild: 520px; --luecke: 24px; position: relative; width: 100vw;
+    /* Über und unter den Bildern derselbe Abstand wie überall: --abstand (8 px oben sind Platz für den Schatten) */
+    margin: calc(var(--abstand) - 8px) 0 calc(-1 * var(--abstand)) calc(50% - 50vw);
+    padding: 8px 0 var(--abstand); overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  }
+  .kopf-buehne .spur { display: flex; gap: var(--luecke); width: max-content; animation: band 80s linear infinite; }
+  .kopf-buehne:hover .spur { animation-play-state: paused; }
+  .kopf-buehne img {
+    display: block; flex: none; width: var(--bild); height: auto; aspect-ratio: 120 / 76; object-fit: cover; object-position: left top;
+    border-radius: 12px; border: 1px solid var(--linie); box-shadow: 0 1px 2px rgba(22, 22, 26, .06), 0 18px 40px rgba(22, 22, 26, .12);
+  }
+  @keyframes band { to { transform: translateX(calc(-50% - var(--luecke) / 2)); } }
+  @media (prefers-reduced-motion: reduce) { .kopf-buehne .spur { animation: none; } }
 
   /* ---------- Abschnitte ---------- */
   /* Jeder Abschnitt ist ein Band über die ganze Breite, abwechselnd auf Grund und Fläche, oben eine
@@ -276,10 +288,8 @@
     .neu b { grid-column: 1; grid-row: 2; font-size: 19px; }
     .neu .was { grid-column: 1; grid-row: 3; }
     .neu .pfeil { grid-column: 2; grid-row: 2; }
-    .kopf-buehne { aspect-ratio: 4 / 3; margin-top: 40px; }
-    .kopf-buehne img { width: 82%; border-radius: 8px; }
-    .kopf-buehne img:nth-child(2) { top: 22%; }
-    .kopf-buehne img:only-child { left: 9%; }
+    .kopf-buehne { --bild: 280px; --luecke: 14px; }
+    .kopf-buehne img { border-radius: 8px; }
     .kontakt { grid-template-columns: minmax(0, 1fr); gap: 12px; }
     .kontakt a { padding: 22px 20px 20px 22px; border-radius: 14px; }
     .kontakt b { font-size: 30px; }

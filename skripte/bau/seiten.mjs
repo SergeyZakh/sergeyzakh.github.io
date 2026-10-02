@@ -224,16 +224,21 @@ function projekteBauen(alle) {
   return gruppen.map(({ art, karten }) => `    <div class="karten${art === 'ohne' ? ' ohne-bild' : ''}">\n${karten.join('\n')}\n    </div>`).join('\n');
 }
 
-// Bühne unter dem Kopf: die Bildschirmfotos aus buehne der ersten beiden Projekte, die eines haben.
-// Nur Schmuck (die Projekte stehen darunter mit Text), deshalb aria-hidden und ohne Alternativtext.
-const BUEHNE_BILDER = 2;
+// Bühne unter dem Kopf: ein Band aus den Bildschirmfotos in buehne, abwechselnd aus den Projekten (erstes
+// von jedem, dann das zweite …), höchstens sechs. Nur Schmuck (die Projekte stehen darunter mit Text),
+// deshalb aria-hidden und ohne Alternativtext.
+const BUEHNE_BILDER = 6;
 function buehneBauen(alle) {
-  const bilder = alle.filter((p) => p.buehne).slice(0, BUEHNE_BILDER).map((p) => {
-    if (!existsSync(join(lauf.wurzel, p.buehne))) throw new Error(`${p.name}: Bild ${p.buehne} fehlt (projekte.mjs)`);
-    const [b, h] = bildgroesse(join(lauf.wurzel, p.buehne));
-    return `<img src="${esc(p.buehne)}" width="${b}" height="${h}" alt="">`;
+  const listen = alle.map((p) => [].concat(p.buehne || []).map((datei) => ({ p, datei })));
+  const reihe = [];
+  for (let i = 0; listen.some((l) => l[i]); i++) for (const l of listen) if (l[i]) reihe.push(l[i]);
+  const bilder = reihe.slice(0, BUEHNE_BILDER).map(({ p, datei }) => {
+    if (!existsSync(join(lauf.wurzel, datei))) throw new Error(`${p.name}: Bild ${datei} fehlt (projekte.mjs)`);
+    const [b, h] = bildgroesse(join(lauf.wurzel, datei));
+    return `<img src="${esc(datei)}" width="${b}" height="${h}" alt="">`;
   });
-  return bilder.length ? `<div class="kopf-buehne" aria-hidden="true">${bilder.join('')}</div>` : '';
+  // Zweimal hintereinander, damit das Band nahtlos weiterläuft (index.html)
+  return bilder.length ? `<div class="kopf-buehne" aria-hidden="true"><div class="spur">${bilder.join('')}${bilder.join('')}</div></div>` : '';
 }
 
 export function startseiteBauen(alle) {

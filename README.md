@@ -30,8 +30,8 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 
 ## Startseite
 
-`index.html` ist die Vorlage. Von oben: Titel, Name, ein Satz und zwei Knöpfe (mittig), darunter die Bühne mit
-Bildschirmfotos, dann Projekte, Neues, Kenntnisse und dunkel Kontakt und Fuß; die
+`index.html` ist die Vorlage. Von oben: Titel, Name, ein Satz und zwei Knöpfe (mittig), darunter ein Band
+aus Bildschirmfotos, das langsam durchläuft (steht still bei „weniger Bewegung“), dann Projekte, Neues, Kenntnisse und dunkel Kontakt und Fuß; die
 Leiste oben springt dorthin (unter 480 px ohne „Neues“, damit sie in die Breite passt).
 Kopf, Abschnittsköpfe und Fuß stehen mittig; hinter dem Kopf liegt ein schlichtes Raster. Die Kenntnisse
 stehen nur in `angaben.mjs`: Nach einer
@@ -45,7 +45,9 @@ bei 1200 × 760 und doppelter Auflösung, damit man auf der Startseite etwas les
 `bilder/berichtsheft-tag.jpg` ist die Tagesansicht der Demo mit dem Beispielheft (Helfer aus
 `test/hilfen.js` im Berichtsheft-Repo), `bilder/fundus-frag.jpg` ein Artikel mit „Frag Fundus“ aus dem
 lokalen Stapel nach `einrichten.py --beispiele`, aufgenommen wie die Handbuch-Bilder
-(`skripte/handbuch-bilder/aufnehmen.mjs`), nur ohne Markierungen. Nach sichtbaren Änderungen an einem
+(`skripte/handbuch-bilder/aufnehmen.mjs`), nur ohne Markierungen. Für das Band unter dem Kopf (`buehne`)
+gilt dasselbe Format: Wochenansicht, Jahresübersicht und Import-Dialog des Berichtshefts, Frag Fundus im
+Vollbild, Schnellsuche und eine Artikelseite. Nach sichtbaren Änderungen an einem
 Projekt neu aufnehmen; `node skripte/bildschirmfoto.mjs` hilft unter Windows.
 
 ## Docs

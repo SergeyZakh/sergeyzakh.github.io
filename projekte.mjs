@@ -10,8 +10,8 @@
 //   download  { adresse, name } für den Knopf zum Herunterladen (optional)
 //   bild      { datei, handy, alt }: Bildschirmfoto unter bilder/; handy ist ein Ausschnitt für
 //             schmale Bildschirme. Steht oben auf der Karte des Projekts; Karten ohne Bild haben ein eigenes Raster.
-//   buehne    zweites Bildschirmfoto unter bilder/ für die Bühne unter dem Kopf der Startseite; die
-//             ersten beiden Projekte mit buehne stehen dort, überlappend   (optional)
+//   buehne    weitere Bildschirmfotos unter bilder/ für die Bühne unter dem Kopf der Startseite, alle im
+//             Format 1200 × 760 (doppelt aufgenommen); abwechselnd aus den Projekten, höchstens sechs (optional)
 //   punkte    { Überschrift: Text } unten auf der Karte, höchstens drei   (optional)
 //   docs      weglassen oder true: Seiten werden gefunden (README, docs/*.md, CONTRIBUTING,
 //             SECURITY, CHANGELOG); false: keine Docs; { gruppen } für eine eigene Gliederung:
@@ -33,7 +33,7 @@ export const projekte = [
       datei: 'bilder/berichtsheft-tag.jpg',
       alt: 'Tagesansicht des Berichtshefts: links der Text für das Heft, farbig unterstrichen nach der Buchung, aus der jedes Wort stammt; rechts die Buchungen des Tages',
     },
-    buehne: 'bilder/berichtsheft-woche.jpg',
+    buehne: ['bilder/berichtsheft-woche.jpg', 'bilder/berichtsheft-uebersicht.jpg', 'bilder/berichtsheft-import.jpg'],
     punkte: {
       'Was es kann': 'Liest Clockify, Harvest, Jira mit Tempo, Kimai, Toggl Track oder Excel und schreibt Wochenblätter nach IHK-Vordruck.',
       'Wie es läuft': 'Eine HTML-Datei, auch offline. Auf Wunsch mit Server, Konten und einer Ansicht für Ausbilder.',
@@ -71,7 +71,7 @@ export const projekte = [
       datei: 'bilder/fundus-frag.jpg',
       alt: 'Ein Artikel im Wiki, rechts daneben beantwortet Frag Fundus eine Frage dazu und nennt die Artikel, aus denen die Antwort stammt',
     },
-    buehne: 'bilder/fundus-chat.jpg',
+    buehne: ['bilder/fundus-chat.jpg', 'bilder/fundus-suche.jpg', 'bilder/fundus-artikel.jpg'],
     punkte: {
       'Was es kann': '„Frag Fundus“ antwortet nur aus Artikeln, die die fragende Person lesen darf, und nennt die Quellen.',
       'Wie es läuft': 'Fertiger Docker-Stapel: BookStack, MariaDB, draw.io, Texterkennung, Ollama und nächtliche Sicherung.',

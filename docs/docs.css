@@ -300,7 +300,7 @@ h1 { margin: 12px 0 0; font-size: clamp(36px, 4.2vw, 54px); line-height: 1.04; f
 .werkzeug-liste { margin-top: 40px; }
 .werkzeug-block { border-top: 1px solid var(--linie); padding: 24px 0 40px; }
 .werkzeug-block h3 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.015em; }
-.werkzeug-block h3 a { text-decoration: none; }
+.werkzeug-block h3 a { display: inline-block; padding: 8px 0; margin: -8px 0; text-decoration: none; }
 .spalten { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 18px; }
 .spalten .gruppe { margin: 0 0 8px; }
 /* Die letzte Gruppe („Für Mitwirkende“) immer in der letzten Spalte, damit sie bei jedem Projekt an derselben
