@@ -30,6 +30,9 @@
     /* Seitenrand: wächst mit der Breite von 20 auf 40 px, statt an einer Grenze zu springen.
        Die Docs nehmen denselben (docs.css). */
     --rand: clamp(20px, 4vw, 40px);
+    /* Senkrechter Abstand zwischen den Abschnitten, 64 px am Handy bis 104 px am PC. Derselbe Wert
+       oben und unten in jedem Band und im Kopf, gemessen an dem, was man sieht. */
+    --abstand: clamp(64px, 8vw, 104px);
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -66,7 +69,8 @@
   .leiste .sz { width: 30px; height: auto; }
 
   /* ---------- Kopf ---------- */
-  .kopf { padding-top: 120px; padding-bottom: 88px; }
+  /* Oben zählt der Abstand ab der Leiste, nicht ab dem Seitenrand: Sie steht 16 px tiefer, als sie Platz nimmt */
+  .kopf { padding-top: calc(var(--abstand) + 16px); padding-bottom: var(--abstand); }
   h1 {
     margin: 22px 0 0; font-size: clamp(60px, 12.4vw, 172px); line-height: .9; font-weight: 600; letter-spacing: -.05em;
     margin-left: -.06em;
@@ -97,7 +101,7 @@
   /* ---------- Abschnitte ---------- */
   /* Jeder Abschnitt ist ein Band über die ganze Breite, abwechselnd auf Grund und Fläche, oben eine
      Haarlinie. Kopf des Bands: Titel links, ein Satz dazu rechts. Der Inhalt fängt mit einer Linie an. */
-  .band { border-top: 1px solid var(--linie); padding: 104px 0 112px; }
+  .band { border-top: 1px solid var(--linie); padding: var(--abstand) 0; }
   .band.flaeche { background: var(--flaeche); }
   .band-kopf { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: 64px; align-items: end; margin-bottom: 48px; }
   .band-kopf h2 { margin: 0; font-size: clamp(36px, 4vw, 52px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
@@ -207,9 +211,8 @@
     .leiste a, .leiste a.marke { padding-top: 10px; padding-bottom: 10px; }
     .leiste a:not(.marke) { padding-left: 10px; padding-right: 10px; }
     .fuss nav a { padding: 10px 0; }
-    .kopf { padding-top: 76px; padding-bottom: 56px; }
     h1 { font-size: clamp(56px, 17vw, 120px); }
-    .einleitung { grid-template-columns: 1fr; gap: 28px; margin-top: 36px; }
+    .einleitung { grid-template-columns: 1fr; gap: 40px; margin-top: 32px; }
     /* Zwei Zeilen statt eines Umbruchs mitten in „· in Ausbildung“ */
     .kopf .versal span { display: block; }
     .kopf .versal .trenner { display: none; }
@@ -219,7 +222,6 @@
       grid-template-columns: minmax(0, 1fr); grid-template-rows: none;
       grid-template-areas: "kopf" "aktionen" "bild" "punkte"; padding: 32px 0 56px;
     }
-    .band { padding: 64px 0; }
     .band-kopf { grid-template-columns: minmax(0, 1fr); row-gap: 12px; margin-bottom: 32px; }
     .band-kopf p { font-size: 16.5px; }
     .weitere .projekt.kurz { padding: 28px 0 36px; }
