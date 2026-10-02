@@ -23,7 +23,7 @@ export function seiteBauen(w, s) {
   const woerter = nurText(gebaut.html).split(' ').length;
   const datum = kopf.stand || stand(w.repoOrdner, s.datei);
   const meta = [datum && `Stand ${esc(datum)}`, `${Math.max(1, Math.round(woerter / 200))} Min. Lesezeit`,
-    `<a href="${esc(quelle)}">${esc(s.datei)} ↗</a>`].filter(Boolean).join('<span>·</span>');
+    `<a href="${esc(quelle)}">${esc(s.datei)} ↗</a>`].filter(Boolean).map((t) => `<span>${t}</span>`).join('<span class="trenner">·</span>');
   // Eckdaten aus dem Kopf der Fundus-Doku: „Teil | Wert“
   const fakten = Array.isArray(kopf.fakten) && kopf.fakten.length ? `<dl class="fakten">
   ${kopf.fakten.map((f) => f.split('|').map((t) => esc(t.trim()))).map(([k, v]) => `<div><dt>${k}</dt><dd>${v || ''}</dd></div>`).join('\n  ')}
@@ -183,7 +183,7 @@ export function seite404() {
 <p class="unterzeile">Diese Seite gibt es nicht (mehr). Vielleicht ist sie umgezogen: Die Suche findet
   alles in den Docs.</p>
 <button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Docs durchsuchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
-<p class="meta"><a href="/">Zur Startseite</a><span>·</span><a href="/docs/">Zu den Docs</a></p>`;
+<p class="meta"><span><a href="/">Zur Startseite</a></span><span class="trenner">·</span><span><a href="/docs/">Zu den Docs</a></span></p>`;
   writeFileSync(join(lauf.ziel, '404.html'), rahmen({
     titel: 'Nicht gefunden · Sergey Zakharov', beschreibung: 'Diese Seite gibt es nicht.', rel: '', haupt, klasse: 'uebersicht',
   }));

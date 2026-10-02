@@ -82,6 +82,18 @@
   .eckdaten dd a { padding: 10px 0; text-decoration: underline; text-decoration-color: var(--linie-fest); text-underline-offset: 4px; }
   .eckdaten dd a:hover { text-decoration-color: currentColor; }
 
+  /* Breit genug: Eckdaten rechts neben dem Namen, bündig mit seiner letzten Zeile, die Einleitung
+     darunter. So bleibt oben rechts keine leere Fläche, und die Projekte rücken höher. */
+  @media (min-width: 1100px) {
+    .kopf { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); column-gap: 48px; }
+    .kopf > .versal { grid-column: 1 / -1; }
+    .kopf h1 { grid-column: 1; grid-row: 2; }
+    .einleitung { display: contents; }
+    .einleitung p { grid-column: 1; grid-row: 3; margin-top: 44px; }
+    .eckdaten { grid-column: 2; grid-row: 2; align-self: end; margin-bottom: 6px; }
+    .eckdaten div { grid-template-columns: 92px 1fr; }
+  }
+
   /* ---------- Abschnitte ---------- */
   .abschnitt-kopf { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--linie); }
   .projekt { padding: 40px 0 96px; }
@@ -125,7 +137,13 @@
   .reihe:first-child { border-top: 0; }
   .reihe dt { font-size: 15px; color: var(--schiefer); grid-column: 2; }
   .reihe dd { margin: 0; font-size: 28px; line-height: 1.3; letter-spacing: -.02em; font-weight: 500; }
-  .reihe dd i { font-style: normal; color: var(--leise); font-weight: 400; }
+  /* Jeder Eintrag trägt seinen Punkt vorn; die Liste ragt um eine Punktbreite nach links aus dd, das
+     dort abschneidet. So verschwindet der Punkt vor dem ersten Eintrag jeder Zeile, auch nach einem
+     Umbruch, und keiner hängt allein am Zeilenende. */
+  .reihe dd { overflow: hidden; }
+  .reihe .liste { display: flex; flex-wrap: wrap; margin-left: -.8em; }
+  .reihe .liste span { white-space: nowrap; }
+  .reihe .liste span::before { content: "·"; display: inline-block; width: .8em; text-align: center; color: var(--leise); font-weight: 400; }
 
   /* ---------- Kontakt ---------- */
   .kontakt { padding: 8px 0 72px; }
@@ -153,6 +171,9 @@
     .kopf { padding-top: 76px; padding-bottom: 56px; }
     h1 { font-size: clamp(56px, 17vw, 120px); }
     .einleitung { grid-template-columns: 1fr; gap: 28px; margin-top: 36px; }
+    /* Zwei Zeilen statt eines Umbruchs mitten in „· in Ausbildung“ */
+    .kopf .versal span { display: block; }
+    .kopf .versal .trenner { display: none; }
     .einleitung p { font-size: 21px; }
     .projekt { padding: 28px 0 64px; }
     .projekt-zeile { grid-template-columns: 1fr; }
@@ -201,7 +222,7 @@
 </div>
 
 <header class="kopf breite">
-  <div class="versal">Fachinformatiker für Systemintegration · in Ausbildung</div>
+  <div class="versal"><span>Fachinformatiker für Systemintegration</span><span class="trenner"> · </span><span>in Ausbildung</span></div>
   <h1>Sergey<br>Zakharov</h1>
   <div class="einleitung">
     <p>Ich baue Werkzeuge für Ausbildung und Betrieb, die man selbst betreibt. <span>Was man dort einträgt,
@@ -226,11 +247,11 @@
     <div class="abschnitt-kopf"><span class="versal">Kenntnisse</span></div>
     <dl class="kenntnisse">
       <!-- kenntnisse:anfang -->
-      <div class="reihe"><dt>Programmieren</dt><dd>TypeScript <i>·</i> JavaScript <i>·</i> PHP <i>·</i> Python <i>·</i> C <i>·</i> Java <i>·</i> Assembler</dd></div>
-      <div class="reihe"><dt>Skripte</dt><dd>Bash <i>·</i> PowerShell</dd></div>
-      <div class="reihe"><dt>Auszeichnung und Daten</dt><dd>HTML <i>·</i> CSS <i>·</i> SQL <i>·</i> YAML <i>·</i> HCL <i>·</i> LaTeX</dd></div>
-      <div class="reihe"><dt>Infrastruktur</dt><dd>Docker <i>·</i> Kubernetes <i>·</i> Terraform <i>·</i> Azure</dd></div>
-      <div class="reihe"><dt>Werkzeuge</dt><dd>VS Code <i>·</i> IntelliJ <i>·</i> Claude Code</dd></div>
+      <div class="reihe"><dt>Programmieren</dt><dd><span class="liste"><span>TypeScript</span><span>JavaScript</span><span>PHP</span><span>Python</span><span>C</span><span>Java</span><span>Assembler</span></span></dd></div>
+      <div class="reihe"><dt>Skripte</dt><dd><span class="liste"><span>Bash</span><span>PowerShell</span></span></dd></div>
+      <div class="reihe"><dt>Auszeichnung und Daten</dt><dd><span class="liste"><span>HTML</span><span>CSS</span><span>SQL</span><span>YAML</span><span>HCL</span><span>LaTeX</span></span></dd></div>
+      <div class="reihe"><dt>Infrastruktur</dt><dd><span class="liste"><span>Docker</span><span>Kubernetes</span><span>Terraform</span><span>Azure</span></span></dd></div>
+      <div class="reihe"><dt>Werkzeuge</dt><dd><span class="liste"><span>VS Code</span><span>IntelliJ</span><span>Claude Code</span></span></dd></div>
       <!-- kenntnisse:ende -->
     </dl>
   </section>

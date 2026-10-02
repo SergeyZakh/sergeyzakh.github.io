@@ -23,17 +23,24 @@ export function seitenVerweis(w, ziel, rest, von) {
   return (posix.relative(von, nach) || '.') + '/' + rest;
 }
 
-function verweis(href, w, s) {
-  if (!href || href.startsWith('#')) return href && '#' + dekodiert(href.slice(1));
+// Die Docs-Seite, auf die ein Verweis aus dem Repo zeigt (relativ oder als GitHub-Adresse), oder null
+function zielSeite(href, w, s) {
   const github = href.match(/^https:\/\/github\.com\/([^/]+\/[^/]+)\/blob\/main\/([^?#]+)(#.*)?$/i);
   if (github && github[1].toLowerCase() === w.repo.toLowerCase() && w.nachDatei.has(github[2])) {
-    return seitenVerweis(w, w.nachDatei.get(github[2]), dekodiert(github[3] || ''), seitenOrdner(w, s));
+    return { seite: w.nachDatei.get(github[2]), rest: dekodiert(github[3] || '') };
   }
-  if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//')) return href;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//') || href.startsWith('#')) return null;
   const [, pfad, rest] = href.match(/^([^?#]*)(.*)$/);
   const imRepo = pfad ? posix.normalize(posix.join(posix.dirname(s.datei), dekodiert(pfad))).replace(/\/$/, '') : s.datei;
-  const ziel = w.nachDatei.get(imRepo);
-  if (ziel) return seitenVerweis(w, ziel, dekodiert(rest), seitenOrdner(w, s));
+  const seite = w.nachDatei.get(imRepo);
+  return seite ? { seite, rest: dekodiert(rest) } : null;
+}
+
+function verweis(href, w, s) {
+  if (!href || href.startsWith('#')) return href && '#' + dekodiert(href.slice(1));
+  const ziel = zielSeite(href, w, s);
+  if (ziel) return seitenVerweis(w, ziel.seite, ziel.rest, seitenOrdner(w, s));
+  if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//')) return href;
   // Alles andere bleibt auf GitHub: Quelltext, Lizenz, Issues, Sicherheitsmeldungen
   return new URL(href, `https://github.com/${w.repo}/blob/main/${s.datei}`).href;
 }
@@ -89,6 +96,12 @@ export function aufbereiten(html, w, s) {
     attr = attr.replace(/\bsrc="[^"]*"/, `src="${esc(neu)}"`).replace(/\s*\/$/, '');
     return `<img${attr}${/\bloading=/.test(attr) ? '' : ' loading="lazy"'}>`;
   });
+  // Steht als Linktext nur ein Dateiname („KI.md“, „docs/SERVER.md“), heißt der Link hier wie die Seite
+  html = html.replace(/<a\b([^>]*?)\bhref="([^"]*)"([^>]*)>([\s\S]*?)<\/a>/g, (ganz, vor, href, nach, text) => {
+    const ziel = zielSeite(entschluesseln(href), w, s);
+    if (!ziel || !/^[\w./-]+\.(md|html)$/i.test(ohneTags(text))) return ganz;
+    return `<a${vor}href="${href}"${nach}>${esc(ziel.seite.titel)}</a>`;
+  });
   html = html.replace(/<a\b([^>]*?)\bhref="([^"]*)"/g, (_, vor, href) => `<a${vor}href="${esc(verweis(entschluesseln(href), w, s))}"`);
   html = html.replace(/<a\b[^>]*>\s*<\/a>/g, '').replace(/<p>\s*<\/p>\n?/g, '');
   // Breite Tabellen scrollen am Handy für sich, die Seite bleibt fest
@@ -122,6 +135,12 @@ export function aufbereiten(html, w, s) {
     if (stufe <= 3) inhalt.push({ stufe, id, text: klar });
     return `<h${stufe} id="${id}">${text}<a class="anker" href="#${id}" aria-label="Link zu diesem Abschnitt">#</a></h${stufe}>`;
   });
+  // Wiederholen sich Unterüberschriften („Neu“, „Geändert“, „Behoben“ je Version im CHANGELOG), stehen im
+  // Inhaltsverzeichnis nur die Hauptabschnitte; sonst wäre es eine lange Liste gleicher Wörter
+  const wieOft = {};
+  for (const e of inhalt) if (e.stufe === 3) wieOft[e.text] = (wieOft[e.text] || 0) + 1;
+  if (Object.values(wieOft).some((n) => n >= 3)) inhalt.splice(0, inhalt.length, ...inhalt.filter((e) => e.stufe < 3));
+
   // Steht ganz oben nur ein fetter Satz, ist er die Unterzeile der Seite
   let unterzeile = null;
   html = html.replace(/^\s*<p><strong>((?:(?!<\/strong>)[\s\S])*)<\/strong><\/p>\n?/, (_, satz) => { unterzeile = satz; return ''; });

@@ -28,8 +28,8 @@ export const projekte = [
     demo: 'https://sergeyzakh.github.io/Ausbildungs-Berichtsheft/',
     download: { adresse: 'https://github.com/SergeyZakh/Ausbildungs-Berichtsheft/releases/latest', name: 'Berichtsheft.html' },
     bild: {
-      datei: 'bilder/berichtsheft-ausschnitt.jpg',
-      alt: 'Wochenansicht des Berichtshefts mit der Vorschau eines fertigen Ausbildungsnachweises',
+      datei: 'bilder/berichtsheft-woche.jpg',
+      alt: 'Wochenansicht des Berichtshefts: oben die Tage als Reiter, darunter der Ausbildungsnachweis der Woche als Blatt',
     },
     punkte: {
       'Was es kann': 'Liest Clockify, Harvest, Jira mit Tempo, Kimai, Toggl Track oder Excel und schreibt Wochenblätter nach IHK-Vordruck.',
@@ -44,7 +44,7 @@ export const projekte = [
             { datei: 'README.md', pfad: '', titel: 'Überblick' },
             { datei: 'docs/START.md', pfad: 'erste-schritte', titel: 'Erste Schritte' },
             { datei: 'docs/KI.md', pfad: 'ki', titel: 'KI mit Ollama' },
-            { datei: 'docs/SERVER.md', pfad: 'server', titel: 'Betrieb mit Konten' },
+            { datei: 'docs/SERVER.md', pfad: 'server', titel: 'Berichtsheft mit Konten' },
           ],
         },
         {

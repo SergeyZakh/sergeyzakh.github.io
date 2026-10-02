@@ -187,8 +187,9 @@ const kenntnisse = angaben
   .filter((a) => a && KENNTNISSE[a[0]])
   .sort((a, b) => reihenfolge.indexOf(KENNTNISSE[a[0]]) - reihenfolge.indexOf(KENNTNISSE[b[0]]))
   .map(([k, v]) => {
-    const eintraege = v.split(',').map((e) => esc(AUSGESCHRIEBEN[e.trim()] || e.trim()));
-    return `      <div class="reihe"><dt>${esc(KENNTNISSE[k])}</dt><dd>${eintraege.join(' <i>·</i> ')}</dd></div>`;
+    // Die Punkte dazwischen setzt das CSS; so hängt beim Umbruch keiner allein am Zeilenende
+    const eintraege = v.split(',').map((e) => `<span>${esc(AUSGESCHRIEBEN[e.trim()] || e.trim())}</span>`);
+    return `      <div class="reihe"><dt>${esc(KENNTNISSE[k])}</dt><dd><span class="liste">${eintraege.join('')}</span></dd></div>`;
   }).join('\n');
 
 const datei = join(wurzel, 'index.html');

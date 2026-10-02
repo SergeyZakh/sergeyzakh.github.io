@@ -30,9 +30,9 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 Änderung schreibt `node skripte/erzeugen.mjs` sie in die Seite und in die Karte unter `karte/`, die
 das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Den Projektteil zwischen
 `<!-- projekte:… -->` setzt erst der Bau ein; die fertige Seite liegt danach in `_site/`.
-`node skripte/bildschirmfoto.mjs` nimmt Vorschaubilder neu auf. Gezeigt wird ein Ausschnitt, kein
-ganzer Bildschirm, damit man etwas lesen kann: `bilder/berichtsheft-ausschnitt.jpg` ist Wochenblatt
-und Reiter aus einer Aufnahme der Demo mit 2880 × 1800, `bilder/fundus.jpg` stammt aus
+`node skripte/bildschirmfoto.mjs` nimmt Vorschaubilder neu auf. Aufgenommen wird nicht zu breit, damit
+man auf der Startseite etwas lesen kann: `bilder/berichtsheft-woche.jpg` ist die Wochenansicht der
+Demo mit dem Beispielheft bei 1200 × 760 und doppelter Auflösung, `bilder/fundus.jpg` stammt aus
 `handbuch/bilder/fundus-vollbild.png` im Fundus-Repo, ohne die orangen Markierungen.
 
 ## Docs
