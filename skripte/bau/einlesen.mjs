@@ -77,7 +77,11 @@ export function einlesen(p) {
   if (!p.repo) return { ...p, kurz, seiten: [], gruppen: [] };
   const repo = repoOrdner(p);
   const changelog = join(repo, 'CHANGELOG.md');
-  const version = existsSync(changelog) ? readFileSync(changelog, 'utf8').match(/^## \[?v?(\d+\.\d+\.\d+)\]?/m)?.[1] : null;
+  // „## [0.5.0] – 2026-10-01“, die erste Überschrift mit Nummer; „## [Unveröffentlicht]“ zählt nicht
+  const neueste = existsSync(changelog)
+    ? readFileSync(changelog, 'utf8').match(/^## \[?v?(\d+\.\d+\.\d+)\]?(?:\s*[–—-]\s*(\d{4}-\d{2}-\d{2}))?/m) : null;
+  const version = neueste?.[1] || null;
+  const datum = neueste?.[2] ? neueste[2].split('-').reverse().join('.') : null;
   const vorlage = p.docs === false ? [] : p.docs?.gruppen || finden(repo);
   const gruppen = vorlage.map((g) => ({
     titel: g.titel,
@@ -89,5 +93,5 @@ export function einlesen(p) {
   }
   const doppelt = seiten.map((s) => s.pfad).find((pfad, i, alle) => alle.indexOf(pfad) !== i);
   if (doppelt !== undefined) throw new Error(`${p.name}: zwei Seiten unter docs/${kurz}/${doppelt}`);
-  return { ...p, kurz, repoOrdner: repo, version, gruppen, seiten, nachDatei: new Map(seiten.map((s) => [s.datei, s])) };
+  return { ...p, kurz, repoOrdner: repo, version, datum, gruppen, seiten, nachDatei: new Map(seiten.map((s) => [s.datei, s])) };
 }

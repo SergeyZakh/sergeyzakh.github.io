@@ -21,7 +21,8 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
   :root {
-    --text: #16161A; --linie: #DEDCD6; --grund: #F3F2EE; --flaeche: #FFFFFF; --buehne: #E9E8E2;
+    --text: #16161A; --linie: #DEDCD6; --linie-fest: #BDBAB2; --grund: #F3F2EE; --flaeche: #FFFFFF; --buehne: #E9E8E2;
+    --hauch: rgba(22, 22, 26, .06); --voll-hover: #33333A;
     --schiefer: #62615C; --leise: #9A9891; --gut: #1A7F37; --bernstein: #8A5300;
     --glas: rgba(243, 242, 238, .72); --glas-kante: rgba(22, 22, 26, .08);
     --schatten-bild: 0 1px 2px rgba(22, 22, 26, .06), 0 24px 60px rgba(22, 22, 26, .14);
@@ -29,13 +30,15 @@
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --text: #ECEBE7; --linie: #2E2E34; --grund: #111114; --flaeche: #1B1B1F; --buehne: #1B1B1F;
+      --text: #ECEBE7; --linie: #2E2E34; --linie-fest: #4B4B53; --grund: #111114; --flaeche: #1B1B1F; --buehne: #1B1B1F;
+      --hauch: rgba(255, 255, 255, .07); --voll-hover: #D2D1CC;
       --schiefer: #A3A29B; --leise: #6E6D68; --gut: #4CB86B; --bernstein: #D8AE5E;
       --glas: rgba(17, 17, 20, .72); --glas-kante: rgba(255, 255, 255, .08);
       --schatten-bild: 0 1px 2px rgba(0, 0, 0, .5), 0 24px 60px rgba(0, 0, 0, .55);
     }
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 88px; }
   body { margin: 0; background: var(--grund); color: var(--text); font: 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
   a { color: inherit; text-decoration: none; }
   :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
@@ -52,7 +55,11 @@
   }
   .leiste a { padding: 7px 14px; border-radius: 999px; font-size: 14px; color: var(--schiefer); }
   .leiste a:hover { color: var(--text); }
+  /* Der Abschnitt, in dem man gerade ist (Skript unten) */
+  .leiste a.aktiv { color: var(--text); background: var(--hauch); }
   .leiste a.marke { padding: 7px 12px 7px 14px; color: var(--text); }
+  /* Docs ist eine eigene Seite, kein Abschnitt hier: abgesetzt */
+  .leiste .trenner { width: 1px; height: 18px; margin: 0 4px; background: var(--linie); }
   .leiste .sz { width: 30px; height: auto; }
 
   /* ---------- Kopf ---------- */
@@ -68,11 +75,14 @@
   .eckdaten div { display: grid; grid-template-columns: 110px 1fr; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--linie); align-items: baseline; }
   .eckdaten dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
   .eckdaten dd { margin: 0; font-size: 15px; }
+  .eckdaten dd a { border-bottom: 1px solid var(--linie); }
+  .eckdaten dd a:hover { border-color: currentColor; }
 
   /* ---------- Abschnitte ---------- */
   .abschnitt-kopf { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--linie); }
   .projekt { padding: 40px 0 96px; }
-  .projekt-zeile { display: grid; grid-template-columns: 64px 1fr auto; gap: 0 24px; align-items: baseline; }
+  .projekt-zeile { display: grid; grid-template-columns: 64px 1fr; gap: 0 24px; align-items: baseline; }
+  .projekt-kopf { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; }
   .nr { font-size: 15px; color: var(--leise); font-variant-numeric: tabular-nums; }
   h2 { margin: 0; font-size: clamp(40px, 5.6vw, 72px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
   .stand { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
@@ -80,16 +90,21 @@
   .stand.gut { color: var(--gut); }
   .stand.vorab { color: var(--bernstein); }
   .satz { grid-column: 2; margin: 16px 0 0; font-size: 22px; line-height: 1.38; color: var(--schiefer); max-width: 34ch; letter-spacing: -.01em; }
-  .verweise { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 22px; font-size: 16px; font-weight: 500; }
-  .verweise a { border-bottom: 1px solid var(--linie); padding-bottom: 2px; transition: border-color .15s; }
-  .verweise a:hover { border-color: currentColor; }
-  .verweise a::after { content: " ↗"; color: var(--leise); }
-  .verweise a.laden::after { content: " ↓"; }
-  .verweise a.intern::after { content: " →"; }
+  /* Pillen wie in Berichtsheft und Fundus; die wichtigste Aktion dunkel wie „Exportieren“ */
+  .aktionen { grid-column: 2; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .knopf {
+    display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px 0 16px; border-radius: 999px;
+    border: 1px solid var(--linie); background: var(--flaeche); font-size: 15px; font-weight: 500; white-space: nowrap;
+    transition: border-color .15s, background .15s;
+  }
+  .knopf:hover { border-color: var(--linie-fest); }
+  .knopf.voll { background: var(--text); border-color: var(--text); color: var(--grund); }
+  .knopf.voll:hover { background: var(--voll-hover); border-color: var(--voll-hover); }
+  .knopf svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
   /* Das Bild liegt auf einer ruhigen Fläche, damit helle Bildschirmfotos auch im dunklen Modus nicht blenden */
-  .bild { margin: 44px 0 0; padding: clamp(20px, 5vw, 64px) clamp(20px, 5vw, 64px) 0; background: var(--buehne); border-radius: 18px; overflow: hidden; }
-  .bild img { display: block; width: 100%; max-width: 980px; height: auto; margin: 0 auto; border-radius: 10px 10px 0 0; box-shadow: var(--schatten-bild); }
+  .bild { margin: 48px 0 0; padding: clamp(16px, 4vw, 48px) clamp(16px, 4vw, 48px) 0; background: var(--buehne); border-radius: 18px; overflow: hidden; }
+  .bild img { display: block; width: 100%; max-width: 1040px; height: auto; margin: 0 auto; border-radius: 10px 10px 0 0; box-shadow: var(--schatten-bild); }
   .bild.schmal img { max-width: 760px; }
   /* Projekte ohne Bildschirmfoto stehen kompakt untereinander */
   .projekt.kurz { padding: 36px 0 44px; border-top: 1px solid var(--linie); }
@@ -114,12 +129,15 @@
   .kontakt b { font-size: clamp(40px, 6.4vw, 84px); line-height: 1.05; font-weight: 600; letter-spacing: -.04em; transition: transform .25s; }
   .kontakt a:hover b { transform: translateX(10px); }
   .kontakt small { font-size: 16px; color: var(--schiefer); }
-  .fuss { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 40px 0 48px; color: var(--leise); font-size: 14px; }
+  .fuss { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; padding-top: 48px; padding-bottom: 56px; color: var(--leise); font-size: 14px; }
+  .fuss b { display: block; color: var(--text); font-weight: 600; font-size: 15px; }
+  .fuss p { margin: 6px 0 0; }
+  .fuss nav { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-top: 18px; }
+  .fuss nav a { color: var(--schiefer); border-bottom: 1px solid var(--linie); }
+  .fuss nav a:hover { color: var(--text); border-color: currentColor; }
   .fuss .sz { width: 112px; height: auto; color: var(--linie); }
-  .fuss a { color: var(--schiefer); border-bottom: 1px solid var(--linie); }
-  .fuss a:hover { color: var(--text); }
 
-  @media (prefers-reduced-motion: reduce) { .kontakt b { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .kontakt b { transition: none; } }
   @media (max-width: 860px) {
     .breite { padding: 0 20px; }
     .leiste a:not(.marke) { padding: 7px 10px; }
@@ -128,9 +146,12 @@
     .einleitung { grid-template-columns: 1fr; gap: 28px; margin-top: 36px; }
     .einleitung p { font-size: 21px; }
     .projekt { padding: 28px 0 64px; }
-    .projekt-zeile { grid-template-columns: 1fr auto; }
-    .nr { grid-column: 1 / -1; margin-bottom: 6px; }
-    .satz, .verweise { grid-column: 1 / -1; }
+    .projekt-zeile { grid-template-columns: 1fr; }
+    .nr { margin-bottom: 6px; }
+    .satz, .aktionen { grid-column: 1; }
+    .aktionen { margin-top: 22px; gap: 8px; }
+    .knopf { height: 42px; padding: 0 16px 0 13px; font-size: 14.5px; }
+    .leiste .trenner { margin: 0 1px; }
     .satz { font-size: 19px; }
     .bild { margin-top: 32px; border-radius: 14px; }
     .bild img { border-radius: 6px 6px 0 0; }
@@ -140,7 +161,8 @@
     .reihe dt { grid-column: auto; }
     .reihe dd { font-size: 21px; }
     .kontakt a { flex-direction: column; gap: 2px; }
-    .fuss { flex-direction: column-reverse; align-items: flex-start; }
+    .fuss { grid-template-columns: 1fr; }
+    .fuss .sz { order: -1; }
   }
 </style>
 </head>
@@ -153,6 +175,7 @@
     <a href="#projekte">Projekte</a>
     <a href="#kenntnisse">Kenntnisse</a>
     <a href="#kontakt">Kontakt</a>
+    <span class="trenner" aria-hidden="true"></span>
     <a href="docs/">Docs</a>
   </nav>
 </div>
@@ -169,6 +192,7 @@
       <div><dt>Sprachen</dt><dd>Deutsch, Russisch, Englisch</dd></div>
       <div><dt>GitHub</dt><dd>315 Beiträge im letzten Jahr</dd></div>
       <!-- eckdaten:ende -->
+      <!-- zuletzt -->
     </dl>
   </div>
 </header>
@@ -201,9 +225,34 @@
 </main>
 
 <footer class="fuss breite">
-  <span>Keine Anfrage nach außen, auch nicht für die Schrift (Instrument Sans).
-    <a href="https://github.com/SergeyZakh/sergeyzakh.github.io">Quelltext</a></span>
+  <div>
+    <b>Sergey Zakharov</b>
+    <p>Fachinformatiker für Systemintegration in Ausbildung. Keine Anfrage nach außen, auch nicht für die
+      Schrift (Instrument Sans).</p>
+    <nav aria-label="Weiteres">
+      <a href="docs/">Docs</a>
+      <a href="https://github.com/SergeyZakh">GitHub</a>
+      <a href="https://www.linkedin.com/in/sergey-zakharov-jr/">LinkedIn</a>
+      <a href="https://github.com/SergeyZakh/sergeyzakh.github.io">Quelltext dieser Seite</a>
+    </nav>
+  </div>
   <svg class="sz" viewBox="0 0 159 89" role="img" aria-label="SZ"><use href="#sz"/></svg>
 </footer>
+
+<script>
+  // Die Leiste zeigt, in welchem Abschnitt man gerade ist
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.leiste a[href^="#"]:not(.marke)'));
+    var ziele = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
+    function markieren() {
+      var aktiv = -1;
+      ziele.forEach(function (z, i) { if (z && z.getBoundingClientRect().top < innerHeight * 0.35) aktiv = i; });
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) aktiv = ziele.length - 1;
+      links.forEach(function (a, i) { a.classList.toggle("aktiv", i === aktiv); });
+    }
+    addEventListener("scroll", markieren, { passive: true });
+    markieren();
+  })();
+</script>
 </body>
 </html>

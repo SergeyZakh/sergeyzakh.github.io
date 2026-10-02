@@ -23,7 +23,13 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
   welcher Seite wird. Ein Fehler in einem Docs-Text wird im jeweiligen Repo behoben.
 - **Keine Anfragen nach außen**, kein CDN, keine Schriften von Google. `seite-pruefen.mjs` prüft das.
   Einzige Abhängigkeit ist `marked`, und nur beim Bauen.
-- **Anker wie auf GitHub** (`anker()` in `seite-bauen.mjs`), damit Verweise aus den Repos
+- **Der Bau steht in Teilen unter `skripte/bau/`**, gemeinsamer Stand in `lauf.mjs`. Wer etwas am
+  Bau umstellt, ohne dass sich die Seite ändern soll, baut vorher und nachher und vergleicht mit
+  `diff -r`: Es muss byte-genau gleich herauskommen.
+- **Aufräumen ist lieber zu eng als zu gierig** (`istNavigation()` in `aufbereiten.mjs`): Was aus
+  den Repos wegfällt, steht sonst nirgends. Nach einer Änderung dort die Zahl der `<p>` je Seite
+  vor und nach vergleichen.
+- **Anker wie auf GitHub** (`anker()` in `skripte/bau/aufbereiten.mjs`), damit Verweise aus den Repos
   (`START.md#weg-2-für-mehrere-…`) auch hier treffen. Ids im Seitenrahmen (`hauptteil`,
   `seitenleiste`) so wählen, dass keine Überschrift sie trifft.
 - **Stil:** Farben, Schrift und Maße wie Berichtsheft und Fundus (warmes Grau, Instrument Sans,

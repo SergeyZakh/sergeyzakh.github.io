@@ -118,7 +118,8 @@ kbd {
 .werkzeug { padding: 0 12px 20px; border-bottom: 1px solid var(--linie); margin-bottom: 14px; }
 .werkzeug-name { font-weight: 600; font-size: 22px; letter-spacing: -.02em; text-decoration: none; margin-right: 8px; }
 .werkzeug p { margin: 8px 0 0; font-size: 14px; color: var(--schiefer); line-height: 1.5; }
-.werkzeug .werkzeug-links { display: flex; gap: 16px; margin-top: 12px; }
+.werkzeug .werkzeug-links { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; }
+.werkzeug-links a { white-space: nowrap; }
 .werkzeug-links a, .anderes a { font-size: 13.5px; font-weight: 500; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--linie); }
 .werkzeug-links a:hover, .anderes a:hover { border-color: currentColor; }
 .stand { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 500; vertical-align: 3px; white-space: nowrap; }
@@ -161,7 +162,21 @@ h1 { margin: 12px 0 0; font-size: clamp(36px, 4.2vw, 54px); line-height: 1.04; f
 :is(h2, h3, h4):hover .anker, .anker:focus-visible { opacity: 1; }
 .text a { text-decoration: underline; text-decoration-color: var(--linie-fest); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .text a:hover { text-decoration-color: currentColor; }
-.text a[href^="http"]:not(:has(img))::after { content: "↗"; margin-left: 1px; font-size: .78em; color: var(--leise); }
+.text a[href^="http"]:not(:has(img), .knopf)::after { content: "↗"; margin-left: 1px; font-size: .78em; color: var(--leise); }
+
+/* Aufrufe aus den READMEs als Knöpfe, wie auf der Startseite; der Rest der Zeile klein daneben */
+.text .aktionen { display: flex; flex-wrap: wrap; gap: 14px 28px; margin: 1.6em 0 1.8em; }
+.text .aktion { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; max-width: 300px; }
+.text .aktion span { font-size: 13.5px; line-height: 1.45; color: var(--schiefer); }
+.text .knopf {
+  display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px 0 14px; border-radius: 999px;
+  border: 1px solid var(--linie); background: var(--flaeche); font-size: 15px; font-weight: 500; white-space: nowrap;
+  text-decoration: none; transition: border-color .15s, background .15s;
+}
+.text .knopf:hover { border-color: var(--linie-fest); }
+.text .knopf.voll { background: var(--text); border-color: var(--text); color: var(--grund); }
+.text .knopf.voll:hover { opacity: .88; }
+.text .knopf svg { width: 16px; height: 16px; }
 .text strong { font-weight: 600; }
 .text :is(ul, ol) { margin: 0 0 1.1em; padding-left: 1.4em; }
 .text li { margin: .3em 0; }

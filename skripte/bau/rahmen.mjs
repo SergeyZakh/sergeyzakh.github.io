@@ -9,9 +9,13 @@ import { seitenOrdner, seitenVerweis } from './aufbereiten.mjs';
 // Bis zu so vielen Projekten mit Docs steht ein Umschalter in der Kopfleiste, darüber ein Menü
 const UMSCHALTER_BIS = 3;
 
-export const versionsMarke = (w) => w.vorab
-  ? `<span class="stand vorab">Vorabversion${w.version ? ' ' + esc(w.version) : ''}</span>`
-  : `<span class="stand gut">${w.version ? 'v' + esc(w.version) : 'veröffentlicht'}</span>`;
+// mitDatum: „v0.5.0 · 01.10.2026“ in der Übersicht; in Seitenleiste und Menü ist dafür kein Platz
+export const versionsMarke = (w, mitDatum) => {
+  const datum = mitDatum && w.datum ? ` · ${esc(w.datum)}` : '';
+  return w.vorab
+    ? `<span class="stand vorab">Vorabversion${w.version ? ' ' + esc(w.version) : ''}${datum}</span>`
+    : `<span class="stand gut">${w.version ? 'v' + esc(w.version) : 'veröffentlicht'}${datum}</span>`;
+};
 
 // Wenige Projekte: Umschalter wie ein Segment. Viele: ein Menü mit Stand und Satz je Projekt.
 function projektwahl(rel, aktiv) {

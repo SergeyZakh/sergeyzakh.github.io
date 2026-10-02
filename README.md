@@ -8,9 +8,11 @@ Anfragen nach außen; auch die Schrift (Instrument Sans, wie in Berichtsheft und
 
 Ein Eintrag in `projekte.mjs`, mehr nicht. Was daraus folgt:
 
-- **Startseite:** ein Abschnitt mit Name, Stand, Satz und Links; mit `bild` groß mit Bildschirmfoto
-  und drei Punkten, ohne Bild kompakt. Nummer und Anzahl zählen sich selbst.
-- **Version:** aus der ersten Überschrift `## [x.y.z]` im `CHANGELOG.md` des Repos, bei jedem Bau neu.
+- **Startseite:** ein Abschnitt mit Name, Stand, Satz und Knöpfen (die Demo dunkel, sonst die Docs);
+  mit `bild` groß mit Bildschirmfoto und drei Punkten, ohne Bild kompakt. Nummer und Anzahl zählen
+  sich selbst.
+- **Version und Datum:** aus der ersten Überschrift `## [x.y.z] – JJJJ-MM-TT` im `CHANGELOG.md` des
+  Repos, bei jedem Bau neu. Die neueste Version aller Projekte steht oben in den Eckdaten als „Zuletzt“.
 - **Docs:** ohne weitere Angaben findet der Bau README, `docs/*.md`, CONTRIBUTING, SECURITY und
   CHANGELOG. Eine eigene Gliederung geht mit `docs: { gruppen }`, keine Docs mit `docs: false`.
 - **Kopfleiste der Docs:** bis drei Projekte ein Umschalter, ab vier ein Menü mit Stand und Satz.
@@ -28,8 +30,10 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 Änderung schreibt `node skripte/erzeugen.mjs` sie in die Seite und in die Karte unter `karte/`, die
 das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Den Projektteil zwischen
 `<!-- projekte:… -->` setzt erst der Bau ein; die fertige Seite liegt danach in `_site/`.
-`node skripte/bildschirmfoto.mjs` nimmt Vorschaubilder neu auf. `bilder/fundus.jpg` ist ein
-Ausschnitt aus `handbuch/bilder/fundus-vollbild.png` im Fundus-Repo, ohne die orangen Markierungen.
+`node skripte/bildschirmfoto.mjs` nimmt Vorschaubilder neu auf. Gezeigt wird ein Ausschnitt, kein
+ganzer Bildschirm, damit man etwas lesen kann: `bilder/berichtsheft-ausschnitt.jpg` ist Wochenblatt
+und Reiter aus einer Aufnahme der Demo mit 2880 × 1800, `bilder/fundus.jpg` stammt aus
+`handbuch/bilder/fundus-vollbild.png` im Fundus-Repo, ohne die orangen Markierungen.
 
 ## Docs
 
@@ -45,7 +49,15 @@ im Stil der Startseite:
 - Mermaid-Diagramme stehen als SVG aus dem Repo da (`mermaid:` in `projekte.mjs`)
 - das Handbuch von Fundus mit der Gliederung aus `skripte/einrichten.py` im Fundus-Repo
 - Abzeichen von shields.io und andere Bilder von außen fallen weg
+- Aufrufe wie `**[▶ Direkt im Browser ausprobieren](…)** — mit …` werden Knöpfe; ein fetter Satz ganz
+  oben wird die Unterzeile der Seite
+- Linkzeilen, die hier schon Seitenleiste und Inhaltsverzeichnis abdecken („**Anleitungen:** …“, die
+  Inhaltsliste im README), fallen weg, ebenso Überschriften, die dadurch leer werden
 - dazu `404.html`, `sitemap.xml` und `robots.txt`
+
+Der Bau steht unter `skripte/bau/`: `einlesen` (Projekte, Versionen, Seiten), `markdown`,
+`aufbereiten` (Bilder, Verweise, Anker, Aufräumen), `rahmen` (Kopfleiste, Seitenleiste) und `seiten`
+(Docs-Seiten, Übersicht, Startseite, 404, Sitemap); `seite-bauen.mjs` setzt sie zusammen.
 
 ## Lokal
 

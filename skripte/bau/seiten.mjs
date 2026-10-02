@@ -30,11 +30,12 @@ export function seiteBauen(w, s) {
 </dl>` : '';
   const hinweis = s.hinweis ? `<p class="herkunft">${esc(s.hinweis)}</p>` : '';
   const ersterAbsatz = gebaut.html.match(/<p>([\s\S]*?)<\/p>/)?.[1];
-  const beschreibung = (kopf.untertitel || (ersterAbsatz ? nurText(ersterAbsatz) : w.satz)).slice(0, 180);
+  const unterzeile = kopf.untertitel ? esc(kopf.untertitel) : gebaut.unterzeile;
+  const beschreibung = (unterzeile ? nurText(unterzeile) : ersterAbsatz ? nurText(ersterAbsatz) : w.satz).slice(0, 180);
 
   const haupt = `<p class="pfad"><a href="${rel}/docs/">Docs</a><span>/</span><a href="${esc(seitenVerweis(w, w.seiten[0], '', ordner))}">${esc(w.name)}</a>${s.gruppe ? `<span>/</span>${esc(s.gruppe)}` : ''}</p>
 <h1>${titelHtml}</h1>
-${kopf.untertitel ? `<p class="unterzeile">${esc(kopf.untertitel)}</p>` : ''}
+${unterzeile ? `<p class="unterzeile">${unterzeile}</p>` : ''}
 <p class="meta">${meta}</p>
 ${fakten}${hinweis}
 <article class="text">
@@ -77,7 +78,7 @@ export function uebersicht(alle) {
     return `<section class="werkzeug-block">
     <div class="werkzeug-zeile">
       <h2><a href="${w.kurz}/">${esc(w.name)}</a></h2>
-      ${versionsMarke(w)}
+      ${versionsMarke(w, true)}
     </div>
     <p class="satz">${esc(w.satz)}</p>
     <div class="spalten">
@@ -101,23 +102,33 @@ export function uebersicht(alle) {
 }
 // ---------- Startseite: der Projektteil ----------
 
-// Mit Bild steht ein Projekt groß da, mit Bildschirmfoto und drei Punkten; ohne Bild kompakt in einer Zeile.
+// Mit Bild steht ein Projekt groß da, mit Bildschirmfoto und drei Punkten; ohne Bild kompakt.
+// Die wichtigste Aktion (Demo, sonst Docs) ist ein dunkler Knopf, wie „Exportieren“ im Berichtsheft.
+export function aktionen(p, docs) {
+  const knoepfe = [
+    p.demo && ['start', p.demo, 'Demo öffnen'],
+    docs && ['buch', docs, 'Docs'],
+    p.repo && ['code', `https://github.com/${p.repo}`, 'Code'],
+    p.download && ['laden', p.download.adresse, p.download.name],
+  ].filter(Boolean);
+  return knoepfe.map(([zeichen, href, text], i) =>
+    `<a class="knopf${i === 0 ? ' voll' : ''}" href="${esc(href)}">${symbol(zeichen)}${esc(text)}</a>`).join('\n          ');
+}
+
+export const standText = (p) => [p.vorab ? `Vorabversion${p.version ? ' ' + p.version : ''}` : p.version && `v${p.version}`, p.datum]
+  .filter(Boolean).join(' · ');
+
 function projektAbschnitt(p, nr) {
-  const verweise = [
-    p.demo && `<a href="${esc(p.demo)}">Demo</a>`,
-    p.seiten.length && `<a class="intern" href="docs/${p.kurz}/">Docs</a>`,
-    p.repo && `<a href="https://github.com/${esc(p.repo)}">Code</a>`,
-    p.download && `<a class="laden" href="${esc(p.download.adresse)}">${esc(p.download.name)}</a>`,
-  ].filter(Boolean).join('\n          ');
-  const marke = p.vorab ? '<span class="stand vorab">Vorabversion</span>'
-    : p.version ? `<span class="stand gut">v${esc(p.version)}</span>` : '';
+  const stand = standText(p);
   const zeile = `      <div class="projekt-zeile">
         <span class="nr">${String(nr).padStart(2, '0')}</span>
-        <h2>${esc(p.name)}</h2>
-        ${marke}
+        <div class="projekt-kopf">
+          <h2>${esc(p.name)}</h2>
+          ${stand ? `<span class="stand ${p.vorab ? 'vorab' : 'gut'}">${esc(stand)}</span>` : ''}
+        </div>
         <p class="satz">${esc(p.satz)}</p>
-        <div class="verweise">
-          ${verweise}
+        <div class="aktionen">
+          ${aktionen(p, p.seiten.length && `docs/${p.kurz}/`)}
         </div>
       </div>`;
   if (!p.bild) return `    <article class="projekt kurz">\n${zeile}\n    </article>`;
@@ -127,7 +138,7 @@ function projektAbschnitt(p, nr) {
     return bildgroesse(join(lauf.wurzel, datei));
   };
   const [breite, hoehe] = groesse(p.bild.datei);
-  // Am Handy wäre ein ganzer Bildschirm zu klein, dort steht der Ausschnitt
+  // Für schmale Bildschirme kann ein eigener Ausschnitt stehen
   const handy = p.bild.handy ? (([b, h]) => `<source media="(max-width: 860px)" srcset="${esc(p.bild.handy)}" width="${b}" height="${h}">`)(groesse(p.bild.handy)) : '';
   // Kleine Bilder nicht über ihre Größe ziehen, sonst werden sie unscharf
   const bild = `      <figure class="bild${breite < 1400 ? ' schmal' : ''}">
@@ -141,6 +152,17 @@ ${bild}${punkte ? `\n      <div class="drei">\n        ${punkte}\n      </div>` 
     </article>`;
 }
 
+// Eckdaten oben auf der Startseite: die neueste Version über alle Projekte, damit sichtbar ist,
+// dass sich hier etwas tut. Das Datum kommt aus dem CHANGELOG, nicht von Hand.
+function zuletzt(alle) {
+  const iso = (d) => d.split('.').reverse().join('-');
+  const neu = alle.filter((p) => p.datum).sort((a, b) => iso(b.datum).localeCompare(iso(a.datum)))[0];
+  if (!neu) return '';
+  const aenderungen = neu.nachDatei?.get('CHANGELOG.md');
+  const name = `${esc(neu.name)} ${esc(neu.version)}`;
+  return `<div><dt>Zuletzt</dt><dd>${aenderungen ? `<a href="${esc(posix.join('docs', neu.kurz, aenderungen.pfad))}/">${name}</a>` : name}, ${esc(neu.datum)}</dd></div>`;
+}
+
 export function startseiteBauen(alle) {
   const teil = `  <section id="projekte" class="breite">
     <div class="abschnitt-kopf"><span class="versal">Projekte</span><span class="versal">${String(alle.length).padStart(2, '0')}</span></div>
@@ -148,8 +170,10 @@ ${alle.map((p, i) => projektAbschnitt(p, i + 1)).join('\n')}
   </section>`;
   const muster = /(<!-- projekte:anfang -->)[\s\S]*?(\n\s*<!-- projekte:ende -->)/;
   if (!muster.test(lauf.startseite)) throw new Error('Markierungen <!-- projekte:anfang/ende --> fehlen in index.html');
-  writeFileSync(join(lauf.ziel, 'index.html'), lauf.startseite.replace(muster, `$1\n${teil}$2`));
+  if (!lauf.startseite.includes('<!-- zuletzt -->')) throw new Error('Markierung <!-- zuletzt --> fehlt in index.html');
+  writeFileSync(join(lauf.ziel, 'index.html'), lauf.startseite.replace(muster, `$1\n${teil}$2`).replace('<!-- zuletzt -->', zuletzt(alle)));
 }
+
 // ---------- 404, Sitemap ----------
 
 // GitHub Pages liefert 404.html unter jedem falschen Pfad aus; deshalb Pfade ab der Wurzel (rel = '')

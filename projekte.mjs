@@ -28,8 +28,7 @@ export const projekte = [
     demo: 'https://sergeyzakh.github.io/Ausbildungs-Berichtsheft/',
     download: { adresse: 'https://github.com/SergeyZakh/Ausbildungs-Berichtsheft/releases/latest', name: 'Berichtsheft.html' },
     bild: {
-      datei: 'bilder/berichtsheft.jpg',
-      handy: 'bilder/berichtsheft-ausschnitt.jpg',
+      datei: 'bilder/berichtsheft-ausschnitt.jpg',
       alt: 'Wochenansicht des Berichtshefts mit der Vorschau eines fertigen Ausbildungsnachweises',
     },
     punkte: {
