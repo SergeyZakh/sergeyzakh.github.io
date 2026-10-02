@@ -36,7 +36,7 @@ zwei Knöpfe (mittig), darunter eine Wand
 aus Bildschirmfotos (3 × 2, am Handy 2 × 3, flach: gekippt wurden sie in Chrome pixelig), dann Projekte, Neues, Kenntnisse und dunkel Kontakt und Fuß; die
 Leiste oben springt dorthin (unter 560 px ohne „Neues“, damit sie in die Breite passt); ihr letzter Knopf
 schaltet zwischen hell und dunkel, die Wahl gilt auch in den Docs.
-Kopf, Abschnittsköpfe und Fuß stehen mittig; hinter dem Kopf liegt ein schlichtes Raster. Die Kenntnisse
+Kopf, Abschnittsköpfe und Fuß stehen mittig. Die Kenntnisse
 stehen nur in `angaben.mjs`: Nach einer
 Änderung schreibt `node skripte/erzeugen.mjs` sie in die Seite und in die Karte unter `karte/`, die
 das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Den Projektteil zwischen
