@@ -63,7 +63,6 @@ export const projekte = [
     name: 'Fundus',
     repo: 'SergeyZakh/fundus',
     satz: 'Firmenwiki mit KI-Suche zum Selbstbetreiben. Die Inhalte verlassen das eigene Netz nicht.',
-    vorab: true,
     bild: {
       datei: 'bilder/fundus-frag.jpg',
       alt: 'Ein Artikel im Wiki, rechts daneben beantwortet Frag Fundus eine Frage dazu und nennt die Artikel, aus denen die Antwort stammt',
