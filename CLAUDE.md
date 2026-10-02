@@ -44,6 +44,9 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
 - **Stil:** Farben, Schrift und Maße wie Berichtsheft und Fundus (warmes Grau, Instrument Sans,
   Haarlinien). Farbe trägt Bedeutung: Grün veröffentlicht, Bernstein Vorabversion; daneben steht
   immer ein Wort. Browser-JavaScript mit `var` und Funktionen, Skripte unter `skripte/` modernes Node.
+- **Hell und dunkel über `data-theme` an `<html>`**, nicht über `prefers-color-scheme` im CSS: Ein kleines
+  Skript im Kopf (`index.html` und `THEMA` in `rahmen.mjs`, beide gleich) setzt die gespeicherte Wahl oder die
+  des Systems, bevor gezeichnet wird. Dunkle Farben stehen unter `:root[data-theme="dunkel"]`.
 - **Auf der Mittelachse:** Kopf, Abschnittsköpfe (Titel und Satz untereinander) und Fuß stehen mittig.
   Die Kenntnisse bleiben ein Raster aus gleich breiten Spalten (am PC fünf Subgrid-Spalten, darunter eine Tabelle).
 - **Symmetrie ist Pflicht, nicht Geschmack:** Gleichartige Container stehen gleich groß nebeneinander

@@ -73,8 +73,8 @@ function lesezeit(w) {
   return min < 60 ? `${Math.max(1, min)} Min.` : `rund ${Math.round(min / 30) / 2} Std.`.replace('.5', ',5');
 }
 
-// Übersicht: oben mittig Titel, Satz und Suche; darunter je Projekt eine gleich große Karte (Bild, Name, Satz,
-// Umfang, Knöpfe); darunter alle Seiten, je Projekt die Gruppen in festen Spalten
+// Übersicht: oben Titel und Satz links, die Suche rechts, in denselben Spalten wie die Karten darunter; je
+// Projekt eine gleich große Karte (Bild, Name, Satz, Umfang, Knöpfe); darunter alle Seiten als Vergleich
 export function uebersicht(alle) {
   const karten = alle.map((w) => {
     const erste = w.seiten.find((s) => s.pfad === 'erste-schritte');
@@ -92,35 +92,44 @@ export function uebersicht(alle) {
     <div class="karte-knoepfe">${knoepfe}</div>
   </article>`;
   }).join('\n  ');
-  const bloecke = alle.map((w) => {
-    const gruppen = w.gruppen.map((g) => {
-      const seiten = g.eintraege.filter((e) => e.datei);
-      const link = (e, text) => `<li><a href="${esc(posix.join(w.kurz, e.pfad))}/">${text}</a></li>`;
-      const rest = seiten.length - UEBERSICHT_JE_GRUPPE;
-      const links = seiten.slice(0, rest > 1 ? UEBERSICHT_JE_GRUPPE : seiten.length).map((e) => link(e, esc(e.titel))).join('')
-        + (rest > 1 ? link(seiten[UEBERSICHT_JE_GRUPPE], `<span class="mehr">und ${rest} weitere →</span>`) : '');
-      return `<div><p class="gruppe">${esc(g.titel || 'Loslegen')}</p><ul>${links}</ul></div>`;
-    }).join('\n      ');
-    return `<section class="werkzeug-block">
-    <h3><a href="${w.kurz}/">${esc(w.name)}</a></h3>
-    <div class="spalten">
-      ${gruppen}
+  // Alle Seiten als Vergleich: eine Spalte je Projekt, genau unter seiner Karte, je Gruppe ein Abschnitt.
+  // Die Gruppen aller Projekte in ihrer Reihenfolge zusammengeführt (Loslegen, Handbuch, Für Mitwirkende);
+  // fehlt einem Projekt eine Gruppe, steht ein Strich. Jede Zeile gleich hoch, so liegen Seiten mit
+  // gleichem Namen nebeneinander.
+  const gruppenVon = (w) => w.gruppen.map((g) => ({ titel: g.titel || 'Loslegen', seiten: g.eintraege.filter((e) => e.datei) }));
+  const titel = [];
+  for (const w of alle) {
+    let davor = -1;
+    for (const g of gruppenVon(w)) {
+      const i = titel.indexOf(g.titel);
+      if (i < 0) titel.splice(++davor, 0, g.titel); else davor = i;
+    }
+  }
+  const vergleich = titel.map((t) => `<section class="vergleich-gruppe">
+    <h3 class="gruppe"><span>${esc(t)}</span></h3>
+    <div class="vergleich-spalten">
+      ${alle.map((w) => {
+        const g = gruppenVon(w).find((x) => x.titel === t);
+        const zeilen = g ? g.seiten.map((e) => `<li><a href="${esc(posix.join(w.kurz, e.pfad))}/">${esc(e.titel)}</a></li>`).join('') : '<li class="leer">—</li>';
+        return `<div><p class="spalten-name">${esc(w.name)}</p><ul>${zeilen}</ul></div>`;
+      }).join('\n      ')}
     </div>
-  </section>`;
-  }).join('\n  ');
+  </section>`).join('\n  ');
   const haupt = `<div class="uebersicht-kopf">
-<p class="pfad"><a href="../">Startseite</a><span>/</span>Docs</p>
-<h1>Docs</h1>
-<p class="unterzeile">Anleitungen und Hintergründe zu meinen Projekten. Die Texte stammen aus den
-  Repositories und werden jede Nacht neu gebaut, damit sie zum Code passen.</p>
-<button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Befehl, Einstellung oder Frage suchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
+  <div>
+    <p class="pfad"><a href="../">Startseite</a><span>/</span>Docs</p>
+    <h1>Docs</h1>
+    <p class="unterzeile">Anleitungen und Hintergründe zu meinen Projekten. Die Texte stammen aus den
+      Repositories und werden jede Nacht neu gebaut, damit sie zum Code passen.</p>
+  </div>
+  <button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Befehl, Einstellung oder Frage suchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
 </div>
 <div class="karten">
   ${karten}
 </div>
 <h2 class="abschnitt">Alle Seiten</h2>
-<div class="werkzeug-liste">
-  ${bloecke}
+<div class="vergleich">
+  ${vergleich}
 </div>`;
   writeFileSync(join(lauf.ziel, 'docs', 'index.html'), rahmen({
     titel: 'Docs · Sergey Zakharov',

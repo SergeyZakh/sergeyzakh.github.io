@@ -27,6 +27,8 @@ const SYMBOL = {
   code: '<path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>',
   laden: '<path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/>',
   raus: '<path d="M7 17 17 7M8 7h9v9"/>',
+  mond: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  sonne: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>',
 };
 export const symbol = (name) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${SYMBOL[name]}</svg>`;
 

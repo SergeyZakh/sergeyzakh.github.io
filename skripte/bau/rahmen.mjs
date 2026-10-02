@@ -34,6 +34,24 @@ function projektwahl(rel, aktiv) {
   </details>`;
 }
 
+// Hell oder dunkel (siehe auch index.html, dort dasselbe Skript)
+const THEMA = `<script>
+  // Hell oder dunkel: die gespeicherte Wahl, sonst wie das System. Steht im Kopf, damit vor dem ersten
+  // Zeichnen feststeht, welche Farben gelten, und nichts aufblitzt.
+  (function () {
+    var wurzel = document.documentElement, system = matchMedia("(prefers-color-scheme: dark)");
+    function gespeichert() { try { return localStorage.getItem("thema"); } catch (e) { return null; } }
+    function setzen(t) { wurzel.setAttribute("data-theme", t); }
+    setzen(gespeichert() || (system.matches ? "dunkel" : "hell"));
+    system.addEventListener("change", function (e) { if (!gespeichert()) setzen(e.matches ? "dunkel" : "hell"); });
+    window.themaWechseln = function () {
+      var neu = wurzel.getAttribute("data-theme") === "dunkel" ? "hell" : "dunkel";
+      setzen(neu);
+      try { localStorage.setItem("thema", neu); } catch (e) { /* ohne Speicher gilt die Wahl nur bis zum Neuladen */ }
+    };
+  })();
+</script>`;
+
 export function rahmen({ titel, beschreibung, rel, aktiv = '', haupt, seitenleiste = '', inhalt = '', klasse = '' }) {
   return `<!doctype html>
 <html lang="de">
@@ -45,8 +63,9 @@ export function rahmen({ titel, beschreibung, rel, aktiv = '', haupt, seitenleis
 <meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="${rel}/docs/docs.css">
 <script src="${rel}/docs/docs.js" defer></script>
+${THEMA}
 </head>
-<body class="${klasse}" data-wurzel="${rel}" data-projekt="${aktiv || ''}">
+<body class="${[klasse, seitenleiste && 'mit-leiste'].filter(Boolean).join(' ')}" data-wurzel="${rel}" data-projekt="${aktiv || ''}">
 <svg width="0" height="0" style="position: absolute" aria-hidden="true">${lauf.sz}</svg>
 <a class="springen" href="#hauptteil">Zum Inhalt</a>
 <header class="kopf">
@@ -55,6 +74,7 @@ export function rahmen({ titel, beschreibung, rel, aktiv = '', haupt, seitenleis
   <a class="docs-name" href="${rel}/docs/">Docs</a>
   ${projektwahl(rel, aktiv)}
   <button class="suchknopf" type="button" data-suche aria-label="Suchen">${symbol('lupe')}<span>Docs durchsuchen</span><kbd>Strg</kbd><kbd>K</kbd></button>
+  <button class="themaknopf" type="button" data-thema aria-label="Hell oder dunkel" title="Hell oder dunkel"><span class="mond">${symbol('mond')}</span><span class="sonne">${symbol('sonne')}</span></button>
   ${seitenleiste ? `<button class="menueknopf" type="button" data-menue aria-controls="seitenleiste" aria-expanded="false">${symbol('menue')}<span>Seiten</span></button>` : ''}
   </div>
 </header>

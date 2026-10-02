@@ -32,7 +32,8 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 
 `index.html` ist die Vorlage. Von oben: Titel, Name, ein Satz und zwei Knöpfe (mittig), darunter eine Wand
 aus Bildschirmfotos (3 × 2, leicht nach hinten gekippt, am Handy 2 × 3), dann Projekte, Neues, Kenntnisse und dunkel Kontakt und Fuß; die
-Leiste oben springt dorthin (unter 480 px ohne „Neues“, damit sie in die Breite passt).
+Leiste oben springt dorthin (unter 560 px ohne „Neues“, damit sie in die Breite passt); ihr letzter Knopf
+schaltet zwischen hell und dunkel, die Wahl gilt auch in den Docs.
 Kopf, Abschnittsköpfe und Fuß stehen mittig; hinter dem Kopf liegt ein schlichtes Raster. Die Kenntnisse
 stehen nur in `angaben.mjs`: Nach einer
 Änderung schreibt `node skripte/erzeugen.mjs` sie in die Seite und in die Karte unter `karte/`, die
@@ -55,8 +56,10 @@ Projekt neu aufnehmen; `node skripte/bildschirmfoto.mjs` hilft unter Windows.
 Die Texte bleiben in den Projekt-Repos und werden dort gepflegt. `skripte/seite-bauen.mjs` setzt sie
 im Stil der Startseite:
 
-- Übersicht unter `docs/`: mittig Titel und Suche, je Projekt eine gleich große Karte (Bild, Stand,
-  Umfang mit Lesezeit, „Erste Schritte“), darunter alle Seiten nach Gruppen
+- Übersicht unter `docs/`: Titel links, Suche rechts, je Projekt eine gleich große Karte (Bild, Stand,
+  Umfang mit Lesezeit, „Erste Schritte“), darunter alle Seiten als Vergleich: eine Spalte je Projekt unter
+  seiner Karte, gleichnamige Seiten nebeneinander, ein Strich, wo eine Gruppe fehlt
+- Seitenleiste und Inhaltsverzeichnis auf einem etwas dunkleren Ton; hell und dunkel umschaltbar
 - Seitenleiste je Projekt, rechts ein Inhaltsverzeichnis, das beim Lesen mitläuft
 - Suche mit `Strg` + `K` über alle Docs; Treffer im Projekt, in dem man liest, zuerst. Den Index
   schreibt der Bau, er lädt erst beim Suchen.

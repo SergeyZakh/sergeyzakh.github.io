@@ -14,6 +14,11 @@
     return el;
   }
 
+  // ---------- Hell oder dunkel (themaWechseln steht im Kopf jeder Seite) ----------
+  document.querySelectorAll("[data-thema]").forEach(function (knopf) {
+    knopf.addEventListener("click", function () { window.themaWechseln(); });
+  });
+
   // ---------- Kopieren ----------
   document.querySelectorAll(".code").forEach(function (block) {
     var knopf = element("button", "kopieren", "Kopieren");
