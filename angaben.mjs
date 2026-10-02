@@ -20,6 +20,5 @@ export const angaben = [
   ['Infra', 'Docker, Kubernetes, Terraform, Azure'],
 ];
 
-// Nur in der Profilkarte, auf der Startseite stehen Projekte und Kontakt in eigenen Fenstern
-export const projekte = 'Ausbildungs-Berichtsheft, Fundus (bald)';
+// Nur in der Profilkarte; die Zeile „Projects“ kommt aus projekte.mjs
 export const kontakt = [['GitHub', 'SergeyZakh'], ['LinkedIn', 'sergey-zakharov-jr']];

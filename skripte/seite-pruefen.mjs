@@ -47,7 +47,9 @@ for (const seite of seiten) {
     if (/^(mailto|tel):/i.test(wert) || wert === '#' || wert === '') continue;
     verweise++;
     const [pfad, anker] = wert.split('#');
-    let ziel = pfad ? join(dirname(seite), dekodiert(pfad.split('?')[0])) : seite;
+    // Pfade ab der Wurzel stehen nur auf der 404-Seite
+    const basis = pfad.startsWith('/') ? ZIEL : dirname(seite);
+    let ziel = pfad ? join(basis, dekodiert(pfad.split('?')[0])) : seite;
     if (existsSync(ziel) && statSync(ziel).isDirectory()) ziel = join(ziel, 'index.html');
     if (!existsSync(ziel)) { fehler.push(`${name}: ${wert} führt ins Leere`); continue; }
     if (anker && extname(ziel) === '.html' && !ids(ziel).has(dekodiert(anker))) {

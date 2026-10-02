@@ -206,7 +206,7 @@
   <text x="230" y="220" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Languages.Computer: </tspan><tspan class="punkte">.......</tspan><tspan class="value"> HTML, CSS, SQL, YAML, HCL, LaTeX</tspan></text>
   <text x="230" y="240" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Languages.Real: </tspan><tspan class="punkte">................</tspan><tspan class="value"> Deutsch, Russisch, Englisch</tspan></text>
   <text x="230" y="280" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Infra: </tspan><tspan class="punkte">................</tspan><tspan class="value"> Docker, Kubernetes, Terraform, Azure</tspan></text>
-  <text x="230" y="300" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Projects: </tspan><tspan class="punkte">..........</tspan><tspan class="value"> Ausbildungs-Berichtsheft, Fundus (bald)</tspan></text>
+  <text x="230" y="300" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">Projects: </tspan><tspan class="punkte">.....................</tspan><tspan class="value"> Berichtsheft, Fundus (Vorab)</tspan></text>
   <text x="230" y="340" textLength="88.2" lengthAdjust="spacing"><tspan class="text">- Contact</tspan></text>
   <line class="linie" x1="328.0" y1="335" x2="837.6" y2="335"/>
   <text x="230" y="360" textLength="607.6" lengthAdjust="spacing"><tspan class="punkte">. </tspan><tspan class="key">GitHub: </tspan><tspan class="punkte">.........................................</tspan><tspan class="value"> SergeyZakh</tspan></text>

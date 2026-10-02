@@ -2,7 +2,10 @@
 // Handy zur Schublade, und Strg + K sucht in allen Docs. Der Suchindex (suche.js) lädt erst, wenn
 // jemand sucht. Was aus dem Index kommt, landet nur über textContent in der Seite.
 (function () {
-  var wurzel = document.body.getAttribute("data-wurzel") || ".";
+  // "" auf der 404-Seite: Pfade ab der Wurzel, weil sie unter jedem falschen Pfad ausgeliefert wird
+  var wurzel = document.body.getAttribute("data-wurzel");
+  if (wurzel === null) wurzel = ".";
+  var projekt = document.body.getAttribute("data-projekt") || "";
 
   function element(tag, klasse, text) {
     var el = document.createElement(tag);
@@ -74,6 +77,13 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") setzen(false); });
   }
 
+  // ---------- Projektmenü (ab vier Projekten statt des Umschalters) ----------
+  var wahl = document.querySelector(".projektwahl");
+  if (wahl) {
+    document.addEventListener("click", function (e) { if (wahl.open && !wahl.contains(e.target)) wahl.open = false; });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") wahl.open = false; });
+  }
+
   // ---------- Suche ----------
   var dialog, feld, liste, index = null, treffer = [], gewaehlt = 0;
   var LUPE = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
@@ -124,7 +134,8 @@
     document.head.appendChild(skript);
   }
 
-  // Alle Wörter müssen vorkommen. Treffer in der Überschrift zählen mehr als im Text.
+  // Alle Wörter müssen vorkommen. Treffer in der Überschrift zählen mehr als im Text, Treffer im
+  // Projekt, in dem man gerade liest, etwas mehr als in den anderen.
   function suchen(woerter) {
     var ergebnis = [];
     index.forEach(function (e) {
@@ -134,7 +145,7 @@
         if (!imKopf && !imText) return;
         punkte += (e.t.toLowerCase().indexOf(w) >= 0 ? 12 : 0) + (imKopf ? 4 : 0) + (imText ? 1 : 0);
       }
-      ergebnis.push({ e: e, punkte: punkte });
+      ergebnis.push({ e: e, punkte: punkte + (e.k === projekt ? 3 : 0) });
     });
     ergebnis.sort(function (a, b) { return b.punkte - a.punkte; });
     return ergebnis.slice(0, 40).map(function (r) { return r.e; });
@@ -172,7 +183,8 @@
     var eingabe = feld.value.trim().toLowerCase();
     var woerter = eingabe.split(/\s+/).filter(Boolean);
     // Ohne Eingabe stehen die Seiten selbst da, zum Stöbern
-    treffer = woerter.length ? suchen(woerter) : index.filter(function (e) { return e.u.indexOf("#") < 0; });
+    treffer = woerter.length ? suchen(woerter) : index.filter(function (e) { return e.u.indexOf("#") < 0; })
+      .sort(function (a, b) { return (b.k === projekt) - (a.k === projekt); });
     gewaehlt = Math.min(gewaehlt, Math.max(treffer.length - 1, 0));
     liste.textContent = "";
     if (!treffer.length) {

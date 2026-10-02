@@ -1,25 +1,30 @@
-// Baut die ganze Seite nach _site/: Startseite, Bilder, Schrift, Profilkarte und die Docs.
-// Die Docs entstehen aus Markdown und HTML der Projekt-Repos; welche Dateien, steht in docs.mjs.
-// Aufruf: node skripte/seite-bauen.mjs [--quellen <ordner>] [--ziel <ordner>]
-//   --quellen  Ordner mit den Kopien der Repos (Vorgabe: der Ordner, in dem dieses Repo liegt)
-//   --ziel     Ausgabe (Vorgabe: _site)
-import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } from 'node:fs';
-import { dirname, join, posix } from 'node:path';
-import { fileURLToPath } from 'node:url';
+// Baut die ganze Seite nach _site/: Startseite mit den Projekten, Docs, Bilder, Schrift, Profilkarte,
+// 404-Seite und Sitemap. Projekte, Versionen und Docs kommen aus projekte.mjs und den Repos der Projekte.
+// Aufruf: node skripte/seite-bauen.mjs [--quellen <ordner>] [--ziel <ordner>] [--projekte <datei>]
+//   --quellen   Ordner mit den Repos (Vorgabe: quellen/, sonst der Ordner, in dem dieses Repo liegt)
+//   --ziel      Ausgabe (Vorgabe: _site)
+//   --projekte  andere Liste statt projekte.mjs, zum Ausprobieren
+import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync, readdirSync } from 'node:fs';
+import { dirname, join, posix, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { Marked } from 'marked';
-import { werkzeuge } from '../docs.mjs';
 
 const wurzel = join(dirname(fileURLToPath(import.meta.url)), '..');
 const option = (name, vorgabe) => {
   const i = process.argv.indexOf(name);
   return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : vorgabe;
 };
-const QUELLEN = option('--quellen', join(wurzel, '..'));
+const QUELLEN = [option('--quellen', null), join(wurzel, 'quellen'), join(wurzel, '..')].filter(Boolean);
 const ZIEL = option('--ziel', join(wurzel, '_site'));
-// Ids im Rahmen (hauptteil, seitenleiste) heißen so, dass keine Überschrift aus den Repos sie trifft.
+const { projekte } = await import(pathToFileURL(resolve(option('--projekte', join(wurzel, 'projekte.mjs')))).href);
+// Für Sitemap und 404-Seite, die unter beliebigen Pfaden ausgeliefert wird
+const ADRESSE = 'https://sergeyzakh.github.io/';
 // Was von hier unverändert auf die Seite geht. Die Profilkarte muss dabei sein, das GitHub-Profil lädt sie.
-const FEST = ['index.html', 'bilder', 'schrift', 'karte', 'docs'];
+const FEST = ['bilder', 'schrift', 'karte', 'docs'];
+// Bis zu so vielen Projekten mit Docs steht ein Umschalter in der Kopfleiste, darüber ein Menü
+const UMSCHALTER_BIS = 3;
+// Ids im Rahmen (hauptteil, seitenleiste) heißen so, dass keine Überschrift aus den Repos sie trifft.
 
 const warnungen = [];
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -32,6 +37,9 @@ const entschluesseln = (s) => s
 const ohneTags = (html) => entschluesseln(html.replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ').trim();
 const nurText = (html) => entschluesseln(html.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 const dekodiert = (s) => { try { return decodeURIComponent(s); } catch { return s; } };
+// „Ausbildungs-Berichtsheft“ → „ausbildungs-berichtsheft“, „Änderungen“ → „aenderungen“
+const pfadwort = (s) => s.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 // ---------- Bausteine aus der Startseite ----------
 
@@ -44,10 +52,23 @@ const SYMBOL = {
   menue: '<path d="M4 7h16M4 12h16M4 17h16"/>',
   links: '<path d="m15 18-6-6 6-6"/>',
   rechts: '<path d="m9 18 6-6-6-6"/>',
+  runter: '<path d="m6 9 6 6 6-6"/>',
 };
 const symbol = (name) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${SYMBOL[name]}</svg>`;
 
-// ---------- Werkzeug und Seiten einlesen ----------
+// Breite und Höhe eines Bildes für width/height, damit beim Laden nichts springt. Nur PNG und JPEG.
+function bildgroesse(datei) {
+  const d = readFileSync(datei);
+  if (d.readUInt32BE(0) === 0x89504e47) return [d.readUInt32BE(16), d.readUInt32BE(20)];
+  for (let i = 2; i < d.length;) {
+    const marke = d[i + 1], laenge = d.readUInt16BE(i + 2);
+    if (marke >= 0xc0 && marke <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marke)) return [d.readUInt16BE(i + 7), d.readUInt16BE(i + 5)];
+    i += 2 + laenge;
+  }
+  throw new Error(`${datei}: Größe nicht lesbar, nur PNG und JPEG`);
+}
+
+// ---------- Projekte und Seiten einlesen ----------
 
 function stand(repo, datei) {
   try {
@@ -58,13 +79,14 @@ function stand(repo, datei) {
   }
 }
 
-// Die Gliederung des Fundus-Handbuchs steht in einrichten.py, das sie beim Einrichten ins Wiki legt.
-// Gelesen wird nur der Block des Handbuchs; ändert sich dort die Form, bricht der Bau laut ab.
-function handbuchSeiten(werkzeug, repo, h) {
+// Handbuchseiten, deren Gliederung in einer Python-Datei des Repos steht (Fundus: einrichten.py legt sie
+// beim Einrichten ins Wiki). Gelesen wird nur der Block des Buchs; ändert sich dort die Form, bricht
+// der Bau laut ab statt still Seiten zu verlieren.
+function handbuchSeiten(repo, h) {
   const py = readFileSync(join(repo, h.gliederung), 'utf8');
-  const anfang = py.indexOf('"So funktioniert das Wiki"');
+  const anfang = py.indexOf(`"${h.buch}"`);
   const ende = py.indexOf('\n]\n', anfang);
-  if (anfang < 0 || ende < 0) throw new Error(`${h.gliederung}: Handbuch „So funktioniert das Wiki“ nicht gefunden`);
+  if (anfang < 0 || ende < 0) throw new Error(`${h.gliederung}: Buch „${h.buch}“ nicht gefunden`);
   const eintraege = [];
   for (const m of py.slice(anfang, ende).matchAll(/\{"name": "([^"]+)", "(seiten|datei)": (?:\[|"([^"]+)")/g)) {
     if (m[2] === 'seiten') {
@@ -72,28 +94,66 @@ function handbuchSeiten(werkzeug, repo, h) {
     } else {
       const datei = `${h.ordner}/${m[3]}.html`;
       if (!existsSync(join(repo, datei))) throw new Error(`${h.gliederung} nennt ${datei}, die Datei fehlt`);
-      eintraege.push({ datei, pfad: `${h.pfad}/${m[3].replace(/^\d+-/, '')}`, titel: m[1], handbuch: true });
+      eintraege.push({ datei, pfad: `${h.pfad}/${m[3].replace(/^\d+-/, '')}`, titel: m[1], hinweis: h.hinweis });
     }
   }
   if (!eintraege.some((e) => e.datei)) throw new Error(`${h.gliederung}: keine Handbuchseiten gefunden`);
   return eintraege;
 }
 
-function einlesen(w) {
-  const repo = join(QUELLEN, w.ordner);
-  if (!existsSync(join(repo, 'README.md'))) {
-    throw new Error(`${repo} fehlt. Das Repo ${w.repo} gehört nach ${QUELLEN} (oder --quellen angeben).`);
+// Ohne eigene Gliederung: was ein Repo üblicherweise an Docs hat. README ist der Überblick, docs/*.md
+// stehen darunter (START zuerst), Entwicklung, Mitmachen, Sicherheit und Änderungen für Mitwirkende.
+const FUER_MITWIRKENDE = /^(ENTWICKLUNG|DEVELOPMENT|ARCHITEKTUR|ARCHITECTURE)\.md$/i;
+const FESTE_SEITEN = [['CONTRIBUTING.md', 'mitmachen', 'Mitmachen'], ['SECURITY.md', 'sicherheit', 'Sicherheit'],
+  ['CHANGELOG.md', 'aenderungen', 'Änderungen']];
+
+// Eine # ist der Titel. Mehrere # sind Kapitel (wie in der Fundus-Doku), dann heißt die Seite wie die Datei.
+function titelAus(datei) {
+  const text = readFileSync(datei, 'utf8').replace(/^```[\s\S]*?^```/gm, '');
+  const einsen = [...text.matchAll(/^# (.+)$/gm)];
+  if (einsen.length === 1) return einsen[0][1].replace(/[`*_]/g, '').trim();
+  const name = datei.split(/[\\/]/).pop().replace(/\.md$/i, '').replace(/[-_]+/g, ' ');
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+}
+
+function finden(repo) {
+  const oben = [], unten = [];
+  if (existsSync(join(repo, 'README.md'))) oben.push({ datei: 'README.md', pfad: '', titel: 'Überblick' });
+  const docs = existsSync(join(repo, 'docs')) ? readdirSync(join(repo, 'docs')).filter((f) => /\.md$/i.test(f)) : [];
+  docs.sort((a, b) => (/^start/i.test(b) - /^start/i.test(a)) || a.localeCompare(b, 'de'));
+  for (const f of docs) {
+    const seite = { datei: `docs/${f}`, pfad: pfadwort(f.replace(/\.md$/i, '')), titel: titelAus(join(repo, 'docs', f)) };
+    (FUER_MITWIRKENDE.test(f) ? unten : oben).push(seite);
   }
-  const version = readFileSync(join(repo, 'CHANGELOG.md'), 'utf8').match(/^## \[(\d+\.\d+\.\d+)\]/m)?.[1];
-  const gruppen = w.gruppen.map((g) => ({
+  for (const [datei, pfad, titel] of FESTE_SEITEN) if (existsSync(join(repo, datei))) unten.push({ datei, pfad, titel });
+  return [{ titel: null, seiten: oben }, { titel: 'Für Mitwirkende', seiten: unten }].filter((g) => g.seiten.length);
+}
+
+function repoOrdner(p) {
+  const name = p.repo.split('/')[1];
+  const ort = QUELLEN.map((q) => join(q, name)).find((o) => existsSync(join(o, '.git')) || existsSync(join(o, 'README.md')));
+  if (!ort) throw new Error(`Repo ${p.repo} nicht gefunden. Erst node skripte/quellen-holen.mjs (holt nach quellen/).`);
+  return ort;
+}
+
+function einlesen(p) {
+  const kurz = pfadwort(p.name);
+  if (!p.repo) return { ...p, kurz, seiten: [], gruppen: [] };
+  const repo = repoOrdner(p);
+  const changelog = join(repo, 'CHANGELOG.md');
+  const version = existsSync(changelog) ? readFileSync(changelog, 'utf8').match(/^## \[?v?(\d+\.\d+\.\d+)\]?/m)?.[1] : null;
+  const vorlage = p.docs === false ? [] : p.docs?.gruppen || finden(repo);
+  const gruppen = vorlage.map((g) => ({
     titel: g.titel,
-    eintraege: g.handbuch ? handbuchSeiten(w, repo, g.handbuch) : g.seiten,
+    eintraege: g.handbuch ? handbuchSeiten(repo, g.handbuch) : g.seiten,
   }));
-  const seiten = gruppen.flatMap((g) => g.eintraege.filter((e) => e.datei));
+  const seiten = gruppen.flatMap((g) => g.eintraege.filter((e) => e.datei).map((e) => Object.assign(e, { gruppe: g.titel })));
   for (const s of seiten) {
-    if (!existsSync(join(repo, s.datei))) throw new Error(`${w.repo}: ${s.datei} fehlt (docs.mjs)`);
+    if (!existsSync(join(repo, s.datei))) throw new Error(`${p.repo}: ${s.datei} fehlt (projekte.mjs)`);
   }
-  return { ...w, repoOrdner: repo, version, gruppen, seiten, nachDatei: new Map(seiten.map((s) => [s.datei, s])) };
+  const doppelt = seiten.map((s) => s.pfad).find((pfad, i, alle) => alle.indexOf(pfad) !== i);
+  if (doppelt !== undefined) throw new Error(`${p.name}: zwei Seiten unter docs/${kurz}/${doppelt}`);
+  return { ...p, kurz, repoOrdner: repo, version, gruppen, seiten, nachDatei: new Map(seiten.map((s) => [s.datei, s])) };
 }
 
 // ---------- Markdown ----------
@@ -151,7 +211,7 @@ function markdown(text, seite) {
             const src = posix.relative(posix.dirname(seite.datei), bild.bild);
             return `<figure class="diagramm"><img src="${esc(src)}" alt="${esc(bild.alt)}"></figure>\n`;
           }
-          warnungen.push(`${seite.datei}: Mermaid-Block ohne Bild in docs.mjs, steht als Code da`);
+          warnungen.push(`${seite.datei}: Mermaid-Block ohne Bild in projekte.mjs, steht als Code da`);
         }
         return codeBlock(code, sprache);
       },
@@ -284,11 +344,31 @@ function abschnitte(html, seitentitel) {
 
 // ---------- Seitenrahmen ----------
 
+// Projekte mit Docs, gesetzt, sobald alle eingelesen sind; Kopfleiste und Seitenleiste brauchen sie
+let MIT_DOCS = [];
+
 const versionsMarke = (w) => w.vorab
   ? `<span class="stand vorab">Vorabversion${w.version ? ' ' + esc(w.version) : ''}</span>`
   : `<span class="stand gut">${w.version ? 'v' + esc(w.version) : 'veröffentlicht'}</span>`;
 
-function rahmen({ titel, beschreibung, rel, aktiv, haupt, seitenleiste = '', inhalt = '', klasse = '' }) {
+// Wenige Projekte: Umschalter wie ein Segment. Viele: ein Menü mit Stand und Satz je Projekt.
+function projektwahl(rel, aktiv) {
+  const link = (w, innen) => `<a href="${rel}/docs/${w.kurz}/"${w.kurz === aktiv ? ' aria-current="true"' : ''}>${innen}</a>`;
+  if (MIT_DOCS.length <= UMSCHALTER_BIS) {
+    return `<nav class="umschalter" aria-label="Projekte">
+    ${MIT_DOCS.map((w) => link(w, esc(w.name))).join('\n    ')}
+  </nav>`;
+  }
+  const jetzt = MIT_DOCS.find((w) => w.kurz === aktiv);
+  return `<details class="projektwahl">
+    <summary>${esc(jetzt ? jetzt.name : 'Projekte')}${symbol('runter')}</summary>
+    <nav aria-label="Projekte">
+      ${MIT_DOCS.map((w) => link(w, `<b>${esc(w.name)}</b>${versionsMarke(w)}<small>${esc(w.satz)}</small>`)).join('\n      ')}
+    </nav>
+  </details>`;
+}
+
+function rahmen({ titel, beschreibung, rel, aktiv = '', haupt, seitenleiste = '', inhalt = '', klasse = '' }) {
   return `<!doctype html>
 <html lang="de">
 <head>
@@ -300,15 +380,13 @@ function rahmen({ titel, beschreibung, rel, aktiv, haupt, seitenleiste = '', inh
 <link rel="stylesheet" href="${rel}/docs/docs.css">
 <script src="${rel}/docs/docs.js" defer></script>
 </head>
-<body class="${klasse}" data-wurzel="${rel}">
+<body class="${klasse}" data-wurzel="${rel}" data-projekt="${aktiv || ''}">
 <svg width="0" height="0" style="position: absolute" aria-hidden="true">${SZ}</svg>
 <a class="springen" href="#hauptteil">Zum Inhalt</a>
 <header class="kopf">
   <a class="marke" href="${rel}/" aria-label="Zur Startseite"><svg class="sz" viewBox="0 0 159 89"><use href="#sz"/></svg></a>
   <a class="docs-name" href="${rel}/docs/">Docs</a>
-  <nav class="umschalter" aria-label="Werkzeuge">
-    ${werkzeuge.map((w) => `<a href="${rel}/docs/${w.kurz}/"${w.kurz === aktiv ? ' aria-current="true"' : ''}>${esc(w.name)}</a>`).join('\n    ')}
-  </nav>
+  ${projektwahl(rel, aktiv)}
   <button class="suchknopf" type="button" data-suche aria-label="Suchen">${symbol('lupe')}<span>Docs durchsuchen</span><kbd>Strg</kbd><kbd>K</kbd></button>
   ${seitenleiste ? `<button class="menueknopf" type="button" data-menue aria-controls="seitenleiste" aria-expanded="false">${symbol('menue')}<span>Seiten</span></button>` : ''}
 </header>
@@ -336,19 +414,23 @@ function seitenleiste(w, aktuell, rel) {
       ${liste}
     </ul>`;
   }).join('\n    ');
-  const anderes = werkzeuge.filter((x) => x.kurz !== w.kurz)
-    .map((x) => `<a href="${rel}/docs/${x.kurz}/">${esc(x.name)}</a>`).join('');
+  const andere = MIT_DOCS.filter((x) => x.kurz !== w.kurz);
+  const anderes = !andere.length ? '' : andere.length < UMSCHALTER_BIS
+    ? `<p class="anderes">Auch hier: ${andere.map((x) => `<a href="${rel}/docs/${x.kurz}/">${esc(x.name)}</a>`).join('')}</p>`
+    : `<p class="anderes"><a href="${rel}/docs/">Alle ${MIT_DOCS.length} Projekte</a></p>`;
+  const links = [w.demo && `<a href="${esc(w.demo)}">Demo ↗</a>`, `<a href="https://github.com/${esc(w.repo)}">Code ↗</a>`,
+    w.download && `<a href="${esc(w.download.adresse)}">${esc(w.download.name)} ↓</a>`].filter(Boolean).join('');
   return `<aside class="seiten" id="seitenleiste">
   <div class="werkzeug">
     <a class="werkzeug-name" href="${esc(seitenVerweis(w, w.seiten[0], '', seitenOrdner(w, aktuell)))}">${esc(w.name)}</a>
     ${versionsMarke(w)}
     <p>${esc(w.satz)}</p>
-    <p class="werkzeug-links">${w.demo ? `<a href="${esc(w.demo)}">Demo ↗</a>` : ''}<a href="https://github.com/${esc(w.repo)}">Code ↗</a></p>
+    <p class="werkzeug-links">${links}</p>
   </div>
   <nav aria-label="Seiten zu ${esc(w.name)}">
     ${gruppen}
   </nav>
-  <p class="anderes">Auch hier: ${anderes}</p>
+  ${anderes}
 </aside>`;
 }
 
@@ -372,6 +454,8 @@ function weiterBlaettern(w, s) {
 // ---------- Eine Seite ----------
 
 const suche = [];
+const sitemap = [{ pfad: '' }, { pfad: 'docs/' }];
+const isoDatum = (d) => d && d.split('.').reverse().join('-');
 
 function seiteBauen(w, s) {
   const roh = readFileSync(join(w.repoOrdner, s.datei), 'utf8').replace(/\r\n/g, '\n');
@@ -390,16 +474,15 @@ function seiteBauen(w, s) {
   const fakten = Array.isArray(kopf.fakten) && kopf.fakten.length ? `<dl class="fakten">
   ${kopf.fakten.map((f) => f.split('|').map((t) => esc(t.trim()))).map(([k, v]) => `<div><dt>${k}</dt><dd>${v || ''}</dd></div>`).join('\n  ')}
 </dl>` : '';
-  const herkunft = s.handbuch ? `<p class="herkunft">Aus dem Handbuch, das Fundus beim Einrichten ins Wiki legt.
-  „Unser Wiki“ ist dort das Wiki der Firma, die Fundus betreibt.</p>` : '';
+  const hinweis = s.hinweis ? `<p class="herkunft">${esc(s.hinweis)}</p>` : '';
   const ersterAbsatz = gebaut.html.match(/<p>([\s\S]*?)<\/p>/)?.[1];
   const beschreibung = (kopf.untertitel || (ersterAbsatz ? nurText(ersterAbsatz) : w.satz)).slice(0, 180);
 
-  const haupt = `<p class="pfad"><a href="${rel}/docs/">Docs</a><span>/</span><a href="${esc(seitenVerweis(w, w.seiten[0], '', ordner))}">${esc(w.name)}</a>${s.handbuch ? '<span>/</span>Handbuch' : ''}</p>
+  const haupt = `<p class="pfad"><a href="${rel}/docs/">Docs</a><span>/</span><a href="${esc(seitenVerweis(w, w.seiten[0], '', ordner))}">${esc(w.name)}</a>${s.gruppe ? `<span>/</span>${esc(s.gruppe)}` : ''}</p>
 <h1>${titelHtml}</h1>
 ${kopf.untertitel ? `<p class="unterzeile">${esc(kopf.untertitel)}</p>` : ''}
 <p class="meta">${meta}</p>
-${fakten}${herkunft}
+${fakten}${hinweis}
 <article class="text">
 ${gebaut.html.trim()}
 </article>
@@ -417,18 +500,25 @@ ${weiterBlaettern(w, s)}
 
   const url = posix.relative('docs', ordner);
   for (const a of abschnitte(gebaut.html, titelText)) {
-    suche.push({ w: w.name, s: s.titel, t: a.t, u: `${url ? url + '/' : ''}${a.a ? '#' + a.a : ''}`, x: a.x });
+    suche.push({ k: w.kurz, w: w.name, s: s.titel, t: a.t, u: `${url ? url + '/' : ''}${a.a ? '#' + a.a : ''}`, x: a.x });
   }
+  sitemap.push({ pfad: ordner + '/', datum: isoDatum(datum) });
   return woerter;
 }
 
 // ---------- Übersicht unter docs/ ----------
 
+// Je Gruppe so viele Seiten, danach ein Verweis auf die nächste; das Fundus-Handbuch allein hat 16
+const UEBERSICHT_JE_GRUPPE = 8;
+
 function uebersicht(alle) {
   const bloecke = alle.map((w) => {
     const gruppen = w.gruppen.map((g) => {
       const seiten = g.eintraege.filter((e) => e.datei);
-      const links = seiten.map((e) => `<li><a href="${esc(posix.join(w.kurz, e.pfad))}/">${esc(e.titel)}</a></li>`).join('');
+      const link = (e, text) => `<li><a href="${esc(posix.join(w.kurz, e.pfad))}/">${text}</a></li>`;
+      const rest = seiten.length - UEBERSICHT_JE_GRUPPE;
+      const links = seiten.slice(0, rest > 1 ? UEBERSICHT_JE_GRUPPE : seiten.length).map((e) => link(e, esc(e.titel))).join('')
+        + (rest > 1 ? link(seiten[UEBERSICHT_JE_GRUPPE], `<span class="mehr">und ${rest} weitere →</span>`) : '');
       return `<div><p class="gruppe">${esc(g.titel || 'Loslegen')}</p><ul>${links}</ul></div>`;
     }).join('\n      ');
     return `<section class="werkzeug-block">
@@ -444,7 +534,7 @@ function uebersicht(alle) {
   }).join('\n  ');
   const haupt = `<p class="pfad"><a href="../">Startseite</a><span>/</span>Docs</p>
 <h1>Docs</h1>
-<p class="unterzeile">Anleitungen und Hintergründe zu meinen Werkzeugen. Die Texte stammen aus den
+<p class="unterzeile">Anleitungen und Hintergründe zu meinen Projekten. Die Texte stammen aus den
   Repositories und werden jede Nacht neu gebaut, damit sie zum Code passen.</p>
 <button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Befehl, Einstellung oder Frage suchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
 <div class="werkzeug-liste">
@@ -452,9 +542,86 @@ function uebersicht(alle) {
 </div>`;
   writeFileSync(join(ZIEL, 'docs', 'index.html'), rahmen({
     titel: 'Docs · Sergey Zakharov',
-    beschreibung: 'Anleitungen und Hintergründe zu Berichtsheft und Fundus.',
-    rel: '..', aktiv: null, haupt, klasse: 'uebersicht',
+    beschreibung: `Anleitungen und Hintergründe zu ${alle.map((w) => w.name).join(', ').replace(/, ([^,]*)$/, ' und $1')}.`,
+    rel: '..', haupt, klasse: 'uebersicht',
   }));
+}
+
+// ---------- Startseite: der Projektteil ----------
+
+// Mit Bild steht ein Projekt groß da, mit Bildschirmfoto und drei Punkten; ohne Bild kompakt in einer Zeile.
+function projektAbschnitt(p, nr) {
+  const verweise = [
+    p.demo && `<a href="${esc(p.demo)}">Demo</a>`,
+    p.seiten.length && `<a class="intern" href="docs/${p.kurz}/">Docs</a>`,
+    p.repo && `<a href="https://github.com/${esc(p.repo)}">Code</a>`,
+    p.download && `<a class="laden" href="${esc(p.download.adresse)}">${esc(p.download.name)}</a>`,
+  ].filter(Boolean).join('\n          ');
+  const marke = p.vorab ? '<span class="stand vorab">Vorabversion</span>'
+    : p.version ? `<span class="stand gut">v${esc(p.version)}</span>` : '';
+  const zeile = `      <div class="projekt-zeile">
+        <span class="nr">${String(nr).padStart(2, '0')}</span>
+        <h2>${esc(p.name)}</h2>
+        ${marke}
+        <p class="satz">${esc(p.satz)}</p>
+        <div class="verweise">
+          ${verweise}
+        </div>
+      </div>`;
+  if (!p.bild) return `    <article class="projekt kurz">\n${zeile}\n    </article>`;
+
+  const groesse = (datei) => {
+    if (!existsSync(join(wurzel, datei))) throw new Error(`${p.name}: Bild ${datei} fehlt (projekte.mjs)`);
+    return bildgroesse(join(wurzel, datei));
+  };
+  const [breite, hoehe] = groesse(p.bild.datei);
+  // Am Handy wäre ein ganzer Bildschirm zu klein, dort steht der Ausschnitt
+  const handy = p.bild.handy ? (([b, h]) => `<source media="(max-width: 860px)" srcset="${esc(p.bild.handy)}" width="${b}" height="${h}">`)(groesse(p.bild.handy)) : '';
+  // Kleine Bilder nicht über ihre Größe ziehen, sonst werden sie unscharf
+  const bild = `      <figure class="bild${breite < 1400 ? ' schmal' : ''}">
+        <picture>${handy}<img src="${esc(p.bild.datei)}" width="${breite}" height="${hoehe}" loading="lazy" alt="${esc(p.bild.alt)}"></picture>
+      </figure>`;
+  const punkte = Object.entries(p.punkte || {}).slice(0, 3)
+    .map(([k, v]) => `<div><h3>${esc(k)}</h3><p>${esc(v)}</p></div>`).join('\n        ');
+  return `    <article class="projekt">
+${zeile}
+${bild}${punkte ? `\n      <div class="drei">\n        ${punkte}\n      </div>` : ''}
+    </article>`;
+}
+
+function startseiteBauen(alle) {
+  const teil = `  <section id="projekte" class="breite">
+    <div class="abschnitt-kopf"><span class="versal">Projekte</span><span class="versal">${String(alle.length).padStart(2, '0')}</span></div>
+${alle.map((p, i) => projektAbschnitt(p, i + 1)).join('\n')}
+  </section>`;
+  const muster = /(<!-- projekte:anfang -->)[\s\S]*?(\n\s*<!-- projekte:ende -->)/;
+  if (!muster.test(startseite)) throw new Error('Markierungen <!-- projekte:anfang/ende --> fehlen in index.html');
+  writeFileSync(join(ZIEL, 'index.html'), startseite.replace(muster, `$1\n${teil}$2`));
+}
+
+// ---------- 404, Sitemap ----------
+
+// GitHub Pages liefert 404.html unter jedem falschen Pfad aus; deshalb Pfade ab der Wurzel (rel = '')
+function seite404() {
+  const haupt = `<p class="pfad"><a href="/">Startseite</a><span>/</span>404</p>
+<h1>Nicht gefunden</h1>
+<p class="unterzeile">Diese Seite gibt es nicht (mehr). Vielleicht ist sie umgezogen: Die Suche findet
+  alles in den Docs.</p>
+<button class="suchfeld" type="button" data-suche>${symbol('lupe')}<span>Docs durchsuchen …</span><kbd>Strg</kbd><kbd>K</kbd></button>
+<p class="meta"><a href="/">Zur Startseite</a><span>·</span><a href="/docs/">Zu den Docs</a></p>`;
+  writeFileSync(join(ZIEL, '404.html'), rahmen({
+    titel: 'Nicht gefunden · Sergey Zakharov', beschreibung: 'Diese Seite gibt es nicht.', rel: '', haupt, klasse: 'uebersicht',
+  }));
+}
+
+function sitemapSchreiben() {
+  const eintraege = sitemap.map((e) => `  <url><loc>${esc(ADRESSE + encodeURI(e.pfad))}</loc>${e.datum ? `<lastmod>${e.datum}</lastmod>` : ''}</url>`);
+  writeFileSync(join(ZIEL, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${eintraege.join('\n')}
+</urlset>
+`);
+  writeFileSync(join(ZIEL, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${ADRESSE}sitemap.xml\n`);
 }
 
 // ---------- Los ----------
@@ -463,13 +630,17 @@ rmSync(ZIEL, { recursive: true, force: true });
 mkdirSync(ZIEL, { recursive: true });
 for (const f of FEST) cpSync(join(wurzel, f), join(ZIEL, f), { recursive: true });
 
-const alle = werkzeuge.map(einlesen);
+const alle = projekte.map(einlesen);
+MIT_DOCS = alle.filter((p) => p.seiten.length);
 let woerter = 0;
-for (const w of alle) for (const s of w.seiten) woerter += seiteBauen(w, s);
-uebersicht(alle);
+for (const w of MIT_DOCS) for (const s of w.seiten) woerter += seiteBauen(w, s);
+startseiteBauen(alle);
+uebersicht(MIT_DOCS);
+seite404();
+sitemapSchreiben();
 // Als Skript statt JSON, damit die Suche auch ohne Server (Datei im Browser geöffnet) lädt
 writeFileSync(join(ZIEL, 'docs', 'suche.js'), `window.DOCS_SUCHE = ${JSON.stringify(suche)};\n`);
 
-const seiten = alle.reduce((n, w) => n + w.seiten.length, 0);
-console.log(`gebaut: ${ZIEL} mit ${seiten} Docs-Seiten, ${suche.length} Abschnitten in der Suche, rund ${woerter} Wörtern`);
+const seiten = MIT_DOCS.reduce((n, w) => n + w.seiten.length, 0);
+console.log(`gebaut: ${ZIEL} mit ${alle.length} Projekten, ${seiten} Docs-Seiten, ${suche.length} Abschnitten in der Suche, rund ${woerter} Wörtern`);
 for (const w of warnungen) console.warn('Warnung: ' + w);

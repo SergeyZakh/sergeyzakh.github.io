@@ -4,7 +4,8 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { zahlen, angaben, projekte, kontakt } from '../angaben.mjs';
+import { zahlen, angaben, kontakt } from '../angaben.mjs';
+import { projekte } from '../projekte.mjs';
 
 const wurzel = join(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -19,11 +20,26 @@ const ZEILE = 20;         // Zeilenabstand
 const TEXT_X = 230;
 const TEXT_Y = 40;
 
+// Zeile „Projects“: so viele Namen, wie neben die längste Angabe passen, der Rest als „+n“.
+// Sonst würde jedes neue Projekt die Karte breiter machen.
+const PROJEKTE_PLATZ = 44;
+function projektzeile() {
+  const namen = projekte.map((p) => p.name + (p.vorab ? ' (Vorab)' : ''));
+  let zeile = '';
+  for (let i = 0; i < namen.length; i++) {
+    const weiter = (zeile ? zeile + ', ' : '') + namen[i];
+    const rest = namen.length - i - 1;
+    if ((weiter + (rest ? ` +${rest}` : '')).length > PROJEKTE_PLATZ) return `${zeile} +${namen.length - i}`;
+    zeile = weiter;
+  }
+  return zeile;
+}
+
 // Zeilen: [schluessel, wert] oder {kopf}, {titel}, {stats} oder null (Leerzeile)
 const zeilen = [
   { kopf: 'sz@github' },
   ...angaben.map((a) => a && [a[0], a[1]]),
-  ['Projects', projekte],
+  ['Projects', projektzeile()],
   null,
   { titel: 'Contact' },
   ...kontakt,

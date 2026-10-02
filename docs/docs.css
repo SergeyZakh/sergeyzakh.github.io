@@ -79,6 +79,24 @@ kbd {
 .umschalter a { padding: 5px 14px; border-radius: 999px; font-size: 14px; color: var(--schiefer); }
 .umschalter a:hover { color: var(--text); }
 .umschalter a[aria-current] { background: var(--flaeche); color: var(--text); box-shadow: var(--schatten); }
+/* Ab vier Projekten: Menü mit Stand und Satz je Projekt statt des Umschalters. Kein Glas: In der
+   gläsernen Kopfleiste würde es nur die Kopfleiste unscharf zeigen, nicht die Seite darunter. */
+.projektwahl { position: relative; margin-left: 8px; }
+.projektwahl summary {
+  list-style: none; display: flex; align-items: center; gap: 6px; padding: 6px 10px 6px 14px; border-radius: 999px;
+  background: var(--hauch); font-size: 14px; cursor: pointer;
+}
+.projektwahl summary::-webkit-details-marker { display: none; }
+.projektwahl summary svg { width: 16px; height: 16px; color: var(--schiefer); transition: transform .15s; }
+.projektwahl[open] summary svg { transform: rotate(180deg); }
+.projektwahl nav {
+  position: absolute; top: calc(100% + 8px); left: 0; z-index: 40; width: 360px; max-height: 70vh; overflow-y: auto; padding: 6px;
+  border: 1px solid var(--linie); border-radius: 14px; background: var(--flaeche); box-shadow: var(--schatten-hoch);
+}
+.projektwahl nav a { display: block; padding: 9px 12px; border-radius: 10px; }
+.projektwahl nav a:hover, .projektwahl nav a[aria-current] { background: var(--band); }
+.projektwahl nav b { font-weight: 600; margin-right: 8px; }
+.projektwahl nav small { display: block; margin-top: 2px; font-size: 13px; color: var(--schiefer); line-height: 1.4; }
 .suchknopf {
   margin-left: auto; width: 290px; height: 38px; display: flex; align-items: center; gap: 10px; padding: 0 7px 0 14px;
   border: 1px solid var(--linie); border-radius: 999px; background: var(--flaeche); color: var(--leise); cursor: pointer;
@@ -235,6 +253,7 @@ h1 { margin: 12px 0 0; font-size: clamp(36px, 4.2vw, 54px); line-height: 1.04; f
 .spalten ul { list-style: none; margin: 0; padding: 0; }
 .spalten a { display: inline-block; padding: 3px 0; font-size: 15.5px; text-decoration: none; border-bottom: 1px solid transparent; }
 .spalten a:hover { border-color: currentColor; }
+.spalten .mehr { color: var(--schiefer); }
 
 /* ---------- Suche: Glas wie die Schnellsuche in Fundus ---------- */
 dialog.suche {
@@ -289,6 +308,7 @@ dialog.suche::backdrop { background: rgba(22, 22, 26, .25); backdrop-filter: blu
 @media (max-width: 640px) {
   .kopf { padding: 0 12px; }
   .umschalter { display: none; }
+  .projektwahl nav { position: fixed; top: calc(var(--kopf) + 6px); left: 12px; right: 12px; width: auto; }
   .docs-name { border-right: 0; }
   .suchknopf { width: 38px; padding: 0; justify-content: center; }
   .suchknopf span, .suchknopf kbd, .suche-fuss { display: none; }
