@@ -103,7 +103,8 @@ export function uebersicht(alle) {
 }
 // ---------- Startseite: der Projektteil ----------
 
-// Mit Bild steht ein Projekt groß da, mit Bildschirmfoto und drei Punkten; ohne Bild kompakt im Raster.
+// Jedes Projekt ist eine Karte: Bild (wenn es eins gibt), Kopf, Knöpfe, drei Punkte. Wie die Karten
+// nebeneinander stehen und gleich groß werden, regelt index.html.
 // Die wichtigste Aktion (Demo, sonst Docs) ist ein dunkler Knopf, wie „Exportieren“ im Berichtsheft.
 export function aktionen(p, docs) {
   const knoepfe = [
@@ -112,20 +113,20 @@ export function aktionen(p, docs) {
     p.repo && ['code', `https://github.com/${p.repo}`, 'Code'],
     p.download && ['laden', p.download.adresse, p.download.name],
   ].filter(Boolean);
-  return knoepfe.map(([zeichen, href, text], i) =>
-    `<a class="knopf${i === 0 ? ' voll' : ''}" href="${esc(href)}">${symbol(zeichen)}${esc(text)}</a>`).join('\n          ');
+  // Herunterladen nur als Zeichen: Mit dem Dateinamen als Text brauchte es eine zweite Zeile, und die Karten
+  // stünden mit verschieden vielen Knopfzeilen nebeneinander. Der Name steht im Hinweis und für Vorleser;
+  // am Handy, wo der Knopf eine halbe Zeile breit ist, steht „Herunterladen“ daneben.
+  return knoepfe.map(([zeichen, href, text], i) => zeichen === 'laden'
+    ? `<a class="knopf rund" href="${esc(href)}" title="${esc(text)} herunterladen" aria-label="${esc(text)} herunterladen">${symbol(zeichen)}<span class="wort">Herunterladen</span></a>`
+    : `<a class="knopf${i === 0 ? ' voll' : ''}" href="${esc(href)}">${symbol(zeichen)}${esc(text)}</a>`).join('\n          ');
 }
 
 export const standText = (p) => [p.vorab ? `Vorabversion${p.version ? ' ' + p.version : ''}` : p.version && `v${p.version}`, p.datum]
   .filter(Boolean).join(' · ');
 
-function projektAbschnitt(p, nr, gespiegelt) {
+function projektAbschnitt(p) {
   const stand = standText(p);
-  // Kopf, Aktionen, Bild und Punkte stehen nebeneinander im Raster des Artikels; wo was steht, regelt
-  // index.html je Breite: am PC Text und Bild nebeneinander, abwechselnd links und rechts, am Handy
-  // untereinander mit dem Bild vor den Punkten.
   const kopf = `      <div class="projekt-kopf">
-        <span class="nr">${String(nr).padStart(2, '0')}</span>
         <h3>${esc(p.name)}</h3>
         ${stand ? `<span class="stand ${p.vorab ? 'vorab' : 'gut'}">${esc(stand)}</span>` : ''}
         <p class="satz">${esc(p.satz)}</p>
@@ -136,7 +137,7 @@ function projektAbschnitt(p, nr, gespiegelt) {
   const punkte = Object.entries(p.punkte || {}).slice(0, 3)
     .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('\n        ');
   const punkteHtml = punkte ? `\n      <dl class="punkte">\n        ${punkte}\n      </dl>` : '';
-  if (!p.bild) return `    <article class="projekt kurz">\n${kopf}${punkteHtml}\n    </article>`;
+  if (!p.bild) return `    <article class="projekt">\n${kopf}${punkteHtml}\n    </article>`;
 
   const groesse = (datei) => {
     if (!existsSync(join(lauf.wurzel, datei))) throw new Error(`${p.name}: Bild ${datei} fehlt (projekte.mjs)`);
@@ -149,9 +150,9 @@ function projektAbschnitt(p, nr, gespiegelt) {
   const ziel = p.demo || (p.seiten.length ? `docs/${p.kurz}/` : null);
   const bild = `<picture>${handy}<img src="${esc(p.bild.datei)}" width="${breite}" height="${hoehe}" loading="lazy" alt="${esc(p.bild.alt)}"></picture>`;
   // Kleine Bilder nicht über ihre Größe ziehen, sonst werden sie unscharf
-  return `    <article class="projekt${gespiegelt ? ' gespiegelt' : ''}">
-${kopf}
-      <figure class="bild${breite < 1400 ? ' schmal' : ''}">${ziel ? `<a href="${esc(ziel)}" tabindex="-1" aria-hidden="true">${bild}</a>` : bild}</figure>${punkteHtml}
+  return `    <article class="projekt">
+      <figure class="bild${breite < 1400 ? ' schmal' : ''}">${ziel ? `<a href="${esc(ziel)}" tabindex="-1" aria-hidden="true">${bild}</a>` : bild}</figure>
+${kopf}${punkteHtml}
     </article>`;
 }
 
@@ -188,22 +189,16 @@ ${zeilen.join('\n')}
   </div></section>`;
 }
 
-// Projekte mit Bild stehen groß und abwechselnd gespiegelt; die ohne Bild, die direkt aufeinander
-// folgen, nebeneinander in einem Raster, damit neben ihnen nicht eine halbe Zeile leer bleibt.
+// Karten mit Bild und Karten ohne Bild haben verschieden viele Zeilen, deshalb je ein eigenes Raster;
+// aufeinanderfolgende Projekte derselben Art kommen zusammen, die Reihenfolge aus projekte.mjs bleibt.
 function projekteBauen(alle) {
-  const teile = [];
-  let gross = 0, weitere = [];
-  const weitereAbschliessen = () => {
-    if (weitere.length) teile.push(`    <div class="weitere">\n${weitere.join('\n')}\n    </div>`);
-    weitere = [];
-  };
-  alle.forEach((p, i) => {
-    if (!p.bild) return weitere.push(projektAbschnitt(p, i + 1));
-    weitereAbschliessen();
-    teile.push(projektAbschnitt(p, i + 1, gross++ % 2 === 1));
-  });
-  weitereAbschliessen();
-  return teile.join('\n');
+  const gruppen = [];
+  for (const p of alle) {
+    const art = p.bild ? 'mit' : 'ohne';
+    if (gruppen.at(-1)?.art !== art) gruppen.push({ art, karten: [] });
+    gruppen.at(-1).karten.push(projektAbschnitt(p));
+  }
+  return gruppen.map(({ art, karten }) => `    <div class="karten${art === 'ohne' ? ' ohne-bild' : ''}">\n${karten.join('\n')}\n    </div>`).join('\n');
 }
 
 // Bühne unter dem Kopf: die Bildschirmfotos aus buehne der ersten beiden Projekte, die eines haben.

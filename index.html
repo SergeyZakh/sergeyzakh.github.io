@@ -99,56 +99,56 @@
   .band-kopf h2 { margin: 0; font-size: clamp(36px, 4vw, 52px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
   .band-kopf p { margin: 0; font-size: 18px; line-height: 1.5; color: var(--schiefer); max-width: 52ch; }
 
-  /* ---------- Projekte als Fallstudien ----------
-     Text und Bild nebeneinander, von Projekt zu Projekt abwechselnd links und rechts. Kopf, Aktionen,
-     Bild und Punkte sind Geschwister im Raster des Artikels; so kann das Bild am Handy vor die Punkte
-     rücken, ohne dass sich die Reihenfolge im HTML ändert. */
-  .projekt {
-    display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: 64px; align-items: start;
-    grid-template-rows: auto auto 1fr; grid-template-areas: "kopf bild" "aktionen bild" "punkte bild";
-    padding: 56px 0 96px; border-top: 1px solid var(--linie);
+  /* ---------- Projekte als Karten ----------
+     Gleich große Karten nebeneinander. Jede Karte ist ein Subgrid über die Zeilen des Rasters: Bild, Kopf,
+     Knöpfe und die drei Punkte stehen in allen Karten auf derselben Linie. Die Punkte liegen in 1fr-Zeilen;
+     in einem Raster ohne feste Höhe werden die alle so hoch wie die höchste, also jeder Punkt gleich groß.
+     Rand und Innenabstand einer Karte zählen bei einem Subgrid zur ersten und letzten Zeile; deshalb hat
+     jede Karte unten eine eigene leere Zeile dafür, sonst wären der erste und letzte Punkt kleiner. */
+  .karten {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); column-gap: 32px;
+    grid-auto-rows: auto auto auto 1fr 1fr 1fr auto; margin-bottom: -32px;
   }
-  .projekt:last-child { padding-bottom: 0; }
-  .projekt.gespiegelt { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "bild kopf" "bild aktionen" "bild punkte"; }
-  .projekt-kopf { grid-area: kopf; }
-  .nr { display: block; margin-bottom: 14px; font-size: 14px; color: var(--leise); font-variant-numeric: tabular-nums; }
-  .projekt h3 { margin: 0; font-size: clamp(40px, 4.6vw, 64px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
-  .stand { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 14px; }
+  .karten.ohne-bild { grid-auto-rows: auto auto 1fr 1fr 1fr auto; }
+  .karten + .karten { margin-top: 64px; }
+  .projekt {
+    display: grid; grid-row: span 7; grid-template-rows: subgrid; margin-bottom: 32px; padding-bottom: 32px;
+    border: 1px solid var(--linie); border-radius: 20px; background: var(--grund); overflow: hidden;
+  }
+  .ohne-bild .projekt { grid-row: span 6; }
+  .projekt-kopf { padding: 28px 32px 0; }
+  .projekt h3 { margin: 0; font-size: clamp(32px, 3.2vw, 40px); line-height: 1.05; font-weight: 600; letter-spacing: -.03em; }
+  .stand { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; }
   .stand::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
   .stand.gut { color: var(--gut); }
   .stand.vorab { color: var(--bernstein); }
-  .satz { margin: 18px 0 0; font-size: 21px; line-height: 1.4; color: var(--schiefer); max-width: 30ch; letter-spacing: -.01em; }
+  .satz { margin: 14px 0 0; font-size: 18px; line-height: 1.45; color: var(--schiefer); letter-spacing: -.01em; }
+  .aktionen { display: flex; flex-wrap: wrap; align-content: start; gap: 10px; padding: 24px 32px 28px; }
   /* Pillen wie in Berichtsheft und Fundus; die wichtigste Aktion dunkel wie „Exportieren“ */
-  .aktionen { grid-area: aktionen; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
   .knopf {
     display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px 0 16px; border-radius: 999px;
     border: 1px solid var(--linie); background: var(--flaeche); font-size: 15px; font-weight: 500; white-space: nowrap;
     transition: border-color .15s, background .15s;
   }
   .knopf:hover { border-color: var(--linie-fest); }
+  .knopf.rund { width: 44px; padding: 0; justify-content: center; }
+  .knopf.rund .wort { display: none; }
   .knopf.voll { background: var(--text); border-color: var(--text); color: var(--grund); }
   .knopf.voll:hover { background: var(--voll-hover); border-color: var(--voll-hover); }
   .knopf svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-  .punkte { grid-area: punkte; margin: 44px 0 0; border-top: 1px solid var(--linie); }
-  .punkte div { padding: 14px 0 15px; border-bottom: 1px solid var(--linie); }
+  .punkte { grid-row: span 3; display: grid; grid-template-rows: subgrid; margin: 0; padding: 0 32px; }
+  .punkte div { padding: 14px 0 15px; border-top: 1px solid var(--linie); }
+  .punkte div:last-child { border-bottom: 1px solid var(--linie); }
   .punkte dt { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
-  .punkte dd { margin: 5px 0 0; font-size: 15.5px; line-height: 1.5; max-width: 44ch; }
+  .punkte dd { margin: 5px 0 0; font-size: 15px; line-height: 1.5; }
 
   /* Das Bild liegt auf einer ruhigen Fläche, damit helle Bildschirmfotos auch im dunklen Modus nicht
-     blenden, und schaut unten aus ihr heraus. Ein Klick führt zur Demo. */
-  .bild { grid-area: bild; margin: 0; padding: clamp(16px, 2.6vw, 36px) clamp(16px, 2.6vw, 36px) 0; background: var(--buehne); border-radius: 18px; overflow: hidden; }
+     blenden, und schaut unten aus ihr heraus. Feste Seitenverhältnisse, damit jede Bühne gleich hoch ist. */
+  .bild { margin: 0; aspect-ratio: 16 / 10; padding: clamp(20px, 2.4vw, 32px) clamp(20px, 2.4vw, 32px) 0; background: var(--buehne); overflow: hidden; }
   .bild a { display: block; }
-  .bild img { display: block; width: 100%; height: auto; margin: 0 auto; border-radius: 10px 10px 0 0; box-shadow: var(--schatten-bild); transition: transform .3s ease; }
+  .bild img { display: block; width: 100%; height: auto; margin: 0 auto; border-radius: 8px 8px 0 0; box-shadow: var(--schatten-bild); transition: transform .3s ease; }
   .bild a:hover img { transform: translateY(-4px); }
   .bild.schmal img { max-width: 760px; }
-
-  /* Ohne Bildschirmfoto: nebeneinander im Raster, je Spalte mindestens 300 px, am Handy untereinander */
-  .weitere { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); column-gap: 48px; }
-  .weitere .projekt.kurz { display: block; padding: 32px 0 40px; border-top: 1px solid var(--linie); }
-  .projekt.kurz h3 { font-size: clamp(32px, 3.2vw, 40px); }
-  .projekt.kurz .satz { font-size: 18px; }
-  .projekt.kurz .aktionen { margin-top: 24px; }
-  .projekt.kurz .punkte { margin-top: 28px; }
 
   /* ---------- Neues aus den CHANGELOGs ---------- */
   .neues { border-top: 1px solid var(--linie); }
@@ -229,21 +229,16 @@
     /* Zwei Zeilen statt eines Umbruchs mitten in „· in Ausbildung“ */
     .kopf .versal span { display: block; }
     .kopf .versal .trenner { display: none; }
-    /* Untereinander: Kopf, Aktionen, Bild, dann die Punkte */
-    .projekt, .projekt.gespiegelt {
-      grid-template-columns: minmax(0, 1fr); grid-template-rows: none;
-      grid-template-areas: "kopf" "aktionen" "bild" "punkte"; padding: 32px 0 56px;
-    }
     .band-kopf { grid-template-columns: minmax(0, 1fr); row-gap: 12px; margin-bottom: 32px; }
     .band-kopf p { font-size: 16.5px; }
-    .weitere .projekt.kurz { padding: 28px 0 36px; }
-    .nr { margin-bottom: 10px; }
-    .aktionen { margin-top: 22px; gap: 8px; }
-    .bild, .punkte { margin-top: 32px; }
+    .karten { column-gap: 20px; margin-bottom: -20px; }
+    .projekt { margin-bottom: 20px; padding-bottom: 24px; border-radius: 16px; }
+    .projekt-kopf { padding: 22px 22px 0; }
+    .aktionen { padding: 20px 22px 22px; gap: 8px; }
+    .punkte { padding: 0 22px; }
     .knopf { height: 42px; padding: 0 16px 0 13px; font-size: 14.5px; }
+    .knopf.rund { width: 42px; padding: 0; }
     .leiste .trenner { margin: 0 1px; }
-    .satz { font-size: 19px; }
-    .bild { border-radius: 14px; }
     .bild img { border-radius: 6px 6px 0 0; }
     .neu { grid-template-columns: minmax(0, 1fr) 20px; gap: 4px 12px; padding: 16px 0; }
     .neu time { grid-column: 1; grid-row: 1; }
@@ -265,6 +260,14 @@
     .kontakt .pfeil { width: 44px; height: 44px; font-size: 18px; }
     .fuss { grid-template-columns: 1fr; padding-top: 40px; padding-bottom: 48px; }
     .fuss .sz { order: -1; }
+  }
+  /* Auf dem Handy passen vier Knöpfe nicht in eine Zeile: dann zwei gleich breite Spalten statt einer
+     ausgefransten zweiten Zeile */
+  @media (max-width: 560px) {
+    .aktionen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .aktionen .knopf { justify-content: center; }
+    .knopf.rund { width: auto; }
+    .knopf.rund .wort { display: inline; }
   }
   /* Die Pille muss auch auf kleinen Handys in die Breite passen: erst ohne „Neues“ (folgt ohnehin
      direkt auf die Projekte), dann enger, unter 340 px ohne SZ */

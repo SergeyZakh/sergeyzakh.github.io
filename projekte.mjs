@@ -9,10 +9,10 @@
 //   demo      Adresse einer Demo                              (optional)
 //   download  { adresse, name } für den Knopf zum Herunterladen (optional)
 //   bild      { datei, handy, alt }: Bildschirmfoto unter bilder/; handy ist ein Ausschnitt für
-//             schmale Bildschirme. Mit Bild steht das Projekt groß auf der Startseite, ohne kompakt.
+//             schmale Bildschirme. Steht oben auf der Karte des Projekts; Karten ohne Bild haben ein eigenes Raster.
 //   buehne    zweites Bildschirmfoto unter bilder/ für die Bühne unter dem Kopf der Startseite; die
 //             ersten beiden Projekte mit buehne stehen dort, überlappend   (optional)
-//   punkte    { Überschrift: Text } unter dem Bild, höchstens drei   (optional)
+//   punkte    { Überschrift: Text } unten auf der Karte, höchstens drei   (optional)
 //   docs      weglassen oder true: Seiten werden gefunden (README, docs/*.md, CONTRIBUTING,
 //             SECURITY, CHANGELOG); false: keine Docs; { gruppen } für eine eigene Gliederung:
 //               gruppen  Abschnitte der Seitenleiste, titel null = ohne Überschrift

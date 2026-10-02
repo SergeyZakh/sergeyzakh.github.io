@@ -8,11 +8,10 @@ Anfragen nach außen; auch die Schrift (Instrument Sans, wie in Berichtsheft und
 
 Ein Eintrag in `projekte.mjs`, mehr nicht. Was daraus folgt:
 
-- **Startseite:** ein Abschnitt mit Name, Stand, Satz und Knöpfen (die Demo dunkel, sonst die Docs).
-  Mit `bild` groß: Text und Bildschirmfoto nebeneinander, von Projekt zu Projekt abwechselnd links und
-  rechts, darunter drei Punkte. Ohne Bild kompakt; aufeinanderfolgende stehen nebeneinander im
-  Raster. Nummer und Anzahl zählen sich selbst. Mit `buehne` (ein zweites Bildschirmfoto) steht das
-  Projekt zusätzlich unter dem Kopf; dort sind Platz für die ersten zwei.
+- **Startseite:** eine Karte mit Name, Stand, Satz, Knöpfen (die Demo dunkel, sonst die Docs) und den
+  Punkten; mit `bild` oben das Bildschirmfoto. Alle Karten sind gleich groß, und Bild, Kopf, Knöpfe und
+  jeder Punkt stehen in allen auf derselben Linie. Mit `buehne` (ein zweites Bildschirmfoto) steht das
+  Projekt zusätzlich unter dem Kopf; dort ist Platz für die ersten zwei.
 - **Version und Datum:** aus der ersten Überschrift `## [x.y.z] – JJJJ-MM-TT` im `CHANGELOG.md` des
   Repos, bei jedem Bau neu.
 - **Neues:** die letzten Versionen aus den CHANGELOGs, je Projekt höchstens zwei, zusammen vier. Als
