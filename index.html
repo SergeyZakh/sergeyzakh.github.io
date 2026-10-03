@@ -119,6 +119,9 @@
   .band-kopf p { margin: 0; font-size: 18px; line-height: 1.5; color: var(--schiefer); max-width: 42ch; text-wrap: pretty; }
   .band-kopf + .neues { border-top: 0; }
   .band-kopf + .kenntnisse .reihe { border-top: 0; padding-top: 0; }
+  /* Kontakt ist der Schluss und bleibt mittig: Titel und Satz untereinander, ohne Linie darunter */
+  #kontakt .band-kopf { flex-direction: column; align-items: center; gap: 16px; text-align: center; padding-bottom: 0; border-bottom: 0; }
+  #kontakt .band-kopf p { max-width: 46ch; text-wrap: balance; }
 
   /* ---------- Projekte als Karten ----------
      Gleich große Karten nebeneinander. Jede Karte ist ein Subgrid über die Zeilen des Rasters: Bild, Kopf,
@@ -216,7 +219,7 @@
   /* Kontakt und Fuß bilden zusammen den dunklen Schluss. Zwei gleich breite Knöpfe; GitHub gefüllt,
      weil es der bevorzugte Weg ist. */
   .band.nacht { border-top: 0; padding-bottom: 56px; }
-  .kontakt { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 12px; width: max-content; }
+  .kontakt { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 12px; width: max-content; margin: 0 auto; }
   .kontakt a {
     display: flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 24px 0 20px;
     border: 1px solid var(--linie-fest); border-radius: 999px; font-size: 16px; font-weight: 500;
@@ -267,6 +270,7 @@
     .fuss nav a { padding: 10px 0; }
     .einleitung { margin-top: 40px; font-size: 21px; }
     .band-kopf { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 36px; padding-bottom: 20px; }
+    #kontakt .band-kopf { gap: 12px; padding-bottom: 0; }
     .band-kopf p { font-size: 16.5px; }
     .karten { column-gap: 20px; margin-bottom: -20px; }
     .projekt { margin-bottom: 20px; padding-bottom: 24px; border-radius: 16px; }
@@ -289,6 +293,11 @@
   @media (max-width: 560px) {
     .reihe { grid-template-columns: minmax(0, 1fr); row-gap: 10px; }
     .reihe dt { padding-top: 0; }
+    /* Für drei Pillen je Zeile zu schmal („Claude Code“ stieß an den Rand): ohne Pillen, Zeichen und Name
+       in zwei gleich breiten Spalten */
+    .reihe .liste { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
+    .reihe .liste span { justify-content: flex-start; padding: 0; border: 0; background: none; }
+    .reihe .liste svg { width: 16px; height: 16px; }
   }
   /* Auf dem Handy passen vier Knöpfe nicht in eine Zeile: dann zwei gleich breite Spalten statt einer
      ausgefransten zweiten Zeile */
