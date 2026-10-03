@@ -43,7 +43,7 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
   und unten in jedem Band. Kopf und Projekte stehen ohne Linie auf demselben Grund, dazwischen steht er nur einmal. Gemessen wird, was man sieht: im Kopf oben ab der Leiste, nicht ab dem Seitenrand.
 - **Stil:** Farben, Schrift und Maße wie Berichtsheft und Fundus (warmes Grau, Instrument Sans,
   Haarlinien). Farbe trägt Bedeutung: Grün veröffentlicht, Bernstein Vorabversion; daneben steht
-  immer ein Wort. Markenfarben nur in den Zeichen unter Kontakt (LinkedIn-Blau). Graue Schrift (`--schiefer`, `--leise`) hält auf jedem Grund, hell wie dunkel, mindestens
+  immer ein Wort. Keine Markenfarben, auch die Zeichen von GitHub und LinkedIn unter Kontakt stehen einfarbig. Graue Schrift (`--schiefer`, `--leise`) hält auf jedem Grund, hell wie dunkel, mindestens
   4,5 : 1 Kontrast; wer ein Grau oder einen Grund ändert, rechnet das nach. Browser-JavaScript mit `var` und Funktionen, Skripte unter `skripte/` modernes Node.
 - **Hell und dunkel über `data-theme` an `<html>`**, nicht über `prefers-color-scheme` im CSS: Ein kleines
   Skript im Kopf (`index.html` und `THEMA` in `rahmen.mjs`, beide gleich) setzt die gespeicherte Wahl oder die
@@ -51,7 +51,7 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
 - **Auf der Mittelachse:** Kopf, Abschnittsköpfe (Titel und Satz untereinander) und Fuß stehen mittig.
   Die Kenntnisse bleiben ein Raster aus gleich breiten Spalten (am PC fünf Subgrid-Spalten, darunter eine Tabelle).
 - **Symmetrie ist Pflicht, nicht Geschmack:** Gleichartige Container stehen gleich groß nebeneinander
-  (Projektkarten, Kontaktkacheln, Kenntnis-Kacheln, Zeilen unter „Neues“, Karten und Vergleich der
+  (Projektkarten, Kontaktknöpfe, Kenntnis-Kacheln, Zeilen unter „Neues“, Karten und Vergleich der
   Docs-Übersicht, Blättern-Kacheln), und Linien zwischen Angaben liegen in allen Karten auf derselben
   y-Koordinate. Die Projektkarten sind dafür Subgrids mit 1fr-Zeilen für die Punkte. Nach jeder
   Änderung messen statt schätzen, von 1920 bis 320 px: Breite, Höhe und die y der Linien je Karte.

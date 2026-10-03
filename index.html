@@ -81,10 +81,8 @@
   .leiste a:hover { color: var(--text); }
   /* Der Abschnitt, in dem man gerade ist (Skript unten) */
   .leiste a.aktiv { color: var(--text); background: var(--hauch); }
-  .leiste a.marke { padding: 7px 12px 7px 14px; color: var(--text); }
   /* Docs ist eine eigene Seite, kein Abschnitt hier: abgesetzt */
   .leiste .trenner { width: 1px; height: 18px; margin: 0 4px; background: var(--linie); }
-  .leiste .sz { width: 30px; height: auto; }
   /* Hell oder dunkel: ein runder Knopf am Ende der Leiste, das Zeichen zeigt, wohin es wechselt */
   .leiste .thema { display: grid; place-items: center; width: 34px; height: 34px; margin-left: 2px; padding: 0; border: 0; border-radius: 999px; background: none; color: var(--schiefer); cursor: pointer; }
   .leiste .thema:hover { color: var(--text); background: var(--hauch); }
@@ -206,25 +204,19 @@
   }
 
   /* ---------- Kontakt ---------- */
-  /* Zwei gleich große Kacheln: links das Zeichen, daneben Name und Adresse, rechts der Pfeil im Kreis, alles auf
-     denselben Linien. Das Zeichen in der Farbe des Dienstes, das Wort steht daneben. */
-  .kontakt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 16px; }
+  /* Kontakt und Fuß bilden zusammen den dunklen Schluss. Zwei gleich breite Knöpfe; GitHub gefüllt,
+     weil es der bevorzugte Weg ist. */
+  .band.nacht { border-top: 0; padding-bottom: 56px; }
+  .kontakt { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 12px; width: max-content; margin: 0 auto; }
   .kontakt a {
-    display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: 24px; align-items: center;
-    padding: 32px 32px 30px; border: 1px solid var(--linie); border-radius: 18px; background: var(--grund); transition: border-color .2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 24px 0 20px;
+    border: 1px solid var(--linie-fest); border-radius: 999px; font-size: 16px; font-weight: 500;
+    transition: background .2s, color .2s, border-color .2s;
   }
-  .kontakt a:hover { border-color: var(--linie-fest); }
-  .kontakt .zeichen { grid-column: 1; grid-row: 1 / span 2; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 14px; }
-  .kontakt .zeichen svg { width: 28px; height: 28px; fill: currentColor; }
-  .kontakt .github { background: var(--text); color: var(--flaeche); }
-  .kontakt .linkedin { background: #0A66C2; color: #FFFFFF; }
-  .kontakt b { grid-column: 2; font-size: clamp(32px, 3.4vw, 44px); line-height: 1.05; font-weight: 600; letter-spacing: -.035em; }
-  .kontakt small { grid-column: 2; margin-top: 8px; font-size: 15px; color: var(--schiefer); overflow-wrap: anywhere; }
-  .kontakt .pfeil {
-    grid-column: 3; grid-row: 1 / span 2; display: grid; place-items: center; width: 52px; height: 52px;
-    border: 1px solid var(--linie-fest); border-radius: 50%; font-size: 20px; transition: background .2s, color .2s, border-color .2s;
-  }
-  .kontakt a:hover .pfeil { background: var(--text); border-color: var(--text); color: var(--grund); }
+  .kontakt a:hover { border-color: var(--text); }
+  .kontakt a:first-child { background: var(--text); border-color: var(--text); color: #16161A; }
+  .kontakt a:first-child:hover { background: #FFFFFF; border-color: #FFFFFF; }
+  .kontakt svg { width: 20px; height: 20px; fill: currentColor; }
   /* Dunkler Schluss im Fuß: dieselben Namen, andere Werte, so passt alles darin von selbst */
   .nacht {
     --text: #F3F2EE; --linie: rgba(243, 242, 238, .14); --linie-fest: rgba(243, 242, 238, .32);
@@ -240,7 +232,9 @@
     text-decoration: underline; text-decoration-color: var(--linie); text-underline-offset: 4px;
   }
   .fuss nav a:hover { color: var(--text); text-decoration-color: currentColor; }
-  .fuss .sz { order: -1; width: 112px; height: auto; color: var(--linie); }
+  /* Die Linie über dem Fuß reicht nur so weit wie der Inhalt, nicht über den Seitenrand */
+  .fuss-band .fuss { background: linear-gradient(var(--linie), var(--linie)) top center / calc(100% - 2 * var(--rand)) 1px no-repeat; }
+  .fuss .sz { order: -1; width: 112px; height: auto; color: var(--linie-fest); }
 
   @media (max-width: 1100px) {
     /* Für fünf Spalten zu schmal, und drei plus zwei wäre schief: eine Tabelle, links das Etikett in fester
@@ -258,8 +252,7 @@
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   @media (max-width: 860px) {
     /* Am Handy größere Tippflächen in der Leiste */
-    .leiste a, .leiste a.marke { padding-top: 10px; padding-bottom: 10px; }
-    .leiste a:not(.marke) { padding-left: 10px; padding-right: 10px; }
+    .leiste a { padding: 10px; }
     .fuss nav a { padding: 10px 0; }
     .einleitung { margin-top: 40px; font-size: 21px; }
     .band-kopf { gap: 12px; margin-bottom: 36px; }
@@ -278,13 +271,6 @@
     .neu b { grid-column: 1; grid-row: 2; font-size: 19px; }
     .neu .was { grid-column: 1; grid-row: 3; }
     .neu .pfeil { grid-column: 2; grid-row: 2; }
-    .kontakt { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-    .kontakt a { column-gap: 16px; padding: 22px 20px 20px 22px; border-radius: 14px; }
-    .kontakt .zeichen { width: 48px; height: 48px; border-radius: 12px; }
-    .kontakt .zeichen svg { width: 24px; height: 24px; }
-    .kontakt b { font-size: 30px; }
-    .kontakt small { margin-top: 4px; }
-    .kontakt .pfeil { width: 44px; height: 44px; font-size: 18px; }
     .fuss { padding-top: 40px; padding-bottom: 48px; }
     .reihe { grid-template-columns: 116px minmax(0, 1fr); column-gap: 16px; padding: 14px 0; }
   }
@@ -302,22 +288,15 @@
     .knopf.rund .wort { display: inline; }
   }
   /* Die Pille muss auch auf kleinen Handys in die Breite passen: erst ohne „Neues“ (folgt ohnehin
-     direkt auf die Projekte), dann enger, unter 400 px ohne SZ, unter 340 px noch enger */
+     direkt auf die Projekte), dann enger, unter 400 px ohne Trenner, unter 340 px noch enger */
   @media (max-width: 560px) { .leiste .neu-link { display: none; } }
   @media (max-width: 480px) {
-    .leiste a:not(.marke) { padding-left: 8px; padding-right: 8px; font-size: 13.5px; }
-    .leiste a.marke { padding-left: 10px; padding-right: 6px; }
-    .leiste .sz { width: 26px; }
+    .leiste a { padding-left: 8px; padding-right: 8px; font-size: 13.5px; }
   }
-  @media (max-width: 400px) { .leiste a.marke, .leiste .trenner { display: none; } }
-  @media (max-width: 340px) { .leiste a:not(.marke) { padding-left: 6px; padding-right: 6px; font-size: 13px; } .leiste .thema { width: 30px; } }
-  /* Sonst bricht „sergey-zakharov-jr“ um und die LinkedIn-Kachel wird höher als die von GitHub */
-  @media (max-width: 340px) {
-    .kontakt a { column-gap: 12px; padding-left: 18px; padding-right: 16px; }
-    .kontakt .zeichen { width: 40px; height: 40px; border-radius: 10px; }
-    .kontakt .zeichen svg { width: 20px; height: 20px; }
-    .kontakt .pfeil { width: 40px; height: 40px; }
-  }
+  @media (max-width: 400px) { .leiste .trenner { display: none; } }
+  @media (max-width: 340px) { .leiste a { padding-left: 6px; padding-right: 6px; font-size: 13px; } .leiste .thema { width: 30px; } }
+  /* Schmale Handys: die Knöpfe untereinander, beide über die volle Breite */
+  @media (max-width: 400px) { .kontakt { grid-auto-flow: row; width: auto; } }
 
 </style>
 </head>
@@ -326,7 +305,6 @@
 
 <div class="leiste">
   <nav aria-label="Abschnitte">
-    <a class="marke" href="#" aria-label="Nach oben"><svg class="sz" viewBox="0 0 159 89"><use href="#sz"/></svg></a>
     <a href="#projekte">Projekte</a>
     <a href="#neues" class="neu-link">Neues</a>
     <a href="#kenntnisse">Kenntnisse</a>
@@ -361,11 +339,11 @@
     </dl>
   </div></section>
 
-  <section id="kontakt" class="band flaeche"><div class="breite">
+  <section id="kontakt" class="band nacht"><div class="breite">
     <header class="band-kopf"><h2>Kontakt</h2><p>Zu den Projekten am besten über GitHub, sonst über LinkedIn.</p></header>
     <div class="kontakt">
-      <a href="https://github.com/SergeyZakh"><span class="zeichen github" aria-hidden="true"><svg><use href="#github"/></svg></span><b>GitHub</b><small>SergeyZakh</small><span class="pfeil" aria-hidden="true">↗</span></a>
-      <a href="https://www.linkedin.com/in/sergey-zakharov-jr/"><span class="zeichen linkedin" aria-hidden="true"><svg><use href="#linkedin"/></svg></span><b>LinkedIn</b><small>sergey-zakharov-jr</small><span class="pfeil" aria-hidden="true">↗</span></a>
+      <a href="https://github.com/SergeyZakh"><svg aria-hidden="true"><use href="#github"/></svg>GitHub ↗</a>
+      <a href="https://www.linkedin.com/in/sergey-zakharov-jr/"><svg aria-hidden="true"><use href="#linkedin"/></svg>LinkedIn ↗</a>
     </div>
   </div></section>
 </main>
@@ -390,7 +368,7 @@
   });
   // Die Leiste zeigt, in welchem Abschnitt man gerade ist
   (function () {
-    var links = Array.prototype.slice.call(document.querySelectorAll('.leiste a[href^="#"]:not(.marke)'));
+    var links = Array.prototype.slice.call(document.querySelectorAll('.leiste a[href^="#"]'));
     var ziele = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
     function markieren() {
       var aktiv = -1;

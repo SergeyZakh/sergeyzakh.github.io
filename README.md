@@ -31,10 +31,10 @@ Höhe liest der Bau selbst. Bilder unter 1400 Pixel Breite stehen schmaler, dami
 ## Startseite
 
 `index.html` ist die Vorlage. Von oben: das SZ aus Quadraten statt des Namens (der steht für Vorleser im Bild), ein Satz und
-zwei Knöpfe (mittig), dann Projekte, Neues, Kenntnisse, Kontakt (GitHub und LinkedIn mit ihren Zeichen)
-und dunkel der Fuß. Kopf und Projekte stehen ohne Linie auf demselben Grund, danach wechseln weiß und
-grau mit Haarlinie dazwischen. Die
-Leiste oben springt dorthin (unter 560 px ohne „Neues“, damit sie in die Breite passt); ihr letzter Knopf
+zwei Knöpfe (mittig), dann Projekte, Neues und Kenntnisse. Kontakt und Fuß bilden zusammen einen dunklen
+Schluss: zwei gleich breite Knöpfe zu GitHub und LinkedIn, darunter eine Haarlinie und der Fuß mit dem SZ.
+Kopf und Projekte stehen ohne Linie auf demselben Grund, danach wechseln weiß und grau mit Haarlinie
+dazwischen. Die Leiste oben (ohne Logo, nur die Abschnitte) springt dorthin (unter 560 px ohne „Neues“, damit sie in die Breite passt); ihr letzter Knopf
 schaltet zwischen hell und dunkel, die Wahl gilt auch in den Docs.
 Kopf, Abschnittsköpfe und Fuß stehen mittig. Die Kenntnisse
 stehen nur in `angaben.mjs`: Nach einer
