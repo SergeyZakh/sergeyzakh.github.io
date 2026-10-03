@@ -50,6 +50,17 @@
   // ---------- Inhaltsverzeichnis folgt dem Lesen ----------
   var toc = document.querySelector(".toc");
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+  // Dieselben Abschnitte stehen links unter der markierten Seite. Sichtbar sind sie nur, wenn das
+  // Inhaltsverzeichnis rechts fehlt (schmales Fenster, Schublade am Handy), siehe docs.css.
+  var hier = document.querySelector(".seiten a[aria-current]");
+  var leisteLinks = [];
+  if (tocLinks.length && hier) {
+    var abschnitte = toc.querySelector("ul").cloneNode(true);
+    abschnitte.className = "abschnitte";
+    abschnitte.setAttribute("aria-label", "Auf dieser Seite");
+    hier.parentNode.appendChild(abschnitte);
+    leisteLinks = Array.prototype.slice.call(abschnitte.querySelectorAll("a"));
+  }
   if (tocLinks.length) {
     var ziele = tocLinks.map(function (a) { return document.getElementById(a.getAttribute("href").slice(1)); });
     var aktiv = -1;
@@ -61,7 +72,10 @@
       if (neu === aktiv) return;
       aktiv = neu;
       tocLinks.forEach(function (a, i) { a.classList.toggle("aktiv", i === aktiv); });
+      leisteLinks.forEach(function (a, i) { a.classList.toggle("aktiv", i === aktiv); });
       zeigen(toc, tocLinks[aktiv]);
+      // offsetParent ist null, solange die Abschnitte links ausgeblendet sind
+      if (leisteLinks[aktiv] && leisteLinks[aktiv].offsetParent) zeigen(seiten, leisteLinks[aktiv]);
     };
     addEventListener("scroll", markieren, { passive: true });
     markieren();
@@ -73,11 +87,13 @@
     var setzen = function (offen) {
       document.body.classList.toggle("menue-offen", offen);
       menue.setAttribute("aria-expanded", String(offen));
-      if (offen) zeigen(seiten, document.querySelector('.seiten a[aria-current]'));
+      if (offen) zeigen(seiten, document.querySelector(".seiten .abschnitte a.aktiv") || document.querySelector('.seiten a[aria-current]'));
     };
     menue.addEventListener("click", function () { setzen(!document.body.classList.contains("menue-offen")); });
     document.addEventListener("click", function (e) {
-      if (document.body.classList.contains("menue-offen") && !e.target.closest(".seiten, [data-menue]")) setzen(false);
+      if (!document.body.classList.contains("menue-offen")) return;
+      // Ein Abschnitt dieser Seite schließt die Schublade, sonst verdeckte sie, wohin man springt
+      if (!e.target.closest(".seiten, [data-menue]") || e.target.closest(".abschnitte a")) setzen(false);
     });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") setzen(false); });
   }

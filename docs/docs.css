@@ -144,6 +144,13 @@ body.mit-leiste {
 .seiten li a[aria-current] { color: var(--text); background: var(--flaeche); font-weight: 500; box-shadow: var(--schatten); }
 .gruppe { margin: 22px 0 6px; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--leise); }
 .seiten li.unter { padding: 10px 0 2px; font-size: 12.5px; color: var(--leise); }
+/* Abschnitte der offenen Seite (setzt docs.js ein), nur ohne Inhaltsverzeichnis rechts sichtbar.
+   Gleiche Haarlinie wie rechts; die Linie steht auf der Textkante der Seiteneinträge. */
+.seiten .abschnitte { display: none; list-style: none; margin: 2px 0 8px; padding: 0; border-left: 1px solid var(--linie); }
+.seiten .abschnitte a { margin-left: -1px; padding: 4px 0 4px 14px; border-left: 1px solid transparent; border-radius: 0; font-size: 13.5px; }
+.seiten .abschnitte .stufe-3 a { padding-left: 26px; font-size: 13px; }
+.seiten .abschnitte a:hover { background: none; }
+.seiten .abschnitte a.aktiv { color: var(--text); border-left-color: var(--text); }
 .anderes { margin: 22px 0 0; padding: 16px 0 0; border-top: 1px solid var(--linie); font-size: 13.5px; color: var(--leise); }
 .anderes a { margin-left: 6px; }
 
@@ -349,6 +356,7 @@ dialog.suche::backdrop { background: rgba(22, 22, 26, .25); backdrop-filter: blu
 @media (max-width: 1180px) {
   .raster { grid-template-columns: 248px minmax(0, 1fr); gap: 48px; }
   .toc { display: none; }
+  .seiten .abschnitte { display: block; }
   body.mit-leiste {
     --l: calc(var(--rand) + 248px + 24px);
     background: linear-gradient(90deg, var(--seite) var(--l), var(--linie) var(--l), var(--linie) calc(var(--l) + 1px), var(--grund) calc(var(--l) + 1px)) fixed;
