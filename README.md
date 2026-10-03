@@ -61,7 +61,8 @@ im Stil der Startseite:
   seiner Karte, gleichnamige Seiten nebeneinander, ein Strich, wo eine Gruppe fehlt; eine Gruppe, die nur
   ein Projekt hat (Handbuch), über die volle Breite in Vierern
 - Seitenleiste und Inhaltsverzeichnis auf einem etwas dunkleren Ton; hell und dunkel umschaltbar
-- Seitenleiste je Projekt, rechts ein Inhaltsverzeichnis, das beim Lesen mitläuft
+- Seitenleiste je Projekt, scrollt ohne sichtbaren Balken und blendet unten weich aus; rechts ein
+  Inhaltsverzeichnis, das beim Lesen mitläuft
 - Suche mit `Strg` + `K` über alle Docs; Treffer im Projekt, in dem man liest, zuerst. Den Index
   schreibt der Bau, er lädt erst beim Suchen.
 - Hinweise wie `> [!TIP]`, Code mit Kopieren-Knopf, Bilder aus den Repos

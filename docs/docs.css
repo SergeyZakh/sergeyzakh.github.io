@@ -108,6 +108,13 @@ kbd {
    Rand, damit der Text trotzdem auf der Linie von Logo und Kopf steht. Links überstehende Kinder
    würde die scrollende Leiste abschneiden, deshalb der Innenabstand an ihr selbst. */
 .seiten { margin-left: -12px; padding-left: 12px; }
+/* Die Seitenleiste scrollt ohne sichtbaren Balken; unten blendet sie über den Innenabstand weich aus,
+   damit man sieht, dass noch mehr kommt, und der letzte Eintrag am Ende trotzdem voll dasteht. */
+.seiten {
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
+}
 .haupt { min-width: 0; max-width: 780px; width: 100%; justify-self: center; padding: 40px 0 88px; }
 /* Seitenleiste und Inhaltsverzeichnis auf einem etwas dunkleren Ton, über die ganze Höhe und bis an den
    Fensterrand, mit einer Haarlinie zum Text. Die Kanten liegen mitten in den Lücken des Rasters (56 px):
@@ -361,6 +368,7 @@ dialog.suche::backdrop { background: rgba(22, 22, 26, .25); backdrop-filter: blu
     position: fixed; top: var(--kopf); left: 0; bottom: 0; z-index: 30; height: auto; width: min(330px, 88vw);
     margin-left: 0; padding: 24px var(--rand) 40px; background: var(--grund); border-right: 1px solid var(--linie); box-shadow: var(--schatten-hoch);
     transform: translateX(-105%); visibility: hidden; transition: transform .22s ease, visibility .22s;
+    -webkit-mask-image: none; mask-image: none;
   }
   .menue-offen .seiten { transform: none; visibility: visible; }
   .menue-offen::after { content: ""; position: fixed; inset: var(--kopf) 0 0; z-index: 25; background: rgba(22, 22, 26, .25); }
