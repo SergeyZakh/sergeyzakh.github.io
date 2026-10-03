@@ -48,7 +48,9 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
 - **Hell und dunkel über `data-theme` an `<html>`**, nicht über `prefers-color-scheme` im CSS: Ein kleines
   Skript im Kopf (`index.html` und `THEMA` in `rahmen.mjs`, beide gleich) setzt die gespeicherte Wahl oder die
   des Systems, bevor gezeichnet wird. Dunkle Farben stehen unter `:root[data-theme="dunkel"]`.
-- **Auf der Mittelachse:** Kopf, Abschnittsköpfe (Titel und Satz untereinander) und Fuß stehen mittig.
+- **Mitte und Kante:** Kopf und Fuß stehen mittig. Abschnittsköpfe sind geteilt, Titel links und Satz rechts auf
+  einer Grundlinie, darunter eine Haarlinie; sie ersetzt die obere Linie des Inhalts darunter, damit nie zwei Linien
+  übereinander stehen. Unter 860 px steht der Satz unter dem Titel, beide links.
   Die Kenntnisse bleiben ein Raster aus gleich breiten Spalten (am PC fünf Subgrid-Spalten, darunter eine Tabelle).
 - **Symmetrie ist Pflicht, nicht Geschmack:** Gleichartige Container stehen gleich groß nebeneinander
   (Projektkarten, Kontaktknöpfe, Kenntnis-Kacheln, Zeilen unter „Neues“, Karten und Vergleich der

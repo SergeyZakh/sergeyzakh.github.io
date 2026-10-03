@@ -36,7 +36,7 @@ Schluss: zwei gleich breite Knöpfe zu GitHub und LinkedIn, darunter eine Haarli
 Kopf und Projekte stehen ohne Linie auf demselben Grund, danach wechseln weiß und grau mit Haarlinie
 dazwischen. Die Leiste oben (ohne Logo, nur die Abschnitte) springt dorthin (unter 560 px ohne „Neues“, damit sie in die Breite passt); ihr letzter Knopf
 schaltet zwischen hell und dunkel, die Wahl gilt auch in den Docs.
-Kopf, Abschnittsköpfe und Fuß stehen mittig. Die Kenntnisse
+Kopf und Fuß stehen mittig, die Abschnitte beginnen mit dem Titel links und einem Satz rechts. Die Kenntnisse
 stehen nur in `angaben.mjs`: Nach einer
 Änderung schreibt `node skripte/erzeugen.mjs` sie in die Seite und in die Karte unter `karte/`, die
 das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Vor jedem Namen steht sein Zeichen aus

@@ -109,10 +109,16 @@
   .band.flaeche { background: var(--flaeche); }
   /* Das erste Band folgt direkt auf den Kopf, auf demselben Grund und ohne Linie */
   #projekte { border-top: 0; }
-  /* Titel und Satz mittig untereinander: alles auf der Mittelachse */
-  .band-kopf { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; margin-bottom: 56px; }
+  /* Geteilter Kopf: Titel links, Satz rechts auf derselben Grundlinie, darunter eine Haarlinie. Sie ersetzt die
+     obere Linie dessen, was folgt (Neues, Kenntnisse), sonst stünden zwei Linien übereinander. */
+  .band-kopf {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 48px;
+    margin-bottom: 56px; padding-bottom: 28px; border-bottom: 1px solid var(--linie);
+  }
   .band-kopf h2 { margin: 0; font-size: clamp(36px, 4vw, 52px); line-height: 1; font-weight: 600; letter-spacing: -.035em; }
-  .band-kopf p { margin: 0; font-size: 18px; line-height: 1.5; color: var(--schiefer); max-width: 46ch; text-wrap: balance; }
+  .band-kopf p { margin: 0; font-size: 18px; line-height: 1.5; color: var(--schiefer); max-width: 42ch; text-wrap: pretty; }
+  .band-kopf + .neues { border-top: 0; }
+  .band-kopf + .kenntnisse .reihe { border-top: 0; padding-top: 0; }
 
   /* ---------- Projekte als Karten ----------
      Gleich große Karten nebeneinander. Jede Karte ist ein Subgrid über die Zeilen des Rasters: Bild, Kopf,
@@ -210,7 +216,7 @@
   /* Kontakt und Fuß bilden zusammen den dunklen Schluss. Zwei gleich breite Knöpfe; GitHub gefüllt,
      weil es der bevorzugte Weg ist. */
   .band.nacht { border-top: 0; padding-bottom: 56px; }
-  .kontakt { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 12px; width: max-content; margin: 0 auto; }
+  .kontakt { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 12px; width: max-content; }
   .kontakt a {
     display: flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 24px 0 20px;
     border: 1px solid var(--linie-fest); border-radius: 999px; font-size: 16px; font-weight: 500;
@@ -244,6 +250,8 @@
        Breite, rechts die Kacheln, jede Zeile zwischen zwei Linien */
     .kenntnisse { grid-template-columns: minmax(0, 1fr); }
     .reihe { grid-row: auto; grid-template-rows: none; grid-template-columns: 200px minmax(0, 1fr); column-gap: 24px; padding: 16px 0; }
+    .band-kopf + .kenntnisse .reihe { padding-top: 16px; }
+    .band-kopf + .kenntnisse .reihe + .reihe { border-top: 1px solid var(--linie); }
     .reihe:last-child { border-bottom: 1px solid var(--linie); }
     .reihe dt { padding-top: 8px; }
     .reihe dd { margin: 0; }
@@ -258,7 +266,7 @@
     .leiste a { padding: 10px; }
     .fuss nav a { padding: 10px 0; }
     .einleitung { margin-top: 40px; font-size: 21px; }
-    .band-kopf { gap: 12px; margin-bottom: 36px; }
+    .band-kopf { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 36px; padding-bottom: 20px; }
     .band-kopf p { font-size: 16.5px; }
     .karten { column-gap: 20px; margin-bottom: -20px; }
     .projekt { margin-bottom: 20px; padding-bottom: 24px; border-radius: 16px; }
