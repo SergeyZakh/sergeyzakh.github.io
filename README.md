@@ -39,7 +39,9 @@ schaltet zwischen hell und dunkel, die Wahl gilt auch in den Docs.
 Kopf, Abschnittsköpfe und Fuß stehen mittig. Die Kenntnisse
 stehen nur in `angaben.mjs`: Nach einer
 Änderung schreibt `node skripte/erzeugen.mjs` sie in die Seite und in die Karte unter `karte/`, die
-das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Den Projektteil zwischen
+das Profil [SergeyZakh](https://github.com/SergeyZakh) von hier lädt. Vor jedem Namen steht sein Zeichen aus
+`zeichen.mjs` (Simple Icons, CC0) in der Farbe des Herstellers; eine neue Kenntnis braucht dort einen Eintrag,
+sonst bricht `erzeugen.mjs` ab. Den Projektteil zwischen
 `<!-- projekte:… -->` setzt erst der Bau ein, zusammen mit „Neues“; die fertige Seite liegt danach
 in `_site/`.
 

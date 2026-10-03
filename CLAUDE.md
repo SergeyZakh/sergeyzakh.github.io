@@ -9,7 +9,7 @@ Erst lesen: [README.md](README.md).
 ```bash
 npm ci
 node skripte/quellen-holen.mjs   # Repos der Projekte nach quellen/
-node skripte/erzeugen.mjs        # angaben.mjs → Profilkarte und Kenntnisse in index.html
+node skripte/erzeugen.mjs        # angaben.mjs, zeichen.mjs → Profilkarte und Kenntnisse in index.html
 node skripte/seite-bauen.mjs     # alles nach _site/
 node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Action nicht
 ```
@@ -43,7 +43,7 @@ node skripte/seite-pruefen.mjs   # muss grün sein, sonst veröffentlicht die Ac
   und unten in jedem Band. Kopf und Projekte stehen ohne Linie auf demselben Grund, dazwischen steht er nur einmal. Gemessen wird, was man sieht: im Kopf oben ab der Leiste, nicht ab dem Seitenrand.
 - **Stil:** Farben, Schrift und Maße wie Berichtsheft und Fundus (warmes Grau, Instrument Sans,
   Haarlinien). Farbe trägt Bedeutung: Grün veröffentlicht, Bernstein Vorabversion; daneben steht
-  immer ein Wort. Keine Markenfarben, auch die Zeichen von GitHub und LinkedIn unter Kontakt stehen einfarbig. Graue Schrift (`--schiefer`, `--leise`) hält auf jedem Grund, hell wie dunkel, mindestens
+  immer ein Wort. Markenfarben nur in den kleinen Zeichen vor den Kenntnissen (`zeichen.mjs`); schwarze Zeichen bekommen dort keine Farbe, sonst verschwänden sie im dunklen Modus. Die Zeichen von GitHub und LinkedIn unter Kontakt stehen einfarbig. Graue Schrift (`--schiefer`, `--leise`) hält auf jedem Grund, hell wie dunkel, mindestens
   4,5 : 1 Kontrast; wer ein Grau oder einen Grund ändert, rechnet das nach. Browser-JavaScript mit `var` und Funktionen, Skripte unter `skripte/` modernes Node.
 - **Hell und dunkel über `data-theme` an `<html>`**, nicht über `prefers-color-scheme` im CSS: Ein kleines
   Skript im Kopf (`index.html` und `THEMA` in `rahmen.mjs`, beide gleich) setzt die gespeicherte Wahl oder die

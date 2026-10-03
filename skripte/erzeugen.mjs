@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { zahlen, angaben, kontakt } from '../angaben.mjs';
 import { projekte } from '../projekte.mjs';
+import { zeichen } from '../zeichen.mjs';
 
 const wurzel = join(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -180,8 +181,14 @@ const kenntnisse = angaben
   .filter((a) => a && KENNTNISSE[a[0]])
   .sort((a, b) => reihenfolge.indexOf(KENNTNISSE[a[0]]) - reihenfolge.indexOf(KENNTNISSE[b[0]]))
   .map(([k, v]) => {
-    // Jede Kenntnis ein eigenes Element, das CSS setzt sie als Kacheln
-    const eintraege = v.split(',').map((e) => `<span>${esc(AUSGESCHRIEBEN[e.trim()] || e.trim())}</span>`);
+    // Jede Kenntnis ein eigenes Element, das CSS setzt sie als Kacheln; davor ihr Zeichen aus zeichen.mjs
+    const eintraege = v.split(',').map((e) => {
+      const name = AUSGESCHRIEBEN[e.trim()] || e.trim();
+      const z = zeichen[name];
+      if (!z) throw new Error(`Kein Zeichen für „${name}“ in zeichen.mjs`);
+      const farbe = z.farbe ? ` style="--farbe: ${z.farbe}"` : '';
+      return `<span${farbe}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${z.d}"/></svg>${esc(name)}</span>`;
+    });
     return `      <div class="reihe"><dt>${esc(KENNTNISSE[k])}</dt><dd><span class="liste">${eintraege.join('')}</span></dd></div>`;
   }).join('\n');
 
